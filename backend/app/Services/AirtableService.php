@@ -20,65 +20,107 @@ class AirtableService
         $this->tableName = config('services.airtable.table_name');
     }
 
-    public function getAllRecords()
+    // 🔥 MEJORADO: Método que obtiene TODOS los registros (sin límite de 100)
+    public function getRecords()
     {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}";
+        $allRecords = [];
+        $offset = null;
+        $requestCount = 0;
+        $maxRequests = 20; // Protección contra loops infinitos
 
-        $response = Http::withHeaders([
-            'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-            'Content-Type'  => self::CONTENT_TYPE_JSON
-        ])->get($url);
+        do {
+            $requestCount++;
+            if ($requestCount > $maxRequests) {
+                \Log::warning("Airtable: Máximo número de requests alcanzado ({$maxRequests}). Total registros obtenidos: " . count($allRecords));
+                break;
+            }
 
-        if ($response->failed()) {
-            throw new AirtableException('Error al obtener los registros de Airtable: ' . $response->body());
-        }
+            $url = "https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}";
 
-        return $response->json();
+            $queryParams = [
+                'pageSize' => 100, // Máximo que permite Airtable
+            ];
+
+            if ($offset) {
+                $queryParams['offset'] = $offset;
+            }
+
+            \Log::info("Airtable request #{$requestCount}" . ($offset ? " con offset: {$offset}" : " (primera página)"));
+
+            $response = Http::withHeaders([
+                'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
+                'Content-Type'  => self::CONTENT_TYPE_JSON
+            ])->get($url, $queryParams);
+
+            if ($response->failed()) {
+                \Log::error('Error en petición a Airtable: ' . $response->body());
+                throw new \Exception('Error al obtener los registros de Airtable: ' . $response->body());
+            }
+
+            $data = $response->json();
+
+            // Agregar registros de esta página
+            if (isset($data['records']) && is_array($data['records'])) {
+                $allRecords = array_merge($allRecords, $data['records']);
+                \Log::info("Página #{$requestCount}: " . count($data['records']) . " registros. Total acumulado: " . count($allRecords));
+            }
+
+            // Verificar si hay más páginas
+            $offset = $data['offset'] ?? null;
+
+        } while ($offset !== null && $requestCount < $maxRequests);
+
+        \Log::info("Airtable: Carga completa. Total registros: " . count($allRecords) . " en {$requestCount} requests");
+
+        return [
+            'records' => $allRecords,
+            'total' => count($allRecords),
+            'requests_made' => $requestCount,
+            'has_more' => ($offset !== null) // Si quedó un offset, significa que hay más
+        ];
     }
 
     public function getRecord($id)
     {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}/{$id}";
-
         $response = Http::withHeaders([
             'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-            'Content-Type' => self::CONTENT_TYPE_JSON
-        ])->get($url);
+            'Content-Type'  => self::CONTENT_TYPE_JSON
+        ])->get("https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}/{$id}");
 
         if ($response->failed()) {
-            throw new AirtableException('Error al obtener el registro de Airtable: ' . $response->body());
+            throw new \Exception('Error al obtener el registro de Airtable: ' . $response->body());
         }
 
         return $response->json();
     }
 
-    public function createRecord($fields)
+    public function createRecord($data)
     {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}";
-
         $response = Http::withHeaders([
             'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-            'Content-Type' => self::CONTENT_TYPE_JSON,
-        ])->post($url, ['fields' => $fields]);
+            'Content-Type'  => self::CONTENT_TYPE_JSON
+        ])->post("https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}", [
+            'fields' => $data
+        ]);
 
         if ($response->failed()) {
-            throw new AirtableException('Error al crear el registro en Airtable: ' . $response->body());
+            throw new \Exception('Error al crear el registro en Airtable: ' . $response->body());
         }
 
         return $response->json();
     }
 
-    public function updateRecord($id, $fields)
+    public function updateRecord($id, $data)
     {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}/{$id}";
-
         $response = Http::withHeaders([
             'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-            'Content-Type' => self::CONTENT_TYPE_JSON,
-        ])->patch($url, ['fields' => $fields]);
+            'Content-Type'  => self::CONTENT_TYPE_JSON
+        ])->patch("https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}/{$id}", [
+            'fields' => $data
+        ]);
 
         if ($response->failed()) {
-            throw new AirtableException('Error al actualizar el registro en Airtable: ' . $response->body());
+            throw new \Exception('Error al actualizar el registro en Airtable: ' . $response->body());
         }
 
         return $response->json();
@@ -86,15 +128,13 @@ class AirtableService
 
     public function deleteRecord($id)
     {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}/{$id}";
-
         $response = Http::withHeaders([
             'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-            'Content-Type' => self::CONTENT_TYPE_JSON
-        ])->delete($url);
+            'Content-Type'  => self::CONTENT_TYPE_JSON
+        ])->delete("https://api.airtable.com/v0/{$this->baseId}/{$this->tableName}/{$id}");
 
         if ($response->failed()) {
-            throw new AirtableException('Error al eliminar el registro en Airtable: ' . $response->body());
+            throw new \Exception('Error al eliminar el registro de Airtable: ' . $response->body());
         }
 
         return $response->json();
