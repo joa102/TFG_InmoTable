@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, map, catchError, of } from 'rxjs';
+import { Observable, map, catchError, of, switchMap } from 'rxjs';
 import { environment } from '../../environments/environment'; // ✅ IMPORTAR ENVIRONMENT
 import {
   Propiedad,
@@ -42,55 +42,89 @@ export class PropiedadesService {
    * Obtener todas las propiedades con filtros opcionales
    */
   getAll(filters?: PropertyFilters): Observable<PropertyListResponse> {
+    // Si hay filtros, usar el método original (sin paginación para mantener compatibilidad)
+    if (filters && this.hasActiveFilters(filters)) {
+      return this.getAllWithFilters(filters);
+    }
+
+    // Sin filtros, obtener TODAS las propiedades con paginación
+    return this.getAllRecordsRecursive().pipe(
+      map(allRecords => ({
+        success: true,
+        data: allRecords,
+        total: allRecords.length
+      })),
+      catchError(error => {
+        console.error('Error al obtener todas las propiedades:', error);
+        return of({
+          success: false,
+          data: [],
+          total: 0,
+          message: 'Error al cargar las propiedades'
+        });
+      })
+    );
+  }
+
+  /**
+   * ✅ MÉTODO AUXILIAR - Verificar si hay filtros activos
+   */
+  private hasActiveFilters(filters: PropertyFilters): boolean {
+    return !!(filters.tipo || filters.estado || filters.precioMin || filters.precioMax ||
+              filters.zona || filters.habitaciones || filters.superficieMin ||
+              filters.superficieMax || filters.banos);
+  }
+
+  /**
+   * ✅ MÉTODO AUXILIAR - getAll con filtros (método original)
+   */
+  private getAllWithFilters(filters: PropertyFilters): Observable<PropertyListResponse> {
     let url = `${this.airtableApiUrl}/${this.baseId}/${this.tableName}`;
 
     const params: string[] = [];
+    const filterFormulas: string[] = [];
 
-    if (filters) {
-      const filterFormulas: string[] = [];
+    if (filters.tipo) {
+      filterFormulas.push(`{Tipo} = "${filters.tipo}"`);
+    }
 
-      if (filters.tipo) {
-        filterFormulas.push(`{Tipo} = "${filters.tipo}"`);
-      }
+    if (filters.estado) {
+      filterFormulas.push(`{Estado} = "${filters.estado}"`);
+    }
 
-      if (filters.estado) {
-        filterFormulas.push(`{Estado} = "${filters.estado}"`);
-      }
+    if (filters.precioMin) {
+      filterFormulas.push(`{Precio} >= ${filters.precioMin}`);
+    }
 
-      if (filters.precioMin) {
-        filterFormulas.push(`{Precio} >= ${filters.precioMin}`);
-      }
+    if (filters.precioMax) {
+      filterFormulas.push(`{Precio} <= ${filters.precioMax}`);
+    }
 
-      if (filters.precioMax) {
-        filterFormulas.push(`{Precio} <= ${filters.precioMax}`);
-      }
+    if (filters.zona) {
+      filterFormulas.push(`FIND("${filters.zona}", {Dirección}) > 0`);
+    }
 
-      if (filters.zona) {
-        filterFormulas.push(`FIND("${filters.zona}", {Dirección}) > 0`);
-      }
+    if (filters.habitaciones) {
+      filterFormulas.push(`{Habitaciones} >= ${filters.habitaciones}`);
+    }
 
-      if (filters.habitaciones) {
-        filterFormulas.push(`{Habitaciones} >= ${filters.habitaciones}`);
-      }
+    if (filters.superficieMin) {
+      filterFormulas.push(`{Superficie} >= ${filters.superficieMin}`);
+    }
 
-      if (filters.superficieMin) {
-        filterFormulas.push(`{Superficie} >= ${filters.superficieMin}`);
-      }
+    if (filters.superficieMax) {
+      filterFormulas.push(`{Superficie} <= ${filters.superficieMax}`);
+    }
 
-      if (filters.superficieMax) {
-        filterFormulas.push(`{Superficie} <= ${filters.superficieMax}`);
-      }
+    if (filters.banos) {
+      filterFormulas.push(`{Baños} >= ${filters.banos}`);
+    }
 
-      if (filters.banos) {
-        filterFormulas.push(`{Baños} >= ${filters.banos}`);
-      }
-
-      if (filterFormulas.length > 0) {
-        const formula = filterFormulas.length === 1
-          ? filterFormulas[0]
-          : `AND(${filterFormulas.join(', ')})`;
-        params.push(`filterByFormula=${encodeURIComponent(formula)}`);
-      }
+    if (filterFormulas.length > 0) {
+      const formula = filterFormulas.length === 1
+        ? filterFormulas[0]
+        : `AND(${filterFormulas.join(', ')})`;
+      params.push(`filterByFormula=${encodeURIComponent(formula)}`);
     }
 
     params.push('sort[0][field]=Fecha de Registro');
@@ -100,7 +134,6 @@ export class PropiedadesService {
       url += '?' + params.join('&');
     }
 
-    // ✅ ARREGLAR EL TIPO CORRECTO
     return this.http.get<AirtableResponse<PropiedadFields>>(url, { headers: this.headers })
       .pipe(
         map(response => ({
@@ -109,7 +142,7 @@ export class PropiedadesService {
             id: record.id,
             fields: record.fields,
             createdTime: record.createdTime
-          })) as Propiedad[], // ✅ CAST CORRECTO
+          })) as Propiedad[],
           total: response.records.length
         })),
         catchError(error => {
@@ -122,6 +155,37 @@ export class PropiedadesService {
           });
         })
       );
+  }
+
+  /**
+   * ✅ MÉTODO RECURSIVO PARA OBTENER TODOS LOS REGISTROS
+   */
+  private getAllRecordsRecursive(offset?: string, accumulatedRecords: Propiedad[] = []): Observable<Propiedad[]> {
+    let url = `${this.airtableApiUrl}/${this.baseId}/${this.tableName}?sort[0][field]=Fecha de Registro&sort[0][direction]=desc&pageSize=100`;
+
+    if (offset) {
+      url += `&offset=${offset}`;
+    }
+
+    return this.http.get<AirtableResponse<PropiedadFields>>(url, { headers: this.headers }).pipe(
+      switchMap(response => {
+        const newRecords = response.records.map(record => ({
+          id: record.id,
+          fields: record.fields,
+          createdTime: record.createdTime
+        })) as Propiedad[];
+
+        const allRecords = [...accumulatedRecords, ...newRecords];
+
+        // Si hay más páginas, continuar recursivamente
+        if (response.offset) {
+          return this.getAllRecordsRecursive(response.offset, allRecords);
+        }
+
+        // Si no hay más páginas, devolver todos los registros
+        return of(allRecords);
+      })
+    );
   }
 
   /**
