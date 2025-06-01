@@ -7,7 +7,7 @@
           <div>
             <h4 class="mb-1">
               <i class="fas fa-home me-3"></i>
-              Propiedades Disponibles
+              Propiedades
             </h4>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb mb-0">
@@ -72,9 +72,11 @@
                 <option value="">Todos</option>
                 <option value="Piso">Piso</option>
                 <option value="Casa">Casa</option>
-                <option value="Apartamento">Apartamento</option>
-                <option value="Chalet">Chalet</option>
                 <option value="Dúplex">Dúplex</option>
+                <option value="Ático">Ático</option>
+                <option value="Garaje">Garaje</option>
+                <option value="Local">Local</option>
+                <option value="Terreno">Terreno</option>
               </select>
             </div>
 
@@ -109,8 +111,8 @@
               <select class="form-select" [(ngModel)]="filterStatus" (change)="applyFilters()">
                 <option value="">Todos</option>
                 <option value="Disponible">Disponible</option>
-                <option value="Vendido">Vendido</option>
-                <option value="Alquilado">Alquilado</option>
+                <option value="Vendida">Vendida</option>
+                <option value="Alquilada">Alquilada</option>
               </select>
             </div>
 
