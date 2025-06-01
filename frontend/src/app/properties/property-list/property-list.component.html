@@ -1,0 +1,296 @@
+<h2>Listado de propiedades</h2>
+
+<div class="property-list-container">
+
+  <!-- 🔝 HEADER CON BÚSQUEDA -->
+  <div class="list-header">
+    <div class="header-content">
+      <h1>Propiedades</h1>
+      <p class="subtitle">{{ mensajeResultados }}</p>
+    </div>
+
+    <div class="header-actions">
+      <!-- 🔍 BÚSQUEDA -->
+      <div class="search-box">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar propiedades..."
+          [value]="terminoBusqueda"
+          (input)="onSearchChange($any($event.target).value)">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+
+      <!-- ➕ NUEVA PROPIEDAD (Solo agentes/admin) -->
+      <button
+        *ngIf="canEditProperties"
+        class="btn btn-primary"
+        (click)="nuevaPropiedad()">
+        <i class="fas fa-plus"></i>
+        Nueva Propiedad
+      </button>
+    </div>
+  </div>
+
+  <!-- 🔧 FILTROS Y CONTROLES -->
+  <div class="controls-section">
+    <div class="filters-controls">
+      <!-- 🎛️ TOGGLE FILTROS -->
+      <button
+        class="btn btn-outline-secondary"
+        (click)="toggleFiltros()">
+        <i class="fas fa-filter"></i>
+        Filtros
+        <span *ngIf="hayFiltrosActivos" class="badge bg-primary ms-2">Activos</span>
+      </button>
+
+      <!-- 🗂️ VISTA -->
+      <div class="view-toggle">
+        <button
+          class="btn btn-sm"
+          [class.btn-primary]="vistaActual === 'grid'"
+          [class.btn-outline-secondary]="vistaActual !== 'grid'"
+          (click)="cambiarVista('grid')">
+          <i class="fas fa-th"></i>
+        </button>
+        <button
+          class="btn btn-sm"
+          [class.btn-primary]="vistaActual === 'list'"
+          [class.btn-outline-secondary]="vistaActual !== 'list'"
+          (click)="cambiarVista('list')">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+
+      <!-- 📊 ORDENAMIENTO -->
+      <div class="sort-controls">
+        <select
+          class="form-select form-select-sm"
+          (change)="ordenarPor($any($event.target).value)">
+          <option value="">Ordenar por...</option>
+          <option value="Precio">Precio</option>
+          <option value="Superficie">Superficie</option>
+          <option value="Fecha de Registro">Fecha</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 🧹 LIMPIAR FILTROS -->
+    <button
+      *ngIf="hayFiltrosActivos"
+      class="btn btn-outline-danger btn-sm"
+      (click)="limpiarFiltros()">
+      <i class="fas fa-times"></i>
+      Limpiar filtros
+    </button>
+  </div>
+
+  <!-- 🎛️ PANEL DE FILTROS -->
+  <div class="filters-panel" [class.show]="mostrarFiltros">
+    <div class="filters-content">
+      <div class="row">
+
+        <!-- 🏠 TIPO -->
+        <div class="col-md-3">
+          <label class="form-label">Tipo de propiedad</label>
+          <select
+            class="form-select"
+            [value]="filtros.tipo || ''"
+            (change)="filtros.tipo = $any($event.target).value; aplicarFiltros()">
+            <option value="">Todos los tipos</option>
+            <option *ngFor="let tipo of tiposDisponibles" [value]="tipo">
+              {{ tipo }}
+            </option>
+          </select>
+        </div>
+
+        <!-- 📍 ZONA -->
+        <div class="col-md-3">
+          <label class="form-label">Zona</label>
+          <select
+            class="form-select"
+            [value]="filtros.zona || ''"
+            (change)="filtros.zona = $any($event.target).value; aplicarFiltros()">
+            <option value="">Todas las zonas</option>
+            <option *ngFor="let zona of zonasDisponibles" [value]="zona">
+              {{ zona }}
+            </option>
+          </select>
+        </div>
+
+        <!-- 🛏️ HABITACIONES -->
+        <div class="col-md-2">
+          <label class="form-label">Habitaciones</label>
+          <select
+            class="form-select"
+            [value]="filtros.habitaciones || ''"
+            (change)="filtros.habitaciones = $any($event.target).value ? +$any($event.target).value : undefined; aplicarFiltros()">
+            <option value="">Cualquiera</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5+</option>
+          </select>
+        </div>
+
+        <!-- PRECIO RANGO -->
+        <div class="col-md-6">
+          <div class="filter-group">
+            <h6>Rango de Precio</h6>
+            <div class="row g-2">
+              <div class="col">
+                <label class="form-label">Precio mínimo</label>
+                <input type="number"
+                       class="form-control"
+                       placeholder="Mín. €"
+                       [value]="precioMin || ''"
+                       (change)="precioMin = $any($event.target).value ? +$any($event.target).value : null; filtrarPorPrecio()">
+              </div>
+              <div class="col">
+                <label class="form-label">Precio máximo</label>
+                <input type="number"
+                       class="form-control"
+                       placeholder="Máx. €"
+                       [value]="precioMax || ''"
+                       (change)="precioMax = $any($event.target).value ? +$any($event.target).value : null; filtrarPorPrecio()">
+              </div>
+            </div>
+
+            <!-- 🔥 Solo mostrar rango si NO hay filtros activos -->
+            <small *ngIf="!hayFiltrosActivos && rangoPrecios.min < rangoPrecios.max" class="text-muted">
+              Rango disponible: {{ rangoPrecios.min | currency:'EUR':'symbol':'1.0-0' }} -
+              {{ rangoPrecios.max | currency:'EUR':'symbol':'1.0-0' }}
+            </small>
+
+            <!-- 🔥 Mostrar filtros aplicados -->
+            <small *ngIf="precioMin !== null || precioMax !== null" class="text-primary">
+              <i class="fas fa-filter me-1"></i>
+              <span *ngIf="precioMin !== null">Mín: {{ precioMin | currency:'EUR':'symbol':'1.0-0' }}</span>
+              <span *ngIf="precioMin !== null && precioMax !== null"> - </span>
+              <span *ngIf="precioMax !== null">Máx: {{ precioMax | currency:'EUR':'symbol':'1.0-0' }}</span>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🚨 ESTADOS -->
+  <div *ngIf="loadingState.loading" class="loading-state">
+    <div class="d-flex justify-content-center align-items-center py-5">
+      <div class="spinner-border text-primary me-3" role="status"></div>
+      <span>Cargando propiedades...</span>
+    </div>
+  </div>
+
+  <div *ngIf="loadingState.error" class="alert alert-danger" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    {{ loadingState.error }}
+    <button class="btn btn-outline-danger btn-sm ms-3" (click)="loadProperties()">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- 📋 LISTADO DE PROPIEDADES -->
+  <div *ngIf="!loadingState.loading && !loadingState.error" class="properties-content">
+
+    <!-- 🔢 RESULTADOS VACÍOS -->
+    <div *ngIf="!hayResultados" class="empty-state">
+      <div class="text-center py-5">
+        <i class="fas fa-home fa-3x text-muted mb-3"></i>
+        <h4>No se encontraron propiedades</h4>
+        <p class="text-muted mb-4">
+          {{ hayFiltrosActivos ? 'Intenta ajustar los filtros de búsqueda' : 'No hay propiedades disponibles en este momento' }}
+        </p>
+        <button
+          *ngIf="hayFiltrosActivos"
+          class="btn btn-primary"
+          (click)="limpiarFiltros()">
+          Limpiar filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- 🏠 GRID DE PROPIEDADES -->
+    <div *ngIf="hayResultados" class="properties-grid">
+      <div class="row">
+        <div
+          *ngFor="let propiedad of propiedadesPaginadas"
+          class="col-lg-4 col-md-6 col-sm-12 mb-4">
+
+          <div class="property-card" (click)="verDetalle(propiedad)">
+            <div class="property-content">
+              <h5>{{ formatearPropiedad(propiedad).titulo }}</h5>
+              <p class="price">{{ formatearPropiedad(propiedad).precio }}</p>
+              <p class="location">
+                <i class="fas fa-map-marker-alt"></i>
+                {{ formatearPropiedad(propiedad).direccion }}
+              </p>
+
+              <div class="property-features">
+                <span *ngIf="formatearPropiedad(propiedad).habitaciones">
+                  <i class="fas fa-bed"></i>
+                  {{ formatearPropiedad(propiedad).habitaciones }}
+                </span>
+                <span *ngIf="formatearPropiedad(propiedad).banos">
+                  <i class="fas fa-bath"></i>
+                  {{ formatearPropiedad(propiedad).banos }}
+                </span>
+                <span>
+                  <i class="fas fa-expand-arrows-alt"></i>
+                  {{ formatearPropiedad(propiedad).superficie }}m²
+                </span>
+              </div>
+
+              <div class="property-actions">
+                <button
+                  class="btn btn-sm btn-primary"
+                  (click)="$event.stopPropagation(); solicitarCita(propiedad)">
+                  Ver más
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="$event.stopPropagation(); contactarPropiedad(propiedad)">
+                  Contactar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 📄 PAGINACIÓN -->
+      <nav *ngIf="totalPaginas > 1" class="pagination-container">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="paginaActual === 1">
+            <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">
+              ‹ Anterior
+            </button>
+          </li>
+
+          <li
+            *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
+            class="page-item"
+            [class.active]="paginaActual === i + 1">
+            <button class="page-link" (click)="cambiarPagina(i + 1)">
+              {{ i + 1 }}
+            </button>
+          </li>
+
+          <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+            <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">
+              Siguiente ›
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<button mat-fab color="primary" class="add-button" (click)="goToCreate()">
+  <mat-icon>add</mat-icon>
+</button>
+
+

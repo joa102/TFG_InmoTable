@@ -1,30 +1,58 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\CitaController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\AgenteController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API Routes - ARQUITECTURA HÍBRIDA
+| - Autenticación: Laravel (SQLite)
+| - Datos: Airtable
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// 🔥 RUTAS DE AUTENTICACIÓN (Laravel SQLite)
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::get('user', [AuthController::class, 'user'])->middleware('auth:sanctum');
+    Route::post('sync', [AuthController::class, 'syncWithAirtable'])->middleware('auth:sanctum');
 });
 
-// Define una constante para la ruta base de propiedades
-const PROPIEDADES_BASE = '/propiedades';
+// 🔥 RUTAS PÚBLICAS (Airtable data)
+Route::apiResource('propiedades', PropertyController::class)->only(['index', 'show']);
 
-Route::get(PROPIEDADES_BASE, [PropertyController::class, 'index']);
-Route::get(PROPIEDADES_BASE . '/{id}', [PropertyController::class, 'show']);
-Route::post(PROPIEDADES_BASE, [PropertyController::class, 'store']);
-Route::put(PROPIEDADES_BASE . '/{id}', [PropertyController::class, 'update']);
-Route::delete(PROPIEDADES_BASE . '/{id}', [PropertyController::class, 'destroy']);
+// 🔥 RUTAS PROTEGIDAS (requieren autenticación Laravel)
+Route::middleware('auth:sanctum')->group(function () {
+
+    // Gestión completa de propiedades para admin/agentes
+    Route::apiResource('propiedades', PropertyController::class)->except(['index', 'show']);
+
+    // Gestión de citas (Airtable)
+    Route::apiResource('citas', CitaController::class);
+    Route::post('citas/{cita}/confirmar', [CitaController::class, 'confirmar']);
+    Route::post('citas/{cita}/cancelar', [CitaController::class, 'cancelar']);
+
+    // Gestión de clientes (Airtable)
+    Route::apiResource('clientes', ClienteController::class);
+    Route::get('clientes/{cliente}/propiedades-interes', [ClienteController::class, 'propiedadesInteres']);
+    Route::post('clientes/{cliente}/agregar-interes/{propiedad}', [ClienteController::class, 'agregarInteres']);
+    Route::delete('clientes/{cliente}/quitar-interes/{propiedad}', [ClienteController::class, 'quitarInteres']);
+
+    // Gestión de agentes (Airtable)
+    Route::apiResource('agentes', AgenteController::class);
+    Route::get('agentes/{agente}/clientes', [AgenteController::class, 'clientes']);
+
+    // Rutas específicas para usuarios logueados
+    Route::get('mis-citas', [CitaController::class, 'misCitas']);
+    Route::get('mis-propiedades-interes', [ClienteController::class, 'misPropiedadesInteres']);
+});
+
+// 🔥 RUTAS DE CONTACTO (públicas - Airtable)
+Route::post('contacto', [PropertyController::class, 'enviarContacto']);
+Route::post('solicitar-cita', [CitaController::class, 'solicitarCita']);

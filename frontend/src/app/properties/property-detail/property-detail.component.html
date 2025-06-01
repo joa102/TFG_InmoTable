@@ -1,0 +1,317 @@
+<div class="property-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container d-flex flex-column align-items-center justify-content-center py-5">
+    <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+    <p class="mt-3 text-muted">Cargando datos de la propiedad...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+      <h4 class="alert-heading">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        Error
+      </h4>
+      <p class="mb-3">{{ error }}</p>
+      <button class="btn btn-outline-danger" (click)="goBack()">
+        <i class="fas fa-arrow-left me-2"></i>
+        Volver a la lista
+      </button>
+    </div>
+  </div>
+
+  <!-- Property Content -->
+  <div *ngIf="property && !loading && !error" class="container-fluid">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/propiedades" class="text-decoration-none">
+            <i class="fas fa-home me-1"></i>
+            Propiedades
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ getFieldAsString('Título') || 'Detalle de propiedad' }}
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="property-header mb-5">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="property-title display-5 fw-bold mb-2">
+            {{ getFieldAsString('Título') || 'Propiedad sin título' }}
+          </h1>
+          <div class="property-price fs-2 fw-bold text-primary mb-3">
+            {{ formatPrice(getFieldAsNumber('Precio')) }}
+          </div>
+          <div class="property-location text-muted">
+            <i class="fas fa-map-marker-alt me-2"></i>
+            {{ getFieldAsString('Dirección') || 'Ubicación no especificada' }}
+          </div>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <div class="property-quick-info">
+            <div class="row g-2">
+              <div class="col-auto" *ngIf="getFieldAsNumber('Habitaciones')">
+                <div class="info-badge">
+                  <i class="fas fa-bed text-primary"></i>
+                  <span class="ms-1">{{ getFieldAsNumber('Habitaciones') }} hab.</span>
+                </div>
+              </div>
+              <div class="col-auto" *ngIf="getFieldAsNumber('Baños')">
+                <div class="info-badge">
+                  <i class="fas fa-bath text-primary"></i>
+                  <span class="ms-1">{{ getFieldAsNumber('Baños') }} baños</span>
+                </div>
+              </div>
+              <div class="col-auto" *ngIf="getFieldAsNumber('Superficie')">
+                <div class="info-badge">
+                  <i class="fas fa-expand-arrows-alt text-primary"></i>
+                  <span class="ms-1">{{ getFieldAsNumber('Superficie') }} m²</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Left Column: Images and Description -->
+      <div class="col-lg-8">
+
+        <!-- Image Gallery -->
+        <div class="property-gallery">
+
+          <!-- Caso 1: Hay imágenes -->
+          <div *ngIf="hasImages; else noImagesTemplate">
+            <div class="main-image-container position-relative">
+              <img
+                [src]="getCurrentImage()"
+                [alt]="getFieldAsString('Título') || 'Imagen de la propiedad'"
+                class="main-image img-fluid rounded"
+                style="width: 100%; height: 500px; object-fit: cover;"
+                (error)="onImageError($event)"
+              />
+
+              <!-- Navigation Arrows -->
+              <button *ngIf="getTotalImages() > 1"
+                      class="btn btn-dark btn-sm position-absolute top-50 start-0 translate-middle-y ms-3"
+                      (click)="previousImage()"
+                      aria-label="Imagen anterior">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button *ngIf="getTotalImages() > 1"
+                      class="btn btn-dark btn-sm position-absolute top-50 end-0 translate-middle-y me-3"
+                      (click)="nextImage()"
+                      aria-label="Imagen siguiente">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+
+              <!-- Image Counter -->
+              <div *ngIf="getTotalImages() > 1"
+                   class="position-absolute bottom-0 end-0 bg-dark bg-opacity-75 text-white px-2 py-1 m-3 rounded">
+                {{ currentImageIndex + 1 }} / {{ getTotalImages() }}
+              </div>
+            </div>
+
+            <!-- Thumbnails -->
+            <div *ngIf="getTotalImages() > 1" class="thumbnails mt-3">
+              <div class="row g-2">
+                <div class="col-2" *ngFor="let image of getAllImages(); let i = index">
+                  <img
+                    [src]="image.thumbnails?.small?.url || image.url"
+                    [alt]="'Imagen ' + (i + 1)"
+                    class="img-fluid rounded cursor-pointer thumbnail-img"
+                    [class.active]="i === currentImageIndex"
+                    (click)="selectImage(i)"
+                    (error)="onThumbnailError($event, i)"
+                    style="height: 80px; object-fit: cover; cursor: pointer;"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Caso 2: No hay imágenes -->
+          <ng-template #noImagesTemplate>
+            <div class="no-images-container text-center py-5">
+              <div class="alert alert-light border">
+                <i class="fas fa-image fa-3x mb-3 text-muted"></i>
+                <h5 class="text-muted">No hay imágenes disponibles</h5>
+                <p class="mb-0 text-muted">Esta propiedad no tiene imágenes asociadas.</p>
+              </div>
+
+              <img
+                src="/assets/images/no-image.jpg"
+                alt="Sin imagen disponible"
+                class="img-fluid rounded"
+                style="max-width: 400px; opacity: 0.7;"
+                (error)="onPlaceholderError($event)"
+              />
+            </div>
+          </ng-template>
+
+        </div>
+
+        <!-- Description Section -->
+        <div class="description-section mb-5">
+          <h3 class="mb-3">
+            <i class="fas fa-align-left text-primary me-2"></i>
+            Descripción
+          </h3>
+          <div class="description-content p-4 bg-light rounded">
+            <p class="mb-0">
+              {{ getFieldAsString('Descripción') || 'No hay descripción disponible para esta propiedad.' }}
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Property Details -->
+      <div class="col-lg-4">
+
+        <!-- Property Information Card -->
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-info-circle me-2"></i>
+              Información de la propiedad
+            </h5>
+          </div>
+          <div class="card-body">
+            <table class="table table-borderless mb-0">
+              <tbody>
+                <tr *ngIf="getFieldAsString('Tipo')">
+                  <td class="fw-semibold">Tipo:</td>
+                  <td>{{ getFieldAsString('Tipo') }}</td>
+                </tr>
+                <tr *ngIf="getFieldAsString('Estado')">
+                  <td class="fw-semibold">Estado:</td>
+                  <td>
+                    <span class="badge bg-success">{{ getFieldAsString('Estado') }}</span>
+                  </td>
+                </tr>
+                <tr *ngIf="getFieldAsNumber('Habitaciones')">
+                  <td class="fw-semibold">Habitaciones:</td>
+                  <td>{{ getFieldAsNumber('Habitaciones') }}</td>
+                </tr>
+                <tr *ngIf="getFieldAsNumber('Baños')">
+                  <td class="fw-semibold">Baños:</td>
+                  <td>{{ getFieldAsNumber('Baños') }}</td>
+                </tr>
+                <tr *ngIf="getFieldAsNumber('Superficie')">
+                  <td class="fw-semibold">Superficie:</td>
+                  <td>{{ getFieldAsNumber('Superficie') }} m²</td>
+                </tr>
+                <tr *ngIf="getFieldAsNumber('Año Construcción')">
+                  <td class="fw-semibold">Año construcción:</td>
+                  <td>{{ getFieldAsNumber('Año Construcción') }}</td>
+                </tr>
+                <tr *ngIf="getFieldAsNumber('Precio') && getFieldAsNumber('Superficie')">
+                  <td class="fw-semibold">Precio/m²:</td>
+                  <td class="text-primary fw-semibold">{{ getPricePerSquareMeter() }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer">
+            <div class="text-center">
+              <div class="h4 text-primary fw-bold mb-0">
+                {{ formatPrice(getFieldAsNumber('Precio')) }}
+              </div>
+              <small class="text-muted">Precio total</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- ✅ CLASIFICACIÓN ENERGÉTICA - NUEVO -->
+        <div class="mb-4" *ngIf="hasEnergyInfo()">
+          <app-energy-rating
+            [data]="getEnergyRatingData()"
+            [showConsumption]="true"
+            size="medium">
+          </app-energy-rating>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons mb-4">
+          <button class="btn btn-primary btn-lg mb-3 w-100" (click)="requestAppointment()">
+            <i class="fas fa-calendar-alt me-2"></i>
+            Solicitar Cita
+          </button>
+          <button class="btn btn-outline-primary btn-lg w-100" (click)="contactAboutProperty()">
+            <i class="fas fa-envelope me-2"></i>
+            Más Información
+          </button>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="card">
+          <div class="card-header">
+            <h6 class="card-title mb-0">
+              <i class="fas fa-chart-line me-2"></i>
+              Estadísticas
+            </h6>
+          </div>
+          <div class="card-body">
+            <div class="row text-center">
+              <div class="col-6">
+                <div class="border-end">
+                  <div class="h5 text-primary mb-0">{{ getFieldAsNumber('Número de visitas') || 0 }}</div>
+                  <small class="text-muted">Visitas</small>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="h5 text-success mb-0">{{ getFieldAsString('Estado') }}</div>
+                <small class="text-muted">Estado</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-map-marker-alt me-2"></i>
+              Ubicación
+            </h5>
+            <button class="btn btn-sm btn-outline-primary" (click)="reinitializeMap()">
+              <i class="fas fa-redo me-1"></i>
+              Recargar mapa
+            </button>
+          </div>
+          <div class="card-body p-0">
+            <div id="propertyMap"></div>
+          </div>
+          <div class="card-footer text-muted">
+            <i class="fas fa-map-marker-alt me-2"></i>
+            {{ getFieldAsString('Dirección') || 'Ubicación no especificada' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="row mt-5 mb-5">
+      <div class="col-12">
+        <button class="btn btn-secondary btn-lg" (click)="goBack()">
+          <i class="fas fa-arrow-left me-2"></i>
+          Volver a la lista de propiedades
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

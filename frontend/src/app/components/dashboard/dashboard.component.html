@@ -1,0 +1,243 @@
+<div class="dashboard-container">
+
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1>Dashboard</h1>
+      <p class="subtitle">Panel de control del sistema inmobiliario</p>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-outline-primary" (click)="refreshData()">
+        <i class="fas fa-sync"></i>
+        Actualizar
+      </button>
+    </div>
+  </div>
+
+  <!-- ESTADOS DE CARGA -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="d-flex justify-content-center align-items-center py-5">
+      <div class="spinner-border text-primary me-3" role="status"></div>
+      <span>Cargando datos del dashboard...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    {{ error }}
+    <button class="btn btn-outline-danger btn-sm ms-3" (click)="refreshData()">Reintentar</button>
+  </div>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div *ngIf="!loading && !error" class="dashboard-content">
+
+    <!-- TARJETAS DE ESTADISTICAS -->
+    <div class="stats-grid">
+
+      <!-- PROPIEDADES -->
+      <div class="stat-card propiedades" *ngIf="isAdmin || isAgent">
+        <div class="stat-icon">
+          <i class="fas fa-home"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ totalPropiedades }}</div>
+          <div class="stat-label">Propiedades</div>
+          <div class="stat-trend positive">
+            <i class="fas fa-arrow-up"></i>
+            +5% este mes
+          </div>
+        </div>
+      </div>
+
+      <!-- CLIENTES -->
+      <div class="stat-card clientes" *ngIf="isAdmin || isAgent">
+        <div class="stat-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ totalClientes }}</div>
+          <div class="stat-label">Clientes</div>
+          <div class="stat-trend positive">
+            <i class="fas fa-arrow-up"></i>
+            +12% este mes
+          </div>
+        </div>
+      </div>
+
+      <!-- CITAS -->
+      <div class="stat-card citas">
+        <div class="stat-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ totalCitas }}</div>
+          <div class="stat-label">Citas</div>
+          <div class="stat-trend neutral">
+            <i class="fas fa-minus"></i>
+            Sin cambios
+          </div>
+        </div>
+      </div>
+
+      <!-- AGENTES -->
+      <div class="stat-card agentes" *ngIf="isAdmin">
+        <div class="stat-icon">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-number">{{ totalAgentes }}</div>
+          <div class="stat-label">Agentes</div>
+          <div class="stat-trend positive">
+            <i class="fas fa-arrow-up"></i>
+            +2 nuevos
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WIDGETS -->
+    <div class="widgets-grid">
+
+      <!-- GRAFICO: CITAS POR ESTADO -->
+      <div class="widget chart-widget" *ngIf="(isAdmin || isAgent) && citasPorEstado.length > 0">
+        <div class="widget-header">
+          <h3>Citas por Estado</h3>
+        </div>
+        <div class="chart-container">
+          <div *ngFor="let item of citasPorEstado" class="chart-item">
+            <div class="chart-bar" [style.background-color]="item.color" [style.height.%]="(item.value / 20) * 100"></div>
+            <div class="chart-label">{{ item.label }}</div>
+            <div class="chart-value">{{ item.value }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRAFICO: PROPIEDADES POR TIPO -->
+      <div class="widget chart-widget" *ngIf="isAdmin && propiedadesPorTipo.length > 0">
+        <div class="widget-header">
+          <h3>Propiedades por Tipo</h3>
+        </div>
+        <div class="chart-container">
+          <div *ngFor="let item of propiedadesPorTipo" class="chart-item">
+            <div class="chart-bar" [style.background-color]="item.color" [style.height.%]="(item.value / 10) * 100"></div>
+            <div class="chart-label">{{ item.label }}</div>
+            <div class="chart-value">{{ item.value }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CITAS PROXIMAS -->
+      <div class="widget list-widget" *ngIf="citasProximas.length > 0">
+        <div class="widget-header">
+          <h3>Proximas Citas</h3>
+        </div>
+        <div class="list-container">
+          <div *ngFor="let cita of citasProximas" class="list-item">
+            <div class="list-content">
+              <div class="list-title">Cita #{{ cita.id }}</div>
+              <div class="list-subtitle">
+                {{ cita.fields['Fecha y Hora'] | date:'dd/MM/yyyy HH:mm' }}
+              </div>
+              <div class="list-badge"
+                [class]="'bg-' + getEstadoBadgeClass(cita.fields.Estado)">
+                {{ cita.fields.Estado }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROPIEDADES DESTACADAS -->
+      <div class="widget grid-widget" *ngIf="propiedadesDestacadas.length > 0">
+        <div class="widget-header">
+          <h3>Propiedades Destacadas</h3>
+        </div>
+        <div class="grid-container">
+          <div *ngFor="let propiedad of propiedadesDestacadas" class="grid-item">
+            <div class="property-card" (click)="navigateToProperty(propiedad.id)">
+              <div class="property-content">
+                <h5>{{ propiedad.fields.Titulo }}</h5>
+                <p class="property-description">{{ propiedad.fields.Descripcion }}</p>
+                <div class="property-details">
+                  <div class="property-price">
+                    {{ propiedad.fields.Precio | currency:'EUR':'symbol':'1.0-0' }}
+                  </div>
+                  <div class="property-size">
+                    {{ propiedad.fields.Superficie }}m²
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCIONES RAPIDAS -->
+    <div class="quick-actions">
+      <h3>Acciones Rapidas</h3>
+
+      <div class="actions-grid">
+        <a *ngIf="isAdmin || isAgent"
+           routerLink="/propiedades"
+           class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="action-content">
+            <div class="action-title">Gestionar Propiedades</div>
+            <div class="action-subtitle">Ver y editar propiedades</div>
+          </div>
+        </a>
+
+        <a *ngIf="isAdmin || isAgent"
+           routerLink="/citas"
+           class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-calendar"></i>
+          </div>
+          <div class="action-content">
+            <div class="action-title">Gestionar Citas</div>
+            <div class="action-subtitle">Programar y revisar citas</div>
+          </div>
+        </a>
+
+        <a routerLink="/clientes"
+           class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="action-content">
+            <div class="action-title">Ver Clientes</div>
+            <div class="action-subtitle">Lista de clientes</div>
+          </div>
+        </a>
+
+        <a *ngIf="isAdmin"
+           routerLink="/agentes"
+           class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <div class="action-content">
+            <div class="action-title">Gestionar Agentes</div>
+            <div class="action-subtitle">Administrar equipo</div>
+          </div>
+        </a>
+
+        <a *ngIf="isAdmin"
+           routerLink="/reportes"
+           class="action-card">
+          <div class="action-icon">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <div class="action-content">
+            <div class="action-title">Ver Reportes</div>
+            <div class="action-subtitle">Analisis y estadisticas</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

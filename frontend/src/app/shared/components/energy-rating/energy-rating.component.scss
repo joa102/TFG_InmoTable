@@ -1,0 +1,315 @@
+.energy-rating-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  .energy-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+
+    i {
+      color: #27ae60;
+    }
+  }
+}
+
+.energy-chart {
+  .energy-scale {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 1rem;
+  }
+
+  .energy-level {
+    position: relative;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateX(5px);
+    }
+
+    &.active {
+      transform: translateX(10px);
+
+      .energy-arrow {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 2px solid #fff;
+      }
+    }
+  }
+
+  .energy-arrow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    border-radius: 0 25px 25px 0;
+    color: white;
+    font-weight: 600;
+    min-height: 40px;
+    transition: all 0.3s ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: -15px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+    }
+
+    .energy-letter {
+      font-size: 1.2rem;
+      font-weight: 700;
+      min-width: 30px;
+    }
+
+    .energy-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+}
+
+// Colores específicos para cada nivel
+.level-a {
+  .energy-arrow {
+    background: linear-gradient(135deg, #00a651, #27ae60);
+    &::after { border-left-color: #27ae60; }
+  }
+}
+
+.level-b {
+  .energy-arrow {
+    background: linear-gradient(135deg, #4cb748, #2ecc71);
+    &::after { border-left-color: #2ecc71; }
+  }
+}
+
+.level-c {
+  .energy-arrow {
+    background: linear-gradient(135deg, #8bc441, #8bc34a);
+    &::after { border-left-color: #8bc34a; }
+  }
+}
+
+.level-d {
+  .energy-arrow {
+    background: linear-gradient(135deg, #f9ec31, #f1c40f);
+    &::after { border-left-color: #f1c40f; }
+    color: #2c3e50;
+  }
+}
+
+.level-e {
+  .energy-arrow {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    &::after { border-left-color: #e67e22; }
+  }
+}
+
+.level-f {
+  .energy-arrow {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+    &::after { border-left-color: #d35400; }
+  }
+}
+
+.level-g {
+  .energy-arrow {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    &::after { border-left-color: #c0392b; }
+  }
+}
+
+// Información de consumo
+.energy-consumption {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin-top: 1rem;
+  border: 1px solid #e9ecef;
+
+  .consumption-title {
+    color: #495057;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #dee2e6;
+    display: flex;
+    align-items: center;
+
+    i {
+      color: #007bff;
+      font-size: 0.9rem;
+    }
+  }
+
+  .consumption-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: rgba(0, 123, 255, 0.05);
+      border-radius: 6px;
+      margin: 0 -0.5rem;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .consumption-label {
+      color: #6c757d;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+
+      i {
+        font-size: 0.85rem;
+        margin-right: 8px !important;
+      }
+
+      sub {
+        font-size: 0.7rem;
+        margin-left: 1px;
+        font-weight: 600;
+      }
+    }
+
+    .consumption-value {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 0.95rem;
+      text-align: right;
+      min-width: 140px;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #dee2e6;
+    }
+  }
+
+  // Estilos específicos para cada tipo de consumo
+  .consumption-item:first-child .consumption-value {
+    background: rgba(255, 193, 7, 0.1);
+    border-color: rgba(255, 193, 7, 0.3);
+    color: #856404;
+  }
+
+  .consumption-item:last-child .consumption-value {
+    background: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
+    color: #155724;
+  }
+}
+
+// Badge del rating actual
+.current-rating {
+  margin-top: 1rem;
+  text-align: center;
+
+  .rating-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 20px;
+    border-radius: 50px;
+    color: white;
+    font-size: 1.1rem;
+    min-width: 120px;
+
+    strong {
+      font-size: 1.5rem;
+      margin-bottom: 2px;
+    }
+
+    span {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+  }
+
+  .badge-a { background: linear-gradient(135deg, #00a651, #27ae60); }
+  .badge-b { background: linear-gradient(135deg, #4cb748, #2ecc71); }
+  .badge-c { background: linear-gradient(135deg, #8bc441, #8bc34a); }
+  .badge-d { background: linear-gradient(135deg, #f9ec31, #f1c40f); color: #2c3e50; }
+  .badge-e { background: linear-gradient(135deg, #f39c12, #e67e22); }
+  .badge-f { background: linear-gradient(135deg, #e67e22, #d35400); }
+  .badge-g { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+}
+
+// Tamaños responsive
+@media (max-width: 768px) {
+  .energy-rating-container {
+    padding: 1rem;
+  }
+
+  .energy-arrow {
+    padding: 6px 12px !important;
+    min-height: 35px !important;
+
+    .energy-letter {
+      font-size: 1rem !important;
+    }
+
+    .energy-label {
+      font-size: 0.8rem !important;
+    }
+  }
+
+  .current-rating .rating-badge {
+    padding: 10px 16px;
+    min-width: 100px;
+
+    strong {
+      font-size: 1.3rem;
+    }
+  }
+}
+
+// Variante compacta
+.energy-rating-container.compact {
+  padding: 1rem;
+
+  .energy-arrow {
+    padding: 6px 12px;
+    min-height: 32px;
+
+    .energy-letter {
+      font-size: 1rem;
+    }
+
+    .energy-label {
+      font-size: 0.8rem;
+    }
+  }
+
+  .current-rating .rating-badge {
+    padding: 8px 16px;
+    font-size: 1rem;
+
+    strong {
+      font-size: 1.2rem;
+    }
+  }
+}

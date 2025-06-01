@@ -1,0 +1,308 @@
+// ===============================
+// MAPA - ESTILOS ESPECÍFICOS
+// ===============================
+
+#propertyMap {
+  height: 400px !important;
+  width: 100% !important;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+
+  // Asegurar que el mapa se vea correctamente
+  .leaflet-container {
+    height: 400px !important;
+    width: 100% !important;
+  }
+
+  // Estilos para el popup del mapa
+  .leaflet-popup-content {
+    margin: 8px;
+
+    .map-popup {
+      min-width: 200px;
+
+      h6 {
+        color: #333;
+        margin-bottom: 4px;
+      }
+
+      .text-muted {
+        font-size: 0.875rem;
+      }
+
+      .text-primary {
+        color: #0d6efd !important;
+      }
+    }
+  }
+}
+
+// ===============================
+// CONTENEDOR GENERAL
+// ===============================
+
+.property-detail-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+
+  .container-fluid {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+}
+
+// ===============================
+// LOADING STATE
+// ===============================
+
+.loading-container {
+  min-height: 60vh;
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+// ===============================
+// HEADER DE PROPIEDAD
+// ===============================
+
+.property-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  .property-title {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .property-price {
+    color: #e74c3c;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .property-location {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+
+    i {
+      color: #e74c3c;
+    }
+  }
+}
+
+// ===============================
+// INFO BADGES
+// ===============================
+
+.property-quick-info {
+  .info-badge {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    margin: 4px;
+    font-size: 0.9rem;
+
+    i {
+      margin-right: 6px;
+      color: #0d6efd;
+    }
+  }
+}
+
+// ===============================
+// GALERÍA DE IMÁGENES
+// ===============================
+
+.property-gallery {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  .main-image-container {
+    position: relative;
+
+    .main-image {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .btn {
+      opacity: 0.8;
+      transition: opacity 0.3s;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .thumbnails {
+    padding: 1rem;
+
+    .thumbnail-img {
+      border: 2px solid transparent;
+      border-radius: 6px;
+      transition: all 0.3s;
+
+      &:hover {
+        border-color: #0d6efd;
+        transform: scale(1.05);
+      }
+
+      &.active {
+        border-color: #0d6efd;
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+      }
+    }
+  }
+}
+
+// ===============================
+// DESCRIPCIÓN
+// ===============================
+
+.description-section {
+  .description-content {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+    p {
+      line-height: 1.6;
+      color: #495057;
+    }
+  }
+}
+
+// ===============================
+// CARDS LATERALES
+// ===============================
+
+.card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  .card-header {
+    border-radius: 12px 12px 0 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .card-footer {
+    border-radius: 0 0 12px 12px !important;
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+  }
+}
+
+// ===============================
+// BOTONES DE ACCIÓN
+// ===============================
+
+.action-buttons {
+  .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+// ===============================
+// BREADCRUMB
+// ===============================
+
+.breadcrumb {
+  background: white;
+  border-radius: 8px;
+  padding: 12px 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  .breadcrumb-item {
+    a {
+      color: #0d6efd;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &.active {
+      color: #6c757d;
+    }
+  }
+}
+
+// ===============================
+// RESPONSIVE
+// ===============================
+
+@media (max-width: 768px) {
+  .property-header {
+    text-align: center;
+
+    .property-price {
+      font-size: 2rem;
+    }
+  }
+
+  .property-gallery .main-image {
+    height: 300px;
+  }
+
+  #propertyMap {
+    height: 300px !important;
+
+    .leaflet-container {
+      height: 300px !important;
+    }
+  }
+}
+
+// ===============================
+// CURSOR POINTER PARA ELEMENTOS CLICKEABLES
+// ===============================
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// ===============================
+// ANIMACIONES
+// ===============================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.property-content {
+  animation: fadeIn 0.5s ease-in-out;
+}

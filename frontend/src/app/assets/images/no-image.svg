@@ -1,0 +1,12 @@
+<!-- filepath: frontend/src/assets/images/no-image.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#f8f9fa" stroke="#dee2e6" stroke-width="2"/>
+  <g transform="translate(200,150)">
+    <circle cx="0" cy="-10" r="25" fill="#6c757d"/>
+    <rect x="-15" y="15" width="30" height="20" fill="#6c757d"/>
+    <polygon points="-10,35 0,25 10,35" fill="#6c757d"/>
+  </g>
+  <text x="200" y="200" text-anchor="middle" fill="#6c757d" font-family="Arial" font-size="16">
+    Sin imagen disponible
+  </text>
+</svg>
