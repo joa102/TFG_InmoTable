@@ -1,296 +1,515 @@
-<h2>Listado de propiedades</h2>
-
-<div class="property-list-container">
-
-  <!-- 🔝 HEADER CON BÚSQUEDA -->
-  <div class="list-header">
-    <div class="header-content">
-      <h1>Propiedades</h1>
-      <p class="subtitle">{{ mensajeResultados }}</p>
-    </div>
-
-    <div class="header-actions">
-      <!-- 🔍 BÚSQUEDA -->
-      <div class="search-box">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Buscar propiedades..."
-          [value]="terminoBusqueda"
-          (input)="onSearchChange($any($event.target).value)">
-        <i class="fas fa-search search-icon"></i>
-      </div>
-
-      <!-- ➕ NUEVA PROPIEDAD (Solo agentes/admin) -->
-      <button
-        *ngIf="canEditProperties"
-        class="btn btn-primary"
-        (click)="nuevaPropiedad()">
-        <i class="fas fa-plus"></i>
-        Nueva Propiedad
-      </button>
-    </div>
-  </div>
-
-  <!-- 🔧 FILTROS Y CONTROLES -->
-  <div class="controls-section">
-    <div class="filters-controls">
-      <!-- 🎛️ TOGGLE FILTROS -->
-      <button
-        class="btn btn-outline-secondary"
-        (click)="toggleFiltros()">
-        <i class="fas fa-filter"></i>
-        Filtros
-        <span *ngIf="hayFiltrosActivos" class="badge bg-primary ms-2">Activos</span>
-      </button>
-
-      <!-- 🗂️ VISTA -->
-      <div class="view-toggle">
-        <button
-          class="btn btn-sm"
-          [class.btn-primary]="vistaActual === 'grid'"
-          [class.btn-outline-secondary]="vistaActual !== 'grid'"
-          (click)="cambiarVista('grid')">
-          <i class="fas fa-th"></i>
-        </button>
-        <button
-          class="btn btn-sm"
-          [class.btn-primary]="vistaActual === 'list'"
-          [class.btn-outline-secondary]="vistaActual !== 'list'"
-          (click)="cambiarVista('list')">
-          <i class="fas fa-list"></i>
-        </button>
-      </div>
-
-      <!-- 📊 ORDENAMIENTO -->
-      <div class="sort-controls">
-        <select
-          class="form-select form-select-sm"
-          (change)="ordenarPor($any($event.target).value)">
-          <option value="">Ordenar por...</option>
-          <option value="Precio">Precio</option>
-          <option value="Superficie">Superficie</option>
-          <option value="Fecha de Registro">Fecha</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- 🧹 LIMPIAR FILTROS -->
-    <button
-      *ngIf="hayFiltrosActivos"
-      class="btn btn-outline-danger btn-sm"
-      (click)="limpiarFiltros()">
-      <i class="fas fa-times"></i>
-      Limpiar filtros
-    </button>
-  </div>
-
-  <!-- 🎛️ PANEL DE FILTROS -->
-  <div class="filters-panel" [class.show]="mostrarFiltros">
-    <div class="filters-content">
-      <div class="row">
-
-        <!-- 🏠 TIPO -->
-        <div class="col-md-3">
-          <label class="form-label">Tipo de propiedad</label>
-          <select
-            class="form-select"
-            [value]="filtros.tipo || ''"
-            (change)="filtros.tipo = $any($event.target).value; aplicarFiltros()">
-            <option value="">Todos los tipos</option>
-            <option *ngFor="let tipo of tiposDisponibles" [value]="tipo">
-              {{ tipo }}
-            </option>
-          </select>
-        </div>
-
-        <!-- 📍 ZONA -->
-        <div class="col-md-3">
-          <label class="form-label">Zona</label>
-          <select
-            class="form-select"
-            [value]="filtros.zona || ''"
-            (change)="filtros.zona = $any($event.target).value; aplicarFiltros()">
-            <option value="">Todas las zonas</option>
-            <option *ngFor="let zona of zonasDisponibles" [value]="zona">
-              {{ zona }}
-            </option>
-          </select>
-        </div>
-
-        <!-- 🛏️ HABITACIONES -->
-        <div class="col-md-2">
-          <label class="form-label">Habitaciones</label>
-          <select
-            class="form-select"
-            [value]="filtros.habitaciones || ''"
-            (change)="filtros.habitaciones = $any($event.target).value ? +$any($event.target).value : undefined; aplicarFiltros()">
-            <option value="">Cualquiera</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5+</option>
-          </select>
-        </div>
-
-        <!-- PRECIO RANGO -->
-        <div class="col-md-6">
-          <div class="filter-group">
-            <h6>Rango de Precio</h6>
-            <div class="row g-2">
-              <div class="col">
-                <label class="form-label">Precio mínimo</label>
-                <input type="number"
-                       class="form-control"
-                       placeholder="Mín. €"
-                       [value]="precioMin || ''"
-                       (change)="precioMin = $any($event.target).value ? +$any($event.target).value : null; filtrarPorPrecio()">
-              </div>
-              <div class="col">
-                <label class="form-label">Precio máximo</label>
-                <input type="number"
-                       class="form-control"
-                       placeholder="Máx. €"
-                       [value]="precioMax || ''"
-                       (change)="precioMax = $any($event.target).value ? +$any($event.target).value : null; filtrarPorPrecio()">
-              </div>
-            </div>
-
-            <!-- 🔥 Solo mostrar rango si NO hay filtros activos -->
-            <small *ngIf="!hayFiltrosActivos && rangoPrecios.min < rangoPrecios.max" class="text-muted">
-              Rango disponible: {{ rangoPrecios.min | currency:'EUR':'symbol':'1.0-0' }} -
-              {{ rangoPrecios.max | currency:'EUR':'symbol':'1.0-0' }}
-            </small>
-
-            <!-- 🔥 Mostrar filtros aplicados -->
-            <small *ngIf="precioMin !== null || precioMax !== null" class="text-primary">
-              <i class="fas fa-filter me-1"></i>
-              <span *ngIf="precioMin !== null">Mín: {{ precioMin | currency:'EUR':'symbol':'1.0-0' }}</span>
-              <span *ngIf="precioMin !== null && precioMax !== null"> - </span>
-              <span *ngIf="precioMax !== null">Máx: {{ precioMax | currency:'EUR':'symbol':'1.0-0' }}</span>
-            </small>
+<div class="container-fluid py-4">
+  <!-- ✅ HEADER IDÉNTICO A PROPERTY-DETAIL -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="mb-1">
+              <i class="fas fa-home me-3"></i>
+              Propiedades Disponibles
+            </h4>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item">
+                  <a routerLink="/dashboard" class="text-white-50">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                  </a>
+                </li>
+                <li class="breadcrumb-item active text-white" aria-current="page">
+                  Propiedades
+                </li>
+              </ol>
+            </nav>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-light btn-sm" (click)="toggleView()">
+              <i class="fas" [class.fa-th-large]="viewMode === 'grid'" [class.fa-list]="viewMode === 'list'"></i>
+              {{ viewMode === 'grid' ? 'Lista' : 'Grid' }}
+            </button>
+            <button class="btn btn-light btn-sm" (click)="refreshProperties()">
+              <i class="fas fa-sync-alt"></i>
+              Actualizar
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 🚨 ESTADOS -->
-  <div *ngIf="loadingState.loading" class="loading-state">
-    <div class="d-flex justify-content-center align-items-center py-5">
-      <div class="spinner-border text-primary me-3" role="status"></div>
-      <span>Cargando propiedades...</span>
-    </div>
-  </div>
+  <!-- ✅ FILTROS Y BÚSQUEDA (MISMO DISEÑO QUE PROPERTY-DETAIL CARDS) -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title mb-3">
+            <i class="fas fa-filter me-2 text-primary"></i>
+            Filtros de búsqueda
+          </h6>
 
-  <div *ngIf="loadingState.error" class="alert alert-danger" role="alert">
-    <i class="fas fa-exclamation-triangle me-2"></i>
-    {{ loadingState.error }}
-    <button class="btn btn-outline-danger btn-sm ms-3" (click)="loadProperties()">
-      Reintentar
-    </button>
-  </div>
+          <div class="row g-3">
+            <!-- Búsqueda por texto -->
+            <div class="col-md-4">
+              <label class="form-label small text-muted">Búsqueda general</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">
+                  <i class="fas fa-search text-muted"></i>
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Buscar propiedades..."
+                  [(ngModel)]="searchText"
+                  (input)="onSearchChange()"
+                />
+              </div>
+            </div>
 
-  <!-- 📋 LISTADO DE PROPIEDADES -->
-  <div *ngIf="!loadingState.loading && !loadingState.error" class="properties-content">
+            <!-- Filtro por tipo -->
+            <div class="col-md-2">
+              <label class="form-label small text-muted">Tipo</label>
+              <select class="form-select" [(ngModel)]="filterType" (change)="applyFilters()">
+                <option value="">Todos</option>
+                <option value="Piso">Piso</option>
+                <option value="Casa">Casa</option>
+                <option value="Apartamento">Apartamento</option>
+                <option value="Chalet">Chalet</option>
+                <option value="Dúplex">Dúplex</option>
+              </select>
+            </div>
 
-    <!-- 🔢 RESULTADOS VACÍOS -->
-    <div *ngIf="!hayResultados" class="empty-state">
-      <div class="text-center py-5">
-        <i class="fas fa-home fa-3x text-muted mb-3"></i>
-        <h4>No se encontraron propiedades</h4>
-        <p class="text-muted mb-4">
-          {{ hayFiltrosActivos ? 'Intenta ajustar los filtros de búsqueda' : 'No hay propiedades disponibles en este momento' }}
-        </p>
-        <button
-          *ngIf="hayFiltrosActivos"
-          class="btn btn-primary"
-          (click)="limpiarFiltros()">
-          Limpiar filtros
-        </button>
+            <!-- Filtro por precio -->
+            <div class="col-md-3">
+              <label class="form-label small text-muted">Rango de precio</label>
+              <div class="row g-2">
+                <div class="col-6">
+                  <input
+                    type="number"
+                    class="form-control"
+                    placeholder="Mín."
+                    [(ngModel)]="priceMin"
+                    (input)="applyFilters()"
+                  />
+                </div>
+                <div class="col-6">
+                  <input
+                    type="number"
+                    class="form-control"
+                    placeholder="Máx."
+                    [(ngModel)]="priceMax"
+                    (input)="applyFilters()"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="col-md-2">
+              <label class="form-label small text-muted">Estado</label>
+              <select class="form-select" [(ngModel)]="filterStatus" (change)="applyFilters()">
+                <option value="">Todos</option>
+                <option value="Disponible">Disponible</option>
+                <option value="Vendido">Vendido</option>
+                <option value="Alquilado">Alquilado</option>
+              </select>
+            </div>
+
+            <!-- Botón limpiar -->
+            <div class="col-md-1">
+              <label class="form-label small text-muted">&nbsp;</label>
+              <button class="btn btn-outline-secondary w-100" (click)="clearFilters()" title="Limpiar filtros">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- 🏠 GRID DE PROPIEDADES -->
-    <div *ngIf="hayResultados" class="properties-grid">
-      <div class="row">
-        <div
-          *ngFor="let propiedad of propiedadesPaginadas"
-          class="col-lg-4 col-md-6 col-sm-12 mb-4">
-
-          <div class="property-card" (click)="verDetalle(propiedad)">
-            <div class="property-content">
-              <h5>{{ formatearPropiedad(propiedad).titulo }}</h5>
-              <p class="price">{{ formatearPropiedad(propiedad).precio }}</p>
-              <p class="location">
-                <i class="fas fa-map-marker-alt"></i>
-                {{ formatearPropiedad(propiedad).direccion }}
-              </p>
-
-              <div class="property-features">
-                <span *ngIf="formatearPropiedad(propiedad).habitaciones">
-                  <i class="fas fa-bed"></i>
-                  {{ formatearPropiedad(propiedad).habitaciones }}
-                </span>
-                <span *ngIf="formatearPropiedad(propiedad).banos">
-                  <i class="fas fa-bath"></i>
-                  {{ formatearPropiedad(propiedad).banos }}
-                </span>
-                <span>
-                  <i class="fas fa-expand-arrows-alt"></i>
-                  {{ formatearPropiedad(propiedad).superficie }}m²
-                </span>
+  <!-- ✅ ESTADÍSTICAS (MISMO DISEÑO QUE PROPERTY-DETAIL) -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-md-3 border-end">
+              <div class="p-3">
+                <div class="h3 text-primary mb-1">{{ getTotalProperties() }}</div>
+                <div class="small text-muted">Total Propiedades</div>
               </div>
-
-              <div class="property-actions">
-                <button
-                  class="btn btn-sm btn-primary"
-                  (click)="$event.stopPropagation(); solicitarCita(propiedad)">
-                  Ver más
-                </button>
-                <button
-                  class="btn btn-sm btn-outline-primary"
-                  (click)="$event.stopPropagation(); contactarPropiedad(propiedad)">
-                  Contactar
-                </button>
+            </div>
+            <div class="col-md-3 border-end">
+              <div class="p-3">
+                <div class="h3 text-success mb-1">{{ getAvailableProperties() }}</div>
+                <div class="small text-muted">Disponibles</div>
+              </div>
+            </div>
+            <div class="col-md-3 border-end">
+              <div class="p-3">
+                <div class="h3 text-warning mb-1">{{ getAveragePrice() }}</div>
+                <div class="small text-muted">Precio Promedio</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3">
+                <div class="h3 text-info mb-1">{{ filteredProperties.length }}</div>
+                <div class="small text-muted">Resultados Filtrados</div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- 📄 PAGINACIÓN -->
-      <nav *ngIf="totalPaginas > 1" class="pagination-container">
-        <ul class="pagination justify-content-center">
-          <li class="page-item" [class.disabled]="paginaActual === 1">
-            <button class="page-link" (click)="cambiarPagina(paginaActual - 1)">
-              ‹ Anterior
-            </button>
-          </li>
+  <!-- ✅ CONTENIDO PRINCIPAL -->
+  <div class="row">
+    <div class="col-12">
 
-          <li
-            *ngFor="let pagina of [].constructor(totalPaginas); let i = index"
-            class="page-item"
-            [class.active]="paginaActual === i + 1">
-            <button class="page-link" (click)="cambiarPagina(i + 1)">
-              {{ i + 1 }}
-            </button>
-          </li>
+      <!-- Loading State -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="spinner-border text-primary mb-3" role="status">
+              <span class="visually-hidden">Cargando propiedades...</span>
+            </div>
+            <p class="text-muted">Cargando propiedades...</p>
+          </div>
+        </div>
+      </div>
 
-          <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
-            <button class="page-link" (click)="cambiarPagina(paginaActual + 1)">
-              Siguiente ›
-            </button>
-          </li>
-        </ul>
-      </nav>
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="alert alert-danger shadow-sm" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-exclamation-triangle me-3"></i>
+          <div class="flex-grow-1">
+            <strong>Error:</strong> {{ error }}
+          </div>
+          <button class="btn btn-outline-danger btn-sm" (click)="loadProperties()">
+            <i class="fas fa-redo me-2"></i>Reintentar
+          </button>
+        </div>
+      </div>
+
+      <!-- ✅ GRID VIEW (CARDS IDÉNTICAS A PROPERTY-DETAIL) -->
+      <div *ngIf="!loading && !error && viewMode === 'grid'">
+        <div class="row g-4" *ngIf="filteredProperties.length > 0">
+          <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let property of paginatedProperties; trackBy: trackByProperty">
+            <div class="card property-card h-100 shadow-sm">
+
+              <!-- Imagen con overlay (EXACTO como property-detail) -->
+              <div class="position-relative">
+                <img
+                  [src]="getPropertyImage(property)"
+                  [alt]="getFieldAsString(property, 'Título')"
+                  class="card-img-top"
+                  style="height: 250px; object-fit: cover;"
+                  (error)="onImageError($event)"
+                  loading="lazy"
+                />
+
+                <!-- Overlay gradient -->
+                <div class="position-absolute top-0 start-0 w-100 h-100"
+                     style="background: linear-gradient(45deg, rgba(0,0,0,0.1) 0%, transparent 50%);"></div>
+
+                <!-- Badge de estado (esquina superior izquierda) -->
+                <div class="position-absolute top-0 start-0 p-3">
+                  <span class="badge" [class]="getStatusBadgeClass(property)">
+                    {{ getFieldAsString(property, 'Estado') || 'Disponible' }}
+                  </span>
+                </div>
+
+                <!-- Badge de tipo (esquina superior derecha) -->
+                <div class="position-absolute top-0 end-0 p-3">
+                  <span class="badge bg-dark bg-opacity-75">
+                    {{ getFieldAsString(property, 'Tipo') || 'Propiedad' }}
+                  </span>
+                </div>
+
+                <!-- Clasificación energética (esquina inferior izquierda) -->
+                <div class="position-absolute bottom-0 start-0 p-3" *ngIf="getEnergyRating(property)">
+                  <span class="badge" [class]="getEnergyBadgeClass(property)">
+                    {{ getEnergyRating(property) }}
+                  </span>
+                </div>
+
+                <!-- Número de imágenes (esquina inferior derecha) -->
+                <div class="position-absolute bottom-0 end-0 p-3" *ngIf="getImageCount(property) > 1">
+                  <span class="badge bg-dark bg-opacity-75">
+                    <i class="fas fa-images me-1"></i>{{ getImageCount(property) }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Contenido de la card (EXACTO como property-detail) -->
+              <div class="card-body d-flex flex-column">
+
+                <!-- Título y precio -->
+                <div class="mb-3">
+                  <h5 class="card-title mb-2 text-truncate" [title]="getFieldAsString(property, 'Título')">
+                    {{ getFieldAsString(property, 'Título') || 'Propiedad sin título' }}
+                  </h5>
+                  <div class="d-flex align-items-baseline gap-2">
+                    <div class="h4 text-primary mb-0">
+                      {{ formatPrice(getFieldAsNumber(property, 'Precio')) }}
+                    </div>
+                    <small class="text-muted" *ngIf="getPricePerSquareMeter(property)">
+                      {{ getPricePerSquareMeter(property) }}/m²
+                    </small>
+                  </div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="mb-3">
+                  <div class="d-flex align-items-start">
+                    <i class="fas fa-map-marker-alt text-muted me-2 mt-1"></i>
+                    <span class="text-muted small">
+                      {{ getFieldAsString(property, 'Dirección') || 'Ubicación no especificada' }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Características (EXACTO como property-detail) -->
+                <div class="row g-2 mb-3">
+                  <div class="col-4" *ngIf="getFieldAsNumber(property, 'Habitaciones') > 0">
+                    <div class="bg-light p-2 rounded text-center">
+                      <i class="fas fa-bed text-primary d-block mb-1"></i>
+                      <div class="small">{{ getFieldAsNumber(property, 'Habitaciones') }}</div>
+                      <div class="x-small text-muted">hab.</div>
+                    </div>
+                  </div>
+                  <div class="col-4" *ngIf="getFieldAsNumber(property, 'Baños') > 0">
+                    <div class="bg-light p-2 rounded text-center">
+                      <i class="fas fa-bath text-primary d-block mb-1"></i>
+                      <div class="small">{{ getFieldAsNumber(property, 'Baños') }}</div>
+                      <div class="x-small text-muted">baños</div>
+                    </div>
+                  </div>
+                  <div class="col-4" *ngIf="getFieldAsNumber(property, 'Superficie') > 0">
+                    <div class="bg-light p-2 rounded text-center">
+                      <i class="fas fa-expand-arrows-alt text-primary d-block mb-1"></i>
+                      <div class="small">{{ getFieldAsNumber(property, 'Superficie') }}</div>
+                      <div class="x-small text-muted">m²</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Descripción corta -->
+                <div class="mb-3 flex-grow-1">
+                  <p class="text-muted small mb-0" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ getFieldAsString(property, 'Descripción') || 'Sin descripción disponible' }}
+                  </p>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="mb-3" *ngIf="getFieldAsNumber(property, 'Año Construcción') > 0">
+                  <div class="d-flex justify-content-between align-items-center small text-muted">
+                    <span>
+                      <i class="fas fa-calendar-alt me-1"></i>
+                      Construido en {{ getFieldAsNumber(property, 'Año Construcción') }}
+                    </span>
+                    <span *ngIf="getFieldAsNumber(property, 'Número de visitas') > 0">
+                      <i class="fas fa-eye me-1"></i>
+                      {{ getFieldAsNumber(property, 'Número de visitas') }} visitas
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Botones de acción (EXACTO como property-detail) -->
+                <div class="mt-auto">
+                  <div class="d-grid gap-2">
+                    <button
+                      class="btn btn-primary"
+                      [routerLink]="['/propiedades', property.id]"
+                    >
+                      <i class="fas fa-eye me-2"></i>
+                      Ver Detalles Completos
+                    </button>
+                    <div class="row g-2">
+                      <div class="col-6">
+                        <button
+                          class="btn btn-outline-success w-100"
+                          (click)="contactProperty(property)"
+                          title="Contactar"
+                        >
+                          <i class="fas fa-phone me-1"></i>
+                          <span class="d-none d-lg-inline">Contactar</span>
+                        </button>
+                      </div>
+                      <div class="col-6">
+                        <button
+                          class="btn btn-outline-secondary w-100"
+                          (click)="toggleFavorite(property)"
+                          title="Favoritos"
+                        >
+                          <i class="fas fa-heart me-1"></i>
+                          <span class="d-none d-lg-inline">Favorito</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- No hay resultados -->
+        <div *ngIf="filteredProperties.length === 0" class="text-center py-5">
+          <div class="card shadow-sm">
+            <div class="card-body py-5">
+              <i class="fas fa-search text-muted mb-3" style="font-size: 3rem;"></i>
+              <h5 class="mb-3">No se encontraron propiedades</h5>
+              <p class="text-muted mb-4">Intenta ajustar los filtros de búsqueda para obtener más resultados</p>
+              <button class="btn btn-outline-primary" (click)="clearFilters()">
+                <i class="fas fa-times me-2"></i>
+                Limpiar todos los filtros
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ LIST VIEW (TABLA COMO PROPERTY-DETAIL) -->
+      <div *ngIf="!loading && !error && viewMode === 'list'" class="card shadow-sm">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="border-0">Imagen</th>
+                  <th class="border-0">Propiedad</th>
+                  <th class="border-0">Tipo</th>
+                  <th class="border-0">Precio</th>
+                  <th class="border-0">Ubicación</th>
+                  <th class="border-0">Características</th>
+                  <th class="border-0">Estado</th>
+                  <th class="border-0">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let property of paginatedProperties; trackBy: trackByProperty">
+                  <td class="align-middle">
+                    <img
+                      [src]="getPropertyImage(property)"
+                      [alt]="getFieldAsString(property, 'Título')"
+                      class="rounded shadow-sm"
+                      style="width: 60px; height: 60px; object-fit: cover;"
+                      (error)="onImageError($event)"
+                    />
+                  </td>
+                  <td class="align-middle">
+                    <div class="fw-bold text-truncate" style="max-width: 200px;" [title]="getFieldAsString(property, 'Título')">
+                      {{ getFieldAsString(property, 'Título') }}
+                    </div>
+                    <small class="text-muted text-truncate d-block" style="max-width: 200px;">
+                      {{ getFieldAsString(property, 'Descripción') }}
+                    </small>
+                  </td>
+                  <td class="align-middle">
+                    <span class="badge bg-secondary">{{ getFieldAsString(property, 'Tipo') }}</span>
+                  </td>
+                  <td class="align-middle">
+                    <div class="fw-bold text-primary">{{ formatPrice(getFieldAsNumber(property, 'Precio')) }}</div>
+                    <small class="text-muted" *ngIf="getPricePerSquareMeter(property)">{{ getPricePerSquareMeter(property) }}/m²</small>
+                  </td>
+                  <td class="align-middle">
+                    <div class="d-flex align-items-center">
+                      <i class="fas fa-map-marker-alt text-muted me-1"></i>
+                      <span class="text-truncate" style="max-width: 150px;" [title]="getFieldAsString(property, 'Dirección')">
+                        {{ getFieldAsString(property, 'Dirección') }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="align-middle">
+                    <div class="d-flex flex-wrap gap-1">
+                      <small class="badge bg-light text-dark" *ngIf="getFieldAsNumber(property, 'Habitaciones') > 0">
+                        <i class="fas fa-bed me-1"></i>{{ getFieldAsNumber(property, 'Habitaciones') }}
+                      </small>
+                      <small class="badge bg-light text-dark" *ngIf="getFieldAsNumber(property, 'Baños') > 0">
+                        <i class="fas fa-bath me-1"></i>{{ getFieldAsNumber(property, 'Baños') }}
+                      </small>
+                      <small class="badge bg-light text-dark" *ngIf="getFieldAsNumber(property, 'Superficie') > 0">
+                        <i class="fas fa-expand-arrows-alt me-1"></i>{{ getFieldAsNumber(property, 'Superficie') }}m²
+                      </small>
+                    </div>
+                  </td>
+                  <td class="align-middle">
+                    <span class="badge" [class]="getStatusBadgeClass(property)">
+                      {{ getFieldAsString(property, 'Estado') }}
+                    </span>
+                  </td>
+                  <td class="align-middle">
+                    <div class="btn-group" role="group">
+                      <button
+                        class="btn btn-sm btn-outline-primary"
+                        [routerLink]="['/propiedades', property.id]"
+                        title="Ver detalles"
+                      >
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-success"
+                        (click)="contactProperty(property)"
+                        title="Contactar"
+                      >
+                        <i class="fas fa-phone"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-secondary"
+                        (click)="toggleFavorite(property)"
+                        title="Favoritos"
+                      >
+                        <i class="fas fa-heart"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ PAGINACIÓN (EXACTO como property-detail) -->
+      <div *ngIf="!loading && !error && filteredProperties.length > 0" class="row mt-4">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <nav aria-label="Paginación de propiedades">
+                <ul class="pagination justify-content-center mb-3">
+                  <li class="page-item" [class.disabled]="currentPage === 1">
+                    <a class="page-link" (click)="goToPage(currentPage - 1)" aria-label="Anterior">
+                      <i class="fas fa-chevron-left"></i>
+                    </a>
+                  </li>
+
+                  <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+                    <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                  </li>
+
+                  <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
+                    <a class="page-link" (click)="goToPage(currentPage + 1)" aria-label="Siguiente">
+                      <i class="fas fa-chevron-right"></i>
+                    </a>
+                  </li>
+                </ul>
+
+                <!-- Info de paginación -->
+                <div class="text-center">
+                  <small class="text-muted">
+                    Mostrando {{ getStartIndex() + 1 }} - {{ getEndIndex() }} de {{ filteredProperties.length }} propiedades
+                    ({{ itemsPerPage }} por página)
+                  </small>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
-<button mat-fab color="primary" class="add-button" (click)="goToCreate()">
-  <mat-icon>add</mat-icon>
-</button>
 
 
