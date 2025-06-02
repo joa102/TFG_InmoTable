@@ -1,4 +1,16 @@
 import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-register',
+  imports: [],
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.scss'
+})
+export class RegisterComponent {
+
+}
+
+/*import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -51,4 +63,4 @@ import { RouterModule } from '@angular/router';
     }
   `]
 })
-export class RegisterComponent {}
+export class RegisterComponent {}*/
