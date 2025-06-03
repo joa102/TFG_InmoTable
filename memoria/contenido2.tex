@@ -34,53 +34,6 @@ introducción
 \paragraph{Planificación temporal} 
 Se debe incluir una referencia a como se han distribuido las tareas a lo largo del tiempo empleado en el TFG. Esta cuestión deriva de los proyectos técnicos de disciplinas de ingeniería. Puede representarse en forma de tabla o gráfico \ref{fig:plan} y puede aparecer dentro del apartado de metodología.
 
-
-
-\begin{figure} 
-\begin{ganttchart}[
-hgrid,
-vgrid={*6{draw=none},dotted},
-x unit=0.5mm,
-y unit title =0.6cm,
-y unit  chart=1cm,
-canvas/.style={draw=none},
-%title/.append style={fill=black!10, rounded corners=1mm},
-title/.append style={ rounded corners=0.5mm},
-time slot format=isodate,
-time slot format/base century=2000,
-time slot unit= day,
-time slot format/start date=2020-11-25,
-bar height=0.5,
- bar label node/.append style={left=0.01cm, align=left, text width=8em},
- bar label text={$\star$#1},
- bar label font=\sffamily\footnotesize,
- group label node/.append style={left=0.01cm, align=left, text width=8em},
-  group peaks width={3},
-   group label font=\bfseries\footnotesize,
-milestone label font=\scshape\sffamily\footnotesize,
-  milestone inline label node/.append style={left=5mm},
-  milestone right shift=2,
-    milestone left shift=-2,
- milestone/.append style={fill=black!40}
-]{2020-11-24}{2021-06-30}
-\gantttitlecalendar[y unit title=0.7cm, title height=0.6]{year, month=shortname ,week} \\
-
-\ganttgroup[ bar height=.1]{Selección área}{2020-11-24}{2020-11-30} \\
-\ganttbar[name=b2]{Envío de Correos de contacto}{2020-11-24}{2020-11-26}\\
-\ganttbar[name=b2]{Realizar Entrevistas}{2020-11-27}{2020-11-30}\\
-\ganttmilestone{Área y tutor definido}{2020-11-30} \\ %\ganttnewline
-\ganttgroup[bar height=.1]{Estudio preliminar}{2020-12-01}{2020-12-22}\\
-\ganttlinkedbar{Task 2}{2020-12-01}{2020-12-22} \\
-\ganttbar{Final Task}{2020-12-01}{2020-12-22}\\
-\ganttbar{Task 2}{2020-12-01}{2020-12-22}
-%\ganttlink{elem2}{elem3}
-%\ganttlink{elem3}{elem4}
-\end{ganttchart}
-        \caption{Planificación del proyecto sobre latex}
-    \label{fig:planb}
-\end{figure}
-
-
 \begin{figure}  
  	\begin{center}
         \includegraphics[width=0.8\textwidth]{Figuras/plandef.png}

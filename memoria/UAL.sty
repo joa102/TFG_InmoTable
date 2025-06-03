@@ -7,7 +7,7 @@
 \RequirePackage{afterpage}
 \RequirePackage{transparent}
 \RequirePackage[scaled=0.95]{helvet}
-\RequirePackage{pgfgantt}
+
 
 
 %%%%%%%%%%%%%%%% Dimensiones
@@ -350,20 +350,5 @@ at (fondo)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%DIBUJOS para las cabeceras y pies con tizzh
-%%%%% Diagrama de gantt
 
-\def\pgfcalendarmonthname#1{%
-\ifcase#1Enero\or Febrero\or Marzo\or Abril\or Mayo\or Junio\or Julio\or Agosto\or Septiembre\or Octubre\or Noviembre\or Diciembre\fi%
-}
-\def\pgfcalendarmonthshortname#1{%
-\scriptsize\ifcase#1 \or Ene\or Feb\or Mar\or Abr\or May\or Jun\or Jul\or Ago\or Sep\or Oct\or Nov\or Dic\fi%
-}
-% \gantttitlecalendar*{7.1.2013}{13.1.2013}{month, month=name, month=shortname, weekday,weekday=name, weekday=shortname, weekday=letter }
 
-\ganttset{%
-calendar week text={%
-\scriptsize{\startday}%
-}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
