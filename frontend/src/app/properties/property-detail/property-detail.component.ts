@@ -400,7 +400,16 @@ export class PropertyDetailComponent implements OnInit, OnDestroy, AfterViewInit
    * Solicitar cita para esta propiedad
    */
   requestAppointment(): void {
-    console.log('Solicitar cita para propiedad:', this.property?.id);
+    //console.log('Solicitar cita para propiedad:', this.property?.id);
+    // 🔥 NAVEGAR A CITAS CON PARÁMETRO DE PROPIEDAD
+    this.router.navigate(['/citas'], {
+      queryParams: {
+        //propertyId: this.property?.id,
+        propertyRecordId: this.getFieldAsString('RECORD_ID'),
+        //propertyTitle: this.getFieldAsString('Título'),
+        //propertyAddress: this.getFieldAsString('Dirección')
+      }
+    });
   }
 
   /**

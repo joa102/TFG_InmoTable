@@ -63,6 +63,8 @@ export interface PropiedadFields {
   'Emisiones CO2'?: number;
   'Rating Energético'?: string;
   'Eficiencia Energética'?: string;
+
+  'RECORD_ID': string;
 }
 
 // ✅ MANTENER LA DEFINICIÓN ORIGINAL
