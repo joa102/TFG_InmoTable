@@ -1,300 +1,280 @@
-# 🏠 Sistema de Gestión Inmobiliaria - TFGJOA102
+# 🏠 InmoTable - Sistema Inmobiliario
 
-> Sistema web completo para la gestión de propiedades inmobiliarias con funcionalidades avanzadas de visualización, filtrado y mapas interactivos.
+**InmoTable** es un sistema de gestión inmobiliaria desarrollado con **Laravel 9 + Vue.js + MySQL**.
 
-[![Angular](https://img.shields.io/badge/Angular-17+-red.svg)](https://angular.io/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![Material Design](https://img.shields.io/badge/Material-Design-blue.svg)](https://material.angular.io/)
-[![Leaflet](https://img.shields.io/badge/Leaflet-Maps-green.svg)](https://leafletjs.com/)
+## 📋 **Requisitos del Sistema**
 
-## 📋 Tabla de Contenidos
+- **Docker** y **Docker Compose**
+- **Git**
+- **Node.js** (v16 o superior)
+- **Composer** (incluido en Docker)
 
-- [Características](#-características)
-- [Tecnologías](#-tecnologías)
-- [Instalación](#-instalación)
-- [Uso](#-uso)
-- [Estructura del Proyecto](#-estructura-del-proyecto)
-- [Desarrollo](#-desarrollo)
-- [Roadmap](#-roadmap)
-- [Contribución](#-contribución)
+## 🚀 **Instalación desde Cero**
 
-## ✨ Características
+### **1. 📥 Clonar el Repositorio**
 
-### 🎯 Funcionalidades Principales
-
-- **📂 Gestión CRUD Completa**: Crear, leer, actualizar y eliminar propiedades
-- **🔍 Sistema de Filtros Avanzados**: Filtrado por zona, tipo, precio, superficie y operación
-- **📱 Diseño Responsive**: Compatible con dispositivos móviles, tablets y desktop
-- **🗺️ Mapas Interactivos**: Integración con Leaflet y OpenStreetMap para ubicaciones
-- **📊 Gráficos de Visitas**: Visualización de estadísticas con Chart.js
-- **🖼️ Galería de Imágenes**: Carrusel con vista en pantalla completa
-- **⚡ Paginación Inteligente**: Navegación eficiente con información detallada
-- **🎨 Material Design**: Interfaz moderna y accesible
-
-### 🚀 Características Técnicas
-
-- **🔄 Datos en Tiempo Real**: Integración con Airtable como backend
-- **🧭 Geocodificación Automática**: Conversión automática de direcciones a coordenadas
-- **📈 Gráficos Dinámicos**: Visualización de datos de visitas y estadísticas
-- **🛡️ Manejo de Errores**: Sistema robusto de manejo de errores y estados de carga
-- **♿ Accesibilidad**: Cumple con estándares WCAG 2.1
-- **🎯 SEO Optimizado**: Meta tags y estructura semántica
-
-## 🛠️ Tecnologías
-
-### Frontend
-- **Angular 17+** - Framework principal
-- **TypeScript 5.0+** - Lenguaje de programación
-- **Angular Material** - Componentes UI y theming
-- **Leaflet** - Mapas interactivos
-- **Chart.js** - Gráficos y visualizaciones
-- **RxJS** - Programación reactiva
-- **SCSS** - Preprocesador CSS
-
-### Backend/Datos
-- **Airtable** - Base de datos y API
-- **OpenStreetMap** - Tiles de mapas
-- **Nominatim** - Servicio de geocodificación
-
-### Herramientas de Desarrollo
-- **Angular CLI** - Herramientas de desarrollo
-- **ESLint** - Linting de código
-- **Prettier** - Formateo de código
-- **Git** - Control de versiones
-
-## 🚀 Instalación
-
-### Prerrequisitos
-
-- Node.js 18+ y npm
-- Angular CLI 17+
-- Git
-
-### Pasos de Instalación
-
-1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/tu-usuario/TFGJOA102.git
-cd TFGJOA102
+git clone https://github.com/tu-usuario/TFG_InmoTable.git
+cd TFG_InmoTable
 ```
 
-2. **Instalar dependencias del frontend**
+### **2. 🐳 Configurar Docker**
+
 ```bash
-cd frontend
+# Construir e iniciar los contenedores
+docker-compose up -d --build
+
+# Verificar que los contenedores están corriendo
+docker-compose ps
+```
+
+### **3. ⚙️ Configurar el Backend (Laravel)**
+
+```bash
+# Entrar al directorio backend
+cd backend
+
+# Instalar dependencias de Laravel
+docker-compose exec app composer install
+
+# Generar clave de aplicación
+docker-compose exec app php artisan key:generate
+
+# Configurar base de datos - ejecutar migraciones
+docker-compose exec app php artisan migrate
+
+# Instalar Laravel Passport para autenticación
+docker-compose exec app php artisan passport:install --force
+```
+
+### **4. 👥 Crear Usuarios de Prueba**
+
+```bash
+# Ejecutar seeder para crear usuarios de prueba
+docker-compose exec app php artisan db:seed --class=UserSeeder
+```
+
+**Usuarios creados:**
+- **Admin**: `admin@inmotable.com` / `password123`
+- **Agente**: `agente@inmotable.com` / `password123`  
+- **Cliente**: `cliente@inmotable.com` / `password123`
+- **Test**: `test@inmotable.com` / `password123`
+
+### **5. 🎨 Configurar el Frontend (Vue.js)**
+
+```bash
+# Ir al directorio frontend
+cd ../frontend
+
+# Instalar dependencias de Node.js
 npm install
+
+# Ejecutar servidor de desarrollo
+npm run dev
 ```
 
-3. **Configurar variables de entorno**
+### **6. 🌐 Acceder a la Aplicación**
+
+- **🖥️ Frontend (Vue.js)**: http://localhost:3000
+- **🔧 Backend API (Laravel)**: http://localhost:8080
+- **🗄️ Base de datos (MySQL)**: localhost:3306
+
+## 🔑 **API de Autenticación**
+
+### **Endpoints Principales:**
+
 ```bash
-# Copiar el archivo de ejemplo
-cp src/environments/environment.example.ts src/environments/environment.ts
-
-# Editar las variables de Airtable
-# AIRTABLE_API_KEY=tu_api_key
-# AIRTABLE_BASE_ID=tu_base_id
+POST /api/auth/register  # Registrar usuario
+POST /api/auth/login     # Iniciar sesión
+POST /api/auth/logout    # Cerrar sesión
+GET  /api/auth/user      # Obtener usuario autenticado
 ```
 
-4. **Ejecutar el proyecto**
+### **🧪 Probar la API**
+
+#### **Login con CURL:**
 ```bash
-npm start
-# o
-ng serve
+curl -X POST "http://localhost:8080/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "email": "test@inmotable.com",
+    "password": "password123"
+  }'
 ```
 
-5. **Abrir en el navegador**
+#### **Login con PowerShell:**
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8080/api/auth/login" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{"email": "test@inmotable.com", "password": "password123"}'
 ```
-http://localhost:4200
+
+#### **Respuesta esperada:**
+```json
+{
+  "success": true,
+  "message": "Login exitoso",
+  "data": {
+    "user": {
+      "id": 4,
+      "name": "Usuario Prueba",
+      "email": "test@inmotable.com",
+      "role": "cliente"
+    },
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+    "token_type": "Bearer"
+  }
+}
 ```
 
-## 📖 Uso
+#### **Usar el token:**
+```bash
+curl -X GET "http://localhost:8080/api/auth/user" \
+  -H "Authorization: Bearer TU_TOKEN_AQUI" \
+  -H "Accept: application/json"
+```
 
-### Navegación Principal
-
-1. **Listado de Propiedades** (`/propiedades`)
-   - Ver todas las propiedades disponibles
-   - Aplicar filtros por zona, tipo, precio, superficie
-   - Navegar con paginación
-   - Acceder al detalle de cada propiedad
-
-2. **Detalle de Propiedad** (`/propiedades/:id`)
-   - Ver información completa de la propiedad
-   - Navegar por galería de imágenes
-   - Ver ubicación en mapa interactivo
-   - Consultar gráfico de visitas
-   - Revisar clasificación energética
-
-3. **Gestión de Propiedades** (Admin)
-   - Crear nuevas propiedades
-   - Editar propiedades existentes
-   - Eliminar propiedades
-
-### Filtros Disponibles
-
-- **Zona**: Filtrar por ubicación geográfica
-- **Tipo de Inmueble**: Casa, Piso, Local, Oficina, etc.
-- **Tipo de Operación**: Venta, Alquiler
-- **Rango de Precio**: Precio mínimo y máximo
-- **Superficie**: Metros cuadrados mínimos y máximos
-
-## 📁 Estructura del Proyecto
+## 📂 **Estructura del Proyecto**
 
 ```
-TFGJOA102/
-├── frontend/
+TFG_InmoTable/
+├── backend/                 # Laravel API
+│   ├── app/
+│   │   ├── Http/Controllers/
+│   │   ├── Models/
+│   │   └── ...
+│   ├── routes/api.php       # Rutas de la API
+│   ├── database/
+│   │   ├── migrations/
+│   │   └── seeders/
+│   └── ...
+├── frontend/                # Vue.js SPA
 │   ├── src/
-│   │   ├── app/
-│   │   │   ├── properties/           # Módulo de propiedades
-│   │   │   │   ├── property-list/    # Listado con filtros
-│   │   │   │   ├── property-detail/  # Detalle con mapa
-│   │   │   │   └── property-form/    # Formulario CRUD
-│   │   │   ├── services/             # Servicios Angular
-│   │   │   │   ├── property.service.ts
-│   │   │   │   └── airtable.service.ts
-│   │   │   ├── shared/               # Componentes compartidos
-│   │   │   │   └── navbar/
-│   │   │   ├── models/               # Interfaces TypeScript
-│   │   │   └── guards/               # Guards de ruta
-│   │   ├── assets/                   # Recursos estáticos
-│   │   ├── environments/             # Configuración
-│   │   └── styles/                   # Estilos globales
-│   ├── angular.json                  # Configuración Angular
-│   ├── package.json                  # Dependencias
-│   └── tsconfig.json                 # Configuración TypeScript
-├── docs/                             # Documentación
-├── .gitignore
-└── README.md
+│   ├── package.json
+│   └── ...
+├── docker-compose.yml       # Configuración Docker
+└── README.md               # Este archivo
 ```
 
-## 🔧 Desarrollo
+## 🔧 **Comandos Útiles**
 
-### Comandos Disponibles
-
+### **Backend (Laravel):**
 ```bash
-# Desarrollo
-npm start                    # Servidor de desarrollo
-npm run build               # Build de producción
-npm run build:dev           # Build de desarrollo
-npm run test                # Ejecutar tests
-npm run lint                # Linting de código
+# Ver rutas disponibles
+docker-compose exec app php artisan route:list
 
-# Específicos de Angular
-ng generate component nombre # Generar componente
-ng generate service nombre   # Generar servicio
-ng generate guard nombre     # Generar guard
+# Limpiar cache
+docker-compose exec app php artisan config:clear
+docker-compose exec app php artisan cache:clear
+
+# Ejecutar migraciones
+docker-compose exec app php artisan migrate
+
+# Ejecutar seeders
+docker-compose exec app php artisan db:seed
+
+# Acceder a Tinker (consola Laravel)
+docker-compose exec app php artisan tinker
 ```
 
-### Estructura de Ramas
+### **Frontend (Vue.js):**
+```bash
+# Servidor de desarrollo
+npm run dev
 
-- **main** - Producción estable
-- **develop** - Desarrollo principal
-- **feature/*** - Nuevas características
-- **bugfix/*** - Corrección de errores
-- **hotfix/*** - Correcciones urgentes
+# Build para producción
+npm run build
 
-### Estándares de Código
+# Preview del build
+npm run preview
+```
 
-- **ESLint** para calidad de código TypeScript
-- **Prettier** para formateo consistente
-- **Conventional Commits** para mensajes de commit
-- **Angular Style Guide** para estructura y nomenclatura
+### **Docker:**
+```bash
+# Iniciar contenedores
+docker-compose up -d
 
-## 🎯 Roadmap
+# Parar contenedores
+docker-compose down
 
-### ✅ Fase 1 - Base (Completado)
-- [x] Setup inicial Angular + Material
-- [x] Integración con Airtable
-- [x] CRUD básico de propiedades
-- [x] Sistema de navegación
+# Ver logs
+docker-compose logs -f app
 
-### ✅ Fase 2 - Filtros (Completado)
-- [x] Filtros avanzados en listado
-- [x] Paginación inteligente
-- [x] Búsqueda por múltiples criterios
-- [x] Estado de "sin resultados"
+# Reconstruir contenedores
+docker-compose up -d --build
+```
 
-### ✅ Fase 3 - UI/UX (Completado)
-- [x] Diseño responsive completo
-- [x] Galería de imágenes con carrusel
-- [x] Clasificación energética visual
-- [x] Estados de carga y error
+## 🛠️ **Tecnologías Utilizadas**
 
-### ✅ Fase 4 - Visualización (Completado)
-- [x] Gráficos de visitas con Chart.js
-- [x] Indicadores de popularidad
-- [x] Estadísticas por período
-- [x] Datos dinámicos
+### **Backend:**
+- **Laravel 9** - Framework PHP
+- **Laravel Passport** - Autenticación OAuth2/JWT
+- **MySQL** - Base de datos
+- **Docker** - Contenedorización
 
-### ✅ Fase 5 - Mapas (Completado)
-- [x] Integración Leaflet + OpenStreetMap
-- [x] Geocodificación automática
-- [x] Marcadores personalizados
-- [x] Popups informativos
+### **Frontend:**
+- **Vue.js 3** - Framework JavaScript
+- **Vite** - Build tool
+- **Tailwind CSS** - Framework CSS
+- **Axios** - Cliente HTTP
 
-### 🚧 Fase 6 - Autenticación (En Progreso)
-- [ ] Sistema de login/registro
-- [ ] Gestión de roles (Admin/Agente/Cliente)
-- [ ] Protección de rutas
-- [ ] Perfil de usuario
+## 🐛 **Solución de Problemas**
 
-### 📋 Fase 7 - Funcionalidades Avanzadas (Planificado)
-- [ ] Sistema de favoritos
-- [ ] Comparador de propiedades
-- [ ] Alertas de nuevas propiedades
-- [ ] Sistema de citas y contacto
+### **Puerto 8080 ocupado:**
+```bash
+# Cambiar puerto en docker-compose.yml
+ports:
+  - "8081:80"  # Usar puerto 8081 en lugar de 8080
+```
 
-### 🔧 Fase 8 - Optimización (Planificado)
-- [ ] Cache inteligente
-- [ ] Lazy loading avanzado
-- [ ] PWA (Progressive Web App)
-- [ ] Optimización SEO
+### **Permisos en Linux/macOS:**
+```bash
+sudo chown -R $USER:$USER backend/storage
+sudo chmod -R 775 backend/storage
+```
 
-## 📊 Métricas del Proyecto
+### **Regenerar claves Passport:**
+```bash
+docker-compose exec app php artisan passport:keys --force
+```
 
-- **Líneas de Código**: ~3,000+ TS/HTML/SCSS
-- **Componentes Angular**: 8+
-- **Servicios**: 3+
-- **Páginas/Rutas**: 4+
-- **Tests**: En desarrollo
-- **Cobertura**: TBD
+## 📝 **Variables de Entorno**
 
-## 🤝 Contribución
+El archivo `.env` en `backend/` debe contener:
 
-### Cómo Contribuir
+```env
+APP_NAME=InmoTable
+APP_ENV=local
+APP_KEY=base64:...
+APP_DEBUG=true
+APP_URL=http://localhost:8080
+
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=inmotable
+DB_USERNAME=root
+DB_PASSWORD=root_password
+```
+
+## 🤝 **Contribuir**
 
 1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/nueva-caracteristica`)
-3. Commit tus cambios (`git commit -m 'feat: añadir nueva característica'`)
-4. Push a la rama (`git push origin feature/nueva-caracteristica`)
+2. Crea tu rama (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-### Tipos de Commits
+## 📄 **Licencia**
 
-- `feat:` Nueva característica
-- `fix:` Corrección de error
-- `docs:` Cambios en documentación
-- `style:` Cambios de formato
-- `refactor:` Refactorización de código
-- `test:` Añadir o modificar tests
-- `chore:` Tareas de mantenimiento
+Este proyecto está bajo la Licencia MIT - mira el archivo [LICENSE](LICENSE) para detalles.
 
-## 📝 Licencia
+## 👨‍💻 **Autor**
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
-
-## 👨‍💻 Autor
-
-**TFGJOA102**
-- GitHub: [@tu-usuario](https://github.com/tu-usuario)
-- Email: tu-email@ejemplo.com
-
-## 🙏 Agradecimientos
-
-- **Angular Team** por el fantástico framework
-- **Material Design** por los componentes UI
-- **Leaflet** por la librería de mapas
-- **Airtable** por la API de datos
-- **OpenStreetMap** por los tiles de mapas gratuitos
+**Tu Nombre** - [tu-email@ejemplo.com](mailto:tu-email@ejemplo.com)
 
 ---
 
-⭐ **¡Dale una estrella si te gusta el proyecto!** ⭐
+⭐ **¡No olvides dar una estrella al proyecto si te ha sido útil!**

@@ -3,31 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Services\AirtableService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    protected $airtableService;
-
-    public function __construct(AirtableService $airtableService)
-    {
-        $this->airtableService = $airtableService;
-    }
-
     /**
-     * Registrar nuevo usuario (Híbrido: Laravel + Airtable)
+     * Registrar nuevo usuario
      */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'telefono' => 'required|string|max:20',
         ]);
 
         if ($validator->fails()) {
@@ -39,57 +30,27 @@ class AuthController extends Controller
         }
 
         try {
-            // 🔥 PASO 1: Crear cliente en Airtable PRIMERO
-            $clienteData = [
-                'Nombre' => $request->nombre,
-                'Email' => $request->email,
-                'Teléfono' => $request->telefono,
-                'Fecha de Registro' => now()->toISOString(),
-                'Estado' => 'Activo'
-            ];
-
-            $airtableCliente = $this->airtableService->createRecord('Clientes', $clienteData);
-
-            // 🔥 PASO 2: Crear usuario en Airtable (tabla Usuarios)
-            $usuarioData = [
-                'Email' => $request->email,
-                'Password' => Hash::make($request->password), // Hash para seguridad
-                'Rol' => 'cliente',
-                'Estado' => 'Activo',
-                'Fecha de Registro' => now()->toISOString(),
-                'Clientes' => [$airtableCliente['id']] // Vincular con cliente
-            ];
-
-            $airtableUsuario = $this->airtableService->createRecord('Usuarios', $usuarioData);
-
-            // 🔥 PASO 3: Crear usuario en Laravel (SQLite) para autenticación
+            // Crear usuario en la base de datos local
             $user = User::create([
-                'name' => $request->nombre,
+                'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => 'cliente',
-                'airtable_id' => $airtableUsuario['id'], // 🔗 Vincular con Airtable
-                'status' => 'active'
             ]);
 
-            // 🔥 PASO 4: Crear token de autenticación
-            $token = $user->createToken('auth_token')->plainTextToken;
+            // Crear token de autenticación con Passport
+            $token = $user->createToken('auth_token')->accessToken;
 
             return response()->json([
                 'success' => true,
                 'message' => 'Usuario registrado correctamente',
                 'data' => [
                     'user' => $user,
-                    'airtable_usuario_id' => $airtableUsuario['id'],
-                    'airtable_cliente_id' => $airtableCliente['id'],
-                    'token' => $token,
+                    'access_token' => $token,
                     'token_type' => 'Bearer'
                 ]
             ], 201);
 
         } catch (\Exception $e) {
-            \Log::error('Error en registro híbrido: ' . $e->getMessage());
-
             return response()->json([
                 'success' => false,
                 'message' => 'Error interno del servidor',
@@ -99,7 +60,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Iniciar sesión (Híbrido: Laravel auth + Airtable sync)
+     * Iniciar sesión
      */
     public function login(Request $request)
     {
@@ -116,42 +77,26 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // 🔥 AUTENTICACIÓN en Laravel (SQLite)
-        $user = User::where('email', $request->email)->first();
+        // Verificar credenciales
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::user();
+            $token = $user->createToken('auth_token')->accessToken;
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Login exitoso',
+                'data' => [
+                    'user' => $user,
+                    'access_token' => $token,
+                    'token_type' => 'Bearer'
+                ]
+            ]);
+        } else {
             return response()->json([
                 'success' => false,
                 'message' => 'Credenciales incorrectas'
             ], 401);
         }
-
-        // 🔥 ACTUALIZAR último login en Airtable
-        try {
-            if ($user->airtable_id) {
-                $this->airtableService->updateRecord('Usuarios', $user->airtable_id, [
-                    'Último login' => now()->toISOString()
-                ]);
-            }
-
-            // Actualizar en Laravel también
-            $user->update(['last_login_at' => now()]);
-
-        } catch (\Exception $e) {
-            \Log::warning('No se pudo actualizar último login en Airtable: ' . $e->getMessage());
-        }
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Login exitoso',
-            'data' => [
-                'user' => $user,
-                'token' => $token,
-                'token_type' => 'Bearer'
-            ]
-        ]);
     }
 
     /**
@@ -159,7 +104,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->token()->revoke();
 
         return response()->json([
             'success' => true,
@@ -168,64 +113,15 @@ class AuthController extends Controller
     }
 
     /**
-     * Obtener usuario autenticado con datos de Airtable
+     * Obtener usuario autenticado
      */
     public function user(Request $request)
     {
-        $user = $request->user();
-
-        // 🔥 OBTENER datos adicionales de Airtable si es necesario
-        $airtableData = null;
-
-        try {
-            if ($user->airtable_id) {
-                $airtableData = $this->airtableService->getRecord('Usuarios', $user->airtable_id);
-            }
-        } catch (\Exception $e) {
-            \Log::warning('No se pudieron obtener datos de Airtable para el usuario: ' . $e->getMessage());
-        }
-
         return response()->json([
             'success' => true,
             'data' => [
-                'user' => $user,
-                'airtable_data' => $airtableData
+                'user' => $request->user()
             ]
         ]);
-    }
-
-    /**
-     * 🔥 NUEVO: Sincronizar usuario Laravel con Airtable
-     */
-    public function syncWithAirtable(Request $request)
-    {
-        try {
-            $user = $request->user();
-
-            if (!$user->airtable_id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Usuario no tiene ID de Airtable asociado'
-                ], 400);
-            }
-
-            $airtableUser = $this->airtableService->getRecord('Usuarios', $user->airtable_id);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Datos sincronizados correctamente',
-                'data' => [
-                    'laravel_user' => $user,
-                    'airtable_user' => $airtableUser
-                ]
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al sincronizar con Airtable',
-                'error' => $e->getMessage()
-            ], 500);
-        }
     }
 }

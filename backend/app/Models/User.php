@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -21,9 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',           // 🔥 NUEVO: Rol del usuario
-        'airtable_id',    // 🔥 NUEVO: ID del registro en Airtable
-        'status',         // 🔥 NUEVO: Estado del usuario
+        'role',
+        'status',
     ];
 
     /**
@@ -43,11 +42,10 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
 
     /**
-     * 🔥 NUEVO: Verificar si el usuario es administrador
+     * Verificar si el usuario es administrador
      */
     public function isAdmin(): bool
     {
@@ -55,7 +53,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 🔥 NUEVO: Verificar si el usuario es agente
+     * Verificar si el usuario es agente
      */
     public function isAgent(): bool
     {
@@ -63,7 +61,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 🔥 NUEVO: Verificar si el usuario es cliente
+     * Verificar si el usuario es cliente
      */
     public function isClient(): bool
     {
@@ -71,7 +69,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 🔥 NUEVO: Scope para filtrar por rol
+     * Scope para filtrar por rol
      */
     public function scopeByRole($query, $role)
     {
@@ -79,7 +77,7 @@ class User extends Authenticatable
     }
 
     /**
-     * 🔥 NUEVO: Scope para usuarios activos
+     * Scope para usuarios activos
      */
     public function scopeActive($query)
     {

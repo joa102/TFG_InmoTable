@@ -1,24 +1,44 @@
-# Etapa 1: imagen base con PHP y extensiones necesarias
-FROM php:8.1-apache
+# Usar PHP 8.1 FPM como imagen base
+FROM php:8.1-fpm
 
-# Instalar extensiones requeridas (pdo, etc.)
-RUN docker-php-ext-install pdo pdo_mysql
+# Instalar dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip
 
-# Activar mod_rewrite
-RUN a2enmod rewrite
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copiamos el contenido de Laravel al directorio de Apache
-COPY . /var/www/html
+# Establecer directorio de trabajo
+WORKDIR /var/www/html
 
-# Ajustamos permisos
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Copiar archivos de la aplicación
+COPY . .
 
-# Configurar DocumentRoot para Laravel
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+# Instalar dependencias de PHP
+RUN composer install --no-dev --optimize-autoloader
 
-# Exponer el puerto 80
-EXPOSE 80
+# Establecer permisos
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage \
+    && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Ejecutar Apache
-CMD ["apache2-foreground"]
+# Exponer puerto 9000 para PHP-FPM
+EXPOSE 9000
+
+# Comando por defecto
+CMD ["php-fpm"]
