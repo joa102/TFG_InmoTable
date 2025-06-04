@@ -1,23 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-// 🔥 IMPORTAR SERVICIO CORRECTO
+// 🔥 IMPORTAR SERVICIOS Y TIPOS
 import { PropiedadesService } from '../../services/propiedades.service';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, User } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
 
   // 📊 ESTADO DEL COMPONENTE
   loading = true;
   error: string | null = null;
+  logoutLoading = false;
+
+  // 🔐 USUARIO AUTENTICADO
+  currentUser: User | null = null;
+  isAdmin = false;
+  isAgent = false;
+  isClient = false;
 
   // 📈 ESTADÍSTICAS
   totalPropiedades = 0;
@@ -33,10 +42,7 @@ export class DashboardComponent implements OnInit {
   citasProximas: any[] = [];
   propiedadesDestacadas: any[] = [];
 
-  // 🔐 PERMISOS (simulados por ahora)
-  isAdmin = true;
-  isAgent = false;
-  isClient = false;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private propiedadesService: PropiedadesService,
@@ -45,7 +51,58 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.initializeUserData();
     this.loadDashboardData();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * 🔐 Inicializar datos del usuario
+   */
+  private initializeUserData(): void {
+    this.authService.getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.currentUser = user;
+        this.isAdmin = this.authService.isAdmin;
+        this.isAgent = this.authService.isAgent;
+        this.isClient = this.authService.isClient;
+
+        console.log('👤 Usuario actual en Dashboard:', {
+          usuario: user?.nombre,
+          email: user?.email,
+          rol: user?.rol,
+          recordId: user?.recordId,
+          ultimoLogin: user?.ultimoLogin
+        });
+      });
+  }
+
+  /**
+   * 🚪 Cerrar sesión
+   */
+  logout(): void {
+    if (this.logoutLoading) return;
+
+    this.logoutLoading = true;
+    console.log('🚪 Iniciando logout desde Dashboard...');
+
+    this.authService.logout()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          console.log('✅ Logout exitoso:', response);
+          // El AuthService ya maneja la redirección
+        },
+        error: (error) => {
+          console.error('❌ Error en logout:', error);
+          this.logoutLoading = false;
+        }
+      });
   }
 
   /**
@@ -56,6 +113,8 @@ export class DashboardComponent implements OnInit {
       this.loading = true;
       this.error = null;
 
+      console.log('📊 Cargando datos del dashboard para:', this.currentUser?.nombre);
+
       // 🔄 Cargar propiedades reales
       await this.loadPropertiesData();
 
@@ -63,7 +122,7 @@ export class DashboardComponent implements OnInit {
       this.loadMockData();
 
     } catch (error) {
-      console.error('Error al cargar datos del dashboard:', error);
+      console.error('❌ Error al cargar datos del dashboard:', error);
       this.error = 'Error al cargar los datos del dashboard';
     } finally {
       this.loading = false;
@@ -75,11 +134,13 @@ export class DashboardComponent implements OnInit {
    */
   private async loadPropertiesData(): Promise<void> {
     try {
-      // 🔥 USAR MÉTODO CORRECTO
+      console.log('🏠 Cargando propiedades...');
+      
       this.propiedadesService.getAll().subscribe({
         next: (response) => {
           if (response?.success && response.data) {
             this.totalPropiedades = response.data.length;
+            console.log('✅ Propiedades cargadas:', this.totalPropiedades);
 
             // 🏠 Procesar propiedades destacadas
             this.propiedadesDestacadas = response.data
@@ -99,12 +160,12 @@ export class DashboardComponent implements OnInit {
           }
         },
         error: (error) => {
-          console.error('Error al cargar propiedades:', error);
+          console.warn('⚠️ Error al cargar propiedades, usando datos mock:', error);
           this.loadMockPropertiesData();
         }
       });
     } catch (error) {
-      console.error('Error al cargar propiedades:', error);
+      console.warn('⚠️ Error al cargar propiedades, usando datos mock:', error);
       this.loadMockPropertiesData();
     }
   }
@@ -128,12 +189,16 @@ export class DashboardComponent implements OnInit {
         value: cantidad,
         color: colores[index % colores.length]
       }));
+
+    console.log('📊 Propiedades por tipo procesadas:', this.propiedadesPorTipo);
   }
 
   /**
    * 🏠 Datos simulados de propiedades
    */
   private loadMockPropertiesData(): void {
+    console.log('🎭 Cargando datos mock de propiedades...');
+    
     this.totalPropiedades = 12;
 
     this.propiedadesDestacadas = [
@@ -168,6 +233,8 @@ export class DashboardComponent implements OnInit {
    * 📊 Cargar datos simulados
    */
   private loadMockData(): void {
+    console.log('🎭 Cargando datos mock generales...');
+
     // 👥 Clientes
     this.totalClientes = 45;
 
@@ -200,6 +267,8 @@ export class DashboardComponent implements OnInit {
         }
       }
     ];
+
+    console.log('✅ Datos mock cargados correctamente');
   }
 
   /**
@@ -225,6 +294,7 @@ export class DashboardComponent implements OnInit {
    * 🔗 Navegar a propiedad
    */
   navigateToProperty(propertyId: string): void {
+    console.log('🔗 Navegando a propiedad:', propertyId);
     this.router.navigate(['/propiedades', propertyId]);
   }
 
@@ -232,6 +302,54 @@ export class DashboardComponent implements OnInit {
    * 🔄 Recargar datos
    */
   refreshData(): void {
+    console.log('🔄 Recargando datos del dashboard...');
     this.loadDashboardData();
+  }
+
+  /**
+   * ⏰ Formatear tiempo desde último login
+   */
+  getTimeSinceLastLogin(): string {
+    if (!this.currentUser?.ultimoLogin) {
+      return 'Primer inicio de sesión';
+    }
+
+    const lastLogin = new Date(this.currentUser.ultimoLogin);
+    const now = new Date();
+    const diffMs = now.getTime() - lastLogin.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return 'Hace menos de 1 minuto';
+    if (diffMins < 60) return `Hace ${diffMins} minutos`;
+    
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `Hace ${diffHours} horas`;
+    
+    const diffDays = Math.floor(diffHours / 24);
+    return `Hace ${diffDays} días`;
+  }
+
+  /**
+   * 🎨 Obtener clase CSS del rol
+   */
+  getRoleClass(): string {
+    switch (this.currentUser?.rol) {
+      case 'admin': return 'text-danger';
+      case 'agente': return 'text-success';
+      case 'cliente': return 'text-info';
+      default: return 'text-secondary';
+    }
+  }
+
+  /**
+   * 🏷️ Obtener etiqueta del rol
+   */
+  getRoleLabel(): string {
+    switch (this.currentUser?.rol) {
+      case 'admin': return 'Administrador';
+      case 'agente': return 'Agente Inmobiliario';
+      case 'cliente': return 'Cliente';
+      default: return 'Usuario';
+    }
   }
 }
