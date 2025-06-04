@@ -35,7 +35,7 @@ export interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  
+
   // 🔥 USUARIOS DE PRUEBA (Definirás los datos después)
   private readonly USUARIOS_PRUEBA: User[] = [
     {
@@ -100,7 +100,7 @@ export class AuthService {
       delay(1000), // 1 segundo de "carga"
       map(() => {
         // Buscar usuario
-        const usuario = this.USUARIOS_PRUEBA.find(u => 
+        const usuario = this.USUARIOS_PRUEBA.find(u =>
           u.email === credentials.email && u.password === credentials.password
         );
 
@@ -138,7 +138,7 @@ export class AuthService {
   // 🔥 LOGOUT
   logout(): Observable<any> {
     console.log('🚪 Cerrando sesión...');
-    
+
     return of(null).pipe(
       delay(500),
       map(() => {
@@ -226,7 +226,7 @@ export class AuthService {
       exp: Date.now() + (24 * 60 * 60 * 1000), // 24 horas
       iat: Date.now()
     };
-    
+
     // Token base64 falso (solo para demo)
     return 'fake_jwt_' + btoa(JSON.stringify(payload));
   }

@@ -49,7 +49,7 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
 
         <!-- 📝 FORMULARIO -->
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-          
+
           <!-- Email -->
           <div class="mb-3">
             <label for="email" class="form-label">
@@ -181,7 +181,7 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
   `]
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  
+
   loginForm!: FormGroup;
   loading = false;
   error: string | null = null;

@@ -135,7 +135,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private async loadPropertiesData(): Promise<void> {
     try {
       console.log('🏠 Cargando propiedades...');
-      
+
       this.propiedadesService.getAll().subscribe({
         next: (response) => {
           if (response?.success && response.data) {
@@ -198,7 +198,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   private loadMockPropertiesData(): void {
     console.log('🎭 Cargando datos mock de propiedades...');
-    
+
     this.totalPropiedades = 12;
 
     this.propiedadesDestacadas = [
@@ -321,10 +321,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (diffMins < 1) return 'Hace menos de 1 minuto';
     if (diffMins < 60) return `Hace ${diffMins} minutos`;
-    
+
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `Hace ${diffHours} horas`;
-    
+
     const diffDays = Math.floor(diffHours / 24);
     return `Hace ${diffDays} días`;
   }

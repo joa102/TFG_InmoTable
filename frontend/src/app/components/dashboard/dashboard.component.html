@@ -8,7 +8,7 @@
         Dashboard
       </h1>
       <p class="subtitle" *ngIf="currentUser">
-        Bienvenido/a, <strong>{{ currentUser.nombre }}</strong> 
+        Bienvenido/a, <strong>{{ currentUser.nombre }}</strong>
         <span class="badge ms-2" [class]="'badge-' + currentUser.rol">
           {{ getRoleLabel() }}
         </span>
@@ -27,9 +27,9 @@
         <i class="fas fa-sync" [class.fa-spin]="loading"></i>
         Actualizar
       </button>
-      <button 
-        class="btn btn-outline-danger" 
-        (click)="logout()" 
+      <button
+        class="btn btn-outline-danger"
+        (click)="logout()"
         [disabled]="logoutLoading"
       >
         <span *ngIf="logoutLoading" class="spinner-border spinner-border-sm me-2"></span>

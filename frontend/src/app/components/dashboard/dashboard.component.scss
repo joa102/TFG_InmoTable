@@ -176,15 +176,15 @@
 
     .stat-trend {
       font-size: 0.85rem;
-      
+
       &.positive {
         color: #28a745;
       }
-      
+
       &.neutral {
         color: #6c757d;
       }
-      
+
       &.negative {
         color: #dc3545;
       }
@@ -247,7 +247,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    
+
     .chart-bar {
       width: 100%;
       max-width: 40px;
@@ -255,13 +255,13 @@
       border-radius: 4px 4px 0 0;
       min-height: 20px;
     }
-    
+
     .chart-label {
       font-size: 0.8rem;
       color: #6c757d;
       margin-bottom: 0.25rem;
     }
-    
+
     .chart-value {
       font-weight: 600;
       color: #2c3e50;
@@ -435,7 +435,7 @@
 
   .user-banner {
     text-align: center;
-    
+
     .row {
       text-align: center !important;
     }
@@ -462,7 +462,7 @@
   .stat-card {
     flex-direction: column;
     text-align: center;
-    
+
     .stat-icon {
       margin-bottom: 1rem;
     }
