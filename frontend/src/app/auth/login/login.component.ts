@@ -219,7 +219,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // 🔥 AUTOCOMPLETAR USUARIOS DE PRUEBA
   fillAdmin(): void {
     this.loginForm.patchValue({
-      email: 'admin@inmobiliaria.com',
+      email: 'admin@inmotable.com',
       password: 'admin123'
     });
     this.clearMessages();
@@ -227,7 +227,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   fillAgent(): void {
     this.loginForm.patchValue({
-      email: 'agente@inmobiliaria.com',
+      email: 'luísbilbao-vara@inmotable.com',
       password: 'agente123'
     });
     this.clearMessages();
@@ -235,7 +235,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   fillClient(): void {
     this.loginForm.patchValue({
-      email: 'cliente@inmobiliaria.com',
+      email: 'mireiabayona@fajardo-tamarit.es',
       password: 'cliente123'
     });
     this.clearMessages();

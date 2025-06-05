@@ -4,11 +4,17 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
+import { AuthService, User } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-appointment-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NavbarComponent  // 🔥 AÑADIR NAVBAR
+  ],
   templateUrl: './appointment-list.component.html',
   styleUrl: './appointment-list.component.scss'
 })
@@ -18,6 +24,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   airtableBaseUrl = 'https://airtable.com/embed/apphONbM2nnoZThgr/pagtZbDsnocCqMAzm/form';
   iframeUrl: SafeResourceUrl = '';
   propertyRecordId: string | null = null;
+  currentUser: User | null = null;
   loading = true;
 
   private destroy$ = new Subject<void>();
@@ -25,15 +32,33 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private authService: AuthService  // 🔥 AÑADIR AUTH SERVICE
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams
+    console.log('📅 Inicializando AppointmentListComponent...');
+
+    // Suscribirse al usuario actual
+    this.authService.getCurrentUser()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(params => {
-        this.propertyRecordId = params['propertyRecordId'] || null;
-        this.buildIframeUrl();
+      .subscribe(user => {
+        this.currentUser = user;
+        console.log('👤 Usuario actual en appointment-list:', user);
+
+        if (user) {
+          // Una vez que tenemos el usuario, procesamos los query params
+          this.route.queryParams
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(params => {
+              this.propertyRecordId = params['propertyRecordId'] || null;
+              console.log('🏠 Property Record ID:', this.propertyRecordId);
+              this.buildIframeUrl();
+            });
+        } else {
+          console.warn('⚠️ No hay usuario logueado');
+          this.router.navigate(['/auth/login']);
+        }
       });
   }
 
@@ -43,7 +68,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Construir URL del iframe con parámetros
+   * 🔧 Construir URL del iframe con parámetros
    */
   private buildIframeUrl(): void {
     let url = this.airtableBaseUrl;
@@ -53,17 +78,44 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     if (this.propertyRecordId) {
       params.append('prefill_Propiedad', this.propertyRecordId);
       params.append('hide_Propiedad', 'true');
+      console.log('✅ Agregando propiedad al formulario:', this.propertyRecordId);
+    }
+
+    // 🔥 USAR EL recordId DEL USUARIO LOGUEADO en lugar del valor hardcodeado
+    if (this.currentUser?.recordId) {
+      params.append('prefill_Cliente', this.currentUser.recordId);
+      params.append('hide_Cliente', 'true');
+      console.log('✅ Agregando cliente del usuario logueado:', this.currentUser.recordId);
+    } else {
+      console.warn('⚠️ No se encontró recordId del usuario, usando valor por defecto');
+      // Fallback al valor anterior si no hay recordId
+      params.append('prefill_Cliente', 'recDmY1oJL8wNTO9q');
+      params.append('hide_Cliente', 'true');
     }
 
     // Parámetros adicionales
-    params.append('prefill_Cliente', 'recDmY1oJL8wNTO9q');
-    params.append('hide_Cliente', 'true');
     params.append('hide_Estado', 'true');
+
+    // Prerellenar información adicional del usuario si está disponible
+    if (this.currentUser) {
+      if (this.currentUser.nombre) {
+        params.append('prefill_Nombre_Cliente', this.currentUser.nombre);
+      }
+      if (this.currentUser.email) {
+        params.append('prefill_Email_Cliente', this.currentUser.email);
+      }
+      if (this.currentUser.telefono) {
+        params.append('prefill_Teléfono_Cliente', this.currentUser.telefono);
+      }
+    }
 
     // Construir URL final
     if (params.toString()) {
       url += '?' + params.toString();
     }
+
+    console.log('🔗 URL del formulario de citas:', url);
+    console.log('📋 Parámetros construidos:', Object.fromEntries(params));
 
     // Sanitizar URL para Angular
     this.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
@@ -71,21 +123,79 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Volver a propiedades
+   * 🔙 Volver a propiedades
    */
   goBack(): void {
+    console.log('🔙 Navegando de vuelta a propiedades...');
     this.router.navigate(['/propiedades']);
   }
 
   /**
-   * Ir a una propiedad específica
+   * 🏠 Ir a una propiedad específica
    */
   goToProperty(): void {
     if (this.propertyRecordId) {
+      console.log('🏠 Navegando a la propiedad:', this.propertyRecordId);
       // Aquí deberías tener el ID real de la propiedad, no el record ID
       // Por ahora navegamos a la lista
       this.router.navigate(['/propiedades']);
+    } else {
+      console.log('🏠 No hay propiedad específica, navegando a lista general');
+      this.router.navigate(['/propiedades']);
     }
+  }
+
+  /**
+   * 📅 Ir al calendario de citas
+   */
+  goToAppointmentCalendar(): void {
+    console.log('📅 Navegando al calendario de citas...');
+    this.router.navigate(['/appointment-calendar']);
+  }
+
+  /**
+   * 🏷️ Obtener etiqueta del rol
+   */
+  getRoleLabel(): string {
+    if (!this.currentUser?.rol) return 'Usuario';
+
+    const roleLabels: { [key: string]: string } = {
+      'admin': 'Administrador',
+      'agente': 'Agente Inmobiliario',
+      'cliente': 'Cliente'
+    };
+
+    return roleLabels[this.currentUser.rol.toLowerCase()] || this.currentUser.rol;
+  }
+
+  /**
+   * 🎨 Obtener clase CSS del rol
+   */
+  getRoleClass(): string {
+    if (!this.currentUser?.rol) return 'secondary';
+
+    const roleClasses: { [key: string]: string } = {
+      'admin': 'danger',
+      'agente': 'success',
+      'cliente': 'primary'
+    };
+
+    return roleClasses[this.currentUser.rol.toLowerCase()] || 'secondary';
+  }
+
+  /**
+   * 🔍 Obtener información del usuario para debug
+   */
+  getUserInfo(): string {
+    if (!this.currentUser) return 'No hay usuario logueado';
+
+    return `
+👤 Usuario: ${this.currentUser.nombre}
+📧 Email: ${this.currentUser.email}
+🏷️ Rol: ${this.currentUser.rol}
+🆔 Record ID: ${this.currentUser.recordId}
+🏠 Propiedad: ${this.propertyRecordId || 'Ninguna'}
+    `;
   }
 }
 

@@ -1,16 +1,7 @@
-<!--<p>appointment-list works!</p>-->
-<!--<div class="appointment-container">
-  <iframe
-    class="airtable-embed"
-    src="https://airtable.com/embed/apphONbM2nnoZThgr/pagtZbDsnocCqMAzm/form"
-    frameborder="0"
-    onmousewheel=""
-    width="100%"
-    height="533"
-    style="background: transparent; border: 1px solid #ccc"
-  ></iframe>
-</div>-->
-<div class="appointment-detail-container">
+<!-- 🔥 NAVBAR HEADER -->
+<app-navbar></app-navbar>
+
+<div class="appointment-detail-container pt-navbar">
 
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-container d-flex flex-column align-items-center justify-content-center py-5">
@@ -51,9 +42,9 @@
         </div>
         <div class="col-lg-4 text-lg-end">
           <div class="appointment-actions">
-            <button class="btn btn-outline-secondary" (click)="goBack()">
+            <button class="btn btn-primary" (click)="goBack()">
               <i class="fas fa-arrow-left me-2"></i>
-              Volver a Propiedades
+              Volver
             </button>
           </div>
         </div>
@@ -177,16 +168,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Back Button -->
-    <div class="row mt-5 mb-5">
-      <div class="col-12">
-        <button class="btn btn-secondary btn-lg" (click)="goBack()">
-          <i class="fas fa-arrow-left me-2"></i>
-          Volver a la lista de propiedades
-        </button>
       </div>
     </div>
 

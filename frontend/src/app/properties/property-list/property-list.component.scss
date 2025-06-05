@@ -1,3 +1,10 @@
+// ===============================
+// NAVBAR - ESTILOS ESPECÍFICOS
+// ===============================
+.pt-navbar {
+    padding-top: 6rem !important;
+}
+
 .property-card {
   width: 100%;
   border-radius: 10px;
@@ -713,6 +720,12 @@
       }
     }
   }
+}
+
+// 🔥 ESPACIO PARA NAVBAR FIJO
+.main-content {
+  padding-top: 80px; // Espacio para el navbar fijo
+  min-height: 100vh;
 }
 
 .bg-gradient-primary {

@@ -40,7 +40,7 @@ export class AuthService {
   private readonly USUARIOS_PRUEBA: User[] = [
     {
       id: 1,
-      email: 'admin@inmobiliaria.com',
+      email: 'admin@inmotable.com',
       password: 'admin123',
       rol: 'admin',
       estado: 'Activo',
@@ -50,35 +50,35 @@ export class AuthService {
       agentes: [],
       fechaRegistro: '2024-01-01T10:00:00.000Z',
       ultimoLogin: undefined,
-      recordId: 'recADMIN001'
+      recordId: 'recZqPUvF8iL6vr8t'
     },
     {
       id: 2,
-      email: 'agente@inmobiliaria.com',
+      email: 'luísbilbao-vara@inmotable.com',
       password: 'agente123',
       rol: 'agente',
       estado: 'Activo',
-      nombre: 'Juan Carlos Agente',
-      telefono: '+34900000002',
-      clientes: ['recCLI001', 'recCLI002'],
-      agentes: [],
+      nombre: 'Luís Bilbao-Vara',
+      telefono: '634929311',
+      clientes: [],
+      agentes: ['6'],
       fechaRegistro: '2024-01-15T10:00:00.000Z',
       ultimoLogin: undefined,
-      recordId: 'recAGE001'
+      recordId: 'rectky7CqkrJSVGbg'
     },
     {
-      id: 3,
-      email: 'cliente@inmobiliaria.com',
+      id: 56,
+      email: 'mireiabayona@fajardo-tamarit.es',
       password: 'cliente123',
       rol: 'cliente',
       estado: 'Activo',
-      nombre: 'María López Cliente',
-      telefono: '+34900000003',
-      clientes: [],
-      agentes: ['recAGE001'],
+      nombre: 'Héctor Núñez Ferrán',
+      telefono: '619015987',
+      clientes: ['45'],
+      agentes: [],
       fechaRegistro: '2024-02-01T10:00:00.000Z',
       ultimoLogin: undefined,
-      recordId: 'recCLI001'
+      recordId: 'recXNz6ABzdQ04Bre'
     }
   ];
 

@@ -1,52 +1,9 @@
-/*.appointment-container {
-  height: 100vh; // Altura completa de la ventana
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+// ===============================
+// NAVBAR - ESTILOS ESPECÍFICOS
+// ===============================
+.pt-navbar {
+    padding-top: 5rem !important;
 }
-
-.airtable-embed {
-  flex: 1; // Ocupa todo el espacio disponible
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-// ✅ RESPONSIVE - Ajustar en móviles
-@media (max-width: 768px) {
-  .register-container {
-    height: calc(100vh - 60px); // Menos altura en móvil para header
-    padding: 10px;
-  }
-}*/
-
-/*.appointment-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-
-  .airtable-embed {
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .alert {
-    border-left: 4px solid #17a2b8;
-  }
-
-  details {
-    cursor: pointer;
-
-    summary {
-      user-select: none;
-
-      &:hover {
-        color: #007bff;
-      }
-    }
-  }
-}*/
 
 // ===============================
 // CONTENEDOR GENERAL

@@ -1,4 +1,7 @@
-<div class="property-detail-container">
+<!-- 🔥 NAVBAR HEADER -->
+<app-navbar></app-navbar>
+
+<div class="property-detail-container pt-navbar">
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-container d-flex flex-column align-items-center justify-content-center py-5">
     <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
@@ -23,23 +26,38 @@
   <!-- Property Content -->
   <div *ngIf="property && !loading && !error" class="container-fluid">
 
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <a routerLink="/propiedades" class="text-decoration-none">
-            <i class="fas fa-home me-1"></i>
-            Propiedades
-          </a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-          {{ getFieldAsString('Título') || 'Detalle de propiedad' }}
-        </li>
-      </ol>
-    </nav>
+    <!-- 🔥 TOP NAVIGATION BAR CON BREADCRUMB Y BOTÓN BACK -->
+    <div class="top-navigation mb-4">
+      <div class="row align-items-center">
+        <!-- Breadcrumb que ocupa todo el espacio disponible -->
+        <div class="col">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item">
+                <a routerLink="/propiedades" class="text-decoration-none">
+                  <i class="fas fa-home me-1"></i>
+                  Propiedades
+                </a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                {{ getFieldAsString('Título') || 'Detalle' }}
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+        <!-- Botón que mantiene su tamaño -->
+        <div class="col-auto">
+          <button class="btn btn-outline-secondary back-button" (click)="goBack()">
+            <i class="fas fa-arrow-left me-2"></i>
+            Volver a la lista
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- Header Section -->
-    <div class="property-header mb-5">
+    <div class="property-header mb-4">
       <div class="row align-items-center">
         <div class="col-lg-8">
           <h1 class="property-title display-5 fw-bold mb-2">
@@ -53,6 +71,7 @@
             {{ getFieldAsString('Dirección') || 'Ubicación no especificada' }}
           </div>
         </div>
+
         <div class="col-lg-4 text-lg-end">
           <div class="property-quick-info">
             <div class="row g-2">
@@ -85,7 +104,7 @@
       <div class="col-lg-8">
 
         <!-- Image Gallery -->
-        <div class="property-gallery">
+        <div class="property-gallery mb-4">
 
           <!-- Caso 1: Hay imágenes -->
           <div *ngIf="hasImages; else noImagesTemplate">
@@ -159,7 +178,7 @@
         </div>
 
         <!-- Description Section -->
-        <div class="description-section mb-5">
+        <div class="description-section mb-4">
           <h3 class="mb-3">
             <i class="fas fa-align-left text-primary me-2"></i>
             Descripción
@@ -168,6 +187,27 @@
             <p class="mb-0">
               {{ getFieldAsString('Descripción') || 'No hay descripción disponible para esta propiedad.' }}
             </p>
+          </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="card mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-map-marker-alt me-2"></i>
+              Ubicación
+            </h5>
+            <button class="btn btn-sm btn-outline-primary" (click)="reinitializeMap()">
+              <i class="fas fa-redo me-1"></i>
+              Recargar mapa
+            </button>
+          </div>
+          <div class="card-body p-0">
+            <div id="propertyMap"></div>
+          </div>
+          <div class="card-footer text-muted">
+            <i class="fas fa-map-marker-alt me-2"></i>
+            {{ getFieldAsString('Dirección') || 'Ubicación no especificada' }}
           </div>
         </div>
 
@@ -275,41 +315,6 @@
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- Map Section -->
-    <div class="row mt-5">
-      <div class="col-12">
-        <div class="card">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">
-              <i class="fas fa-map-marker-alt me-2"></i>
-              Ubicación
-            </h5>
-            <button class="btn btn-sm btn-outline-primary" (click)="reinitializeMap()">
-              <i class="fas fa-redo me-1"></i>
-              Recargar mapa
-            </button>
-          </div>
-          <div class="card-body p-0">
-            <div id="propertyMap"></div>
-          </div>
-          <div class="card-footer text-muted">
-            <i class="fas fa-map-marker-alt me-2"></i>
-            {{ getFieldAsString('Dirección') || 'Ubicación no especificada' }}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Back Button -->
-    <div class="row mt-5 mb-5">
-      <div class="col-12">
-        <button class="btn btn-secondary btn-lg" (click)="goBack()">
-          <i class="fas fa-arrow-left me-2"></i>
-          Volver a la lista de propiedades
-        </button>
       </div>
     </div>
 

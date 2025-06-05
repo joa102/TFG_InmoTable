@@ -6,6 +6,7 @@ import { Propiedad, PropiedadFields } from '../../models/airtable.interfaces';
 import { EnergyRatingComponent, EnergyRatingData } from '../../shared/components/energy-rating/energy-rating.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
 // ✅ LEAFLET SIN CONFIGURACIÓN PERSONALIZADA DE ICONOS
 import * as L from 'leaflet';
@@ -16,7 +17,8 @@ import * as L from 'leaflet';
   imports: [
     CommonModule,
     RouterModule,
-    EnergyRatingComponent
+    EnergyRatingComponent,
+    NavbarComponent  // 🔥 AÑADIR NAVBAR
   ],
   templateUrl: './property-detail.component.html',
   styleUrls: ['./property-detail.component.scss']

@@ -1,0 +1,158 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container-fluid">
+
+    <!-- 🏠 LOGO Y BRAND -->
+    <a class="navbar-brand d-flex align-items-center" (click)="navigateToHome()" style="cursor: pointer;">
+      <i class="fas fa-home me-2 fs-4"></i>
+      <span class="fw-bold">InmoTable</span>
+    </a>
+
+    <!-- 📱 TOGGLE BUTTON PARA MÓVILES -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- 🔗 NAVEGACIÓN -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+
+      <!-- ENLACES PRINCIPALES -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateToHome()" style="cursor: pointer;" title="Ir a página de inicio">
+            <i class="fas fa-home me-1"></i>
+            Inicio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateToProperties()" style="cursor: pointer;" title="Ver todas las propiedades">
+            <i class="fas fa-building me-1"></i>
+            Propiedades
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateToContact()" style="cursor: pointer;" title="Información de contacto">
+            <i class="fas fa-envelope me-1"></i>
+            Contacto
+          </a>
+        </li>
+      </ul>
+
+      <!-- 👤 SECCIÓN DE USUARIO -->
+      <ul class="navbar-nav">
+
+        <!-- 🔐 SI NO ESTÁ LOGUEADO -->
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link btn btn-outline-light px-3" (click)="navigateToLogin()" style="cursor: pointer;" title="Iniciar sesión en el sistema">
+            <i class="fas fa-sign-in-alt me-1"></i>
+            Iniciar sesión
+          </a>
+        </li>
+
+        <!-- 👤 SI ESTÁ LOGUEADO -->
+        <li class="nav-item dropdown position-relative" *ngIf="isLoggedIn"
+            [class.show]="showUserDropdown">
+
+          <!-- BOTÓN DEL USUARIO -->
+          <a class="nav-link dropdown-toggle user-dropdown"
+             (click)="toggleUserDropdown()"
+             style="cursor: pointer;"
+             [attr.aria-expanded]="showUserDropdown"
+             [title]="'Menú de ' + getDisplayName()">
+
+            <!-- AVATAR CON INICIALES -->
+            <div class="user-avatar me-2">
+              {{ getUserInitials() }}
+            </div>
+
+            <!-- NOMBRE Y ROL -->
+            <div class="user-info d-none d-md-inline-block">
+              <div class="user-name">{{ getDisplayName() }}</div>
+              <small class="user-role text-light-50">{{ getRoleLabel() }}</small>
+            </div>
+          </a>
+
+          <!-- 📋 DROPDOWN MENU -->
+          <ul class="dropdown-menu dropdown-menu-end"
+              [class.show]="showUserDropdown">
+
+            <!-- HEADER DEL DROPDOWN -->
+            <li class="dropdown-header">
+              <div class="d-flex align-items-center">
+                <div class="user-avatar-large me-2">
+                  {{ getUserInitials() }}
+                </div>
+                <div>
+                  <div class="fw-semibold">{{ currentUser?.nombre }}</div>
+                  <small class="text-muted">{{ currentUser?.email }}</small>
+                  <div>
+                    <span class="badge bg-{{ getRoleClass() }} mt-1">{{ getRoleLabel() }}</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <!-- OPCIONES DEL MENU -->
+            <li>
+              <a class="dropdown-item" (click)="navigateToUserProfile()" style="cursor: pointer;" title="Ver y editar datos personales">
+                <i class="fas fa-user me-2 text-primary"></i>
+                <span>Datos del usuario</span>
+                <small class="text-muted d-block">Perfil y configuración</small>
+              </a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" (click)="navigateToInterestedProperties()" style="cursor: pointer;" title="Ver propiedades marcadas como favoritas">
+                <i class="fas fa-heart me-2 text-danger"></i>
+                <span>Propiedades interesadas</span>
+                <small class="text-muted d-block">Tus favoritos</small>
+              </a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" (click)="navigateToAppointments()" style="cursor: pointer;" title="Visualizar citas y visitas">
+                <i class="fas fa-calendar-alt me-2 text-success"></i>
+                <span>Citas</span>
+                <small class="text-muted d-block">Visualizar visitas</small>
+              </a>
+            </li>
+
+            <!-- SEPARADOR PARA ADMIN/AGENTE -->
+            <li *ngIf="isAdmin() || isAgent()">
+              <hr class="dropdown-divider">
+            </li>
+
+            <!-- OPCIONES ADICIONALES PARA ADMIN/AGENTE -->
+            <li *ngIf="isAdmin() || isAgent()">
+              <a class="dropdown-item" (click)="navigateToDashboard()" style="cursor: pointer;" title="Panel de administración">
+                <i class="fas fa-tachometer-alt me-2 text-info"></i>
+                <span>Dashboard</span>
+                <small class="text-muted d-block">Panel de control</small>
+              </a>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <!-- CERRAR SESIÓN -->
+            <li>
+              <a class="dropdown-item text-danger" (click)="logout()" style="cursor: pointer;" title="Cerrar sesión actual">
+                <i class="fas fa-sign-out-alt me-2"></i>
+                <span>Cerrar sesión</span>
+                <small class="text-muted d-block">Salir del sistema</small>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
