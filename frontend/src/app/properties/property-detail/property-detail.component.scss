@@ -1,4 +1,11 @@
 // ===============================
+// NAVBAR - ESTILOS ESPECÍFICOS
+// ===============================
+.pt-navbar {
+    padding-top: 5rem !important;
+}
+
+// ===============================
 // MAPA - ESTILOS ESPECÍFICOS
 // ===============================
 
@@ -229,7 +236,94 @@
 }
 
 // ===============================
-// BREADCRUMB
+// 🔥 TOP NAVIGATION BAR - MEJORADO
+// ===============================
+
+.top-navigation {
+  background: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+
+  .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    // 🔥 PERMITIR QUE USE TODO EL ANCHO DISPONIBLE
+    width: 100%;
+
+    .breadcrumb-item {
+      font-size: 0.95rem;
+
+      a {
+        color: #0d6efd;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+          color: #0a58ca;
+          text-decoration: underline;
+        }
+      }
+
+      &.active {
+        color: #6c757d;
+        font-weight: 500;
+        // 🔥 REMOVER RESTRICCIONES DE ANCHO Y PERMITIR QUEBRADO
+        max-width: none !important;
+        overflow: visible !important;
+        text-overflow: initial !important;
+        white-space: normal !important;
+        display: inline !important;
+        word-break: break-word;
+        line-height: 1.4;
+      }
+
+      &:not(.active)::before {
+        color: #6c757d;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .back-button {
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    border: 1px solid #6c757d;
+    color: #6c757d;
+    background: transparent;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    // 🔥 EVITAR QUE EL BOTÓN SE ENCOJA
+    flex-shrink: 0;
+    white-space: nowrap;
+
+    &:hover {
+      background: #6c757d;
+      color: white;
+      border-color: #6c757d;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(108, 117, 125, 0.3);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+    }
+
+    i {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// ===============================
+// BREADCRUMB GENERAL - MEJORADO
 // ===============================
 
 .breadcrumb {
@@ -239,18 +333,144 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   .breadcrumb-item {
+    font-size: 0.95rem;
+
     a {
       color: #0d6efd;
       text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
 
       &:hover {
+        color: #0a58ca;
         text-decoration: underline;
       }
     }
 
     &.active {
       color: #6c757d;
+      font-weight: 500;
+      // 🔥 CONFIGURACIÓN RESPONSIVE MEJORADA
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+      line-height: 1.4;
     }
+
+    &:not(.active)::before {
+      color: #6c757d;
+      font-weight: 600;
+    }
+  }
+}
+
+// ===============================
+// RESPONSIVE PARA TOP NAVIGATION - MEJORADO
+// ===============================
+
+@media (max-width: 768px) {
+  .top-navigation {
+    padding: 0.75rem 1rem;
+
+    .row {
+      // 🔥 MANTENER DISTRIBUCIÓN HORIZONTAL EN MÓVILES
+      flex-direction: row !important;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .col {
+      // 🔥 PERMITIR QUE EL BREADCRUMB USE EL ESPACIO DISPONIBLE
+      flex: 1;
+      min-width: 0;
+    }
+
+    .col-auto {
+      // 🔥 MANTENER EL BOTÓN EN SU TAMAÑO
+      flex-shrink: 0;
+    }
+
+    .breadcrumb {
+      margin-bottom: 0;
+
+      .breadcrumb-item {
+        font-size: 0.85rem;
+
+        &.active {
+          // 🔥 PERMITIR MÚLTIPLES LÍNEAS EN MÓVILES
+          word-break: break-word;
+          overflow-wrap: break-word;
+          hyphens: auto;
+        }
+      }
+    }
+
+    .back-button {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+      // 🔥 ASEGURAR QUE EL BOTÓN SE MANTIENE VISIBLE
+      min-width: auto;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .top-navigation {
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.75rem;
+
+    .breadcrumb {
+      padding: 8px 12px;
+
+      .breadcrumb-item {
+        font-size: 0.8rem;
+
+        &.active {
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    .back-button {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.6rem;
+
+      i {
+        font-size: 0.75rem;
+      }
+
+      .me-2 {
+        margin-right: 0.25rem !important;
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 TÍTULO LARGO - ESTILOS ESPECÍFICOS
+// ===============================
+
+.breadcrumb-item.active {
+  // Mejorar legibilidad de títulos largos
+  font-weight: 500;
+  color: #495057;
+
+  // Para títulos muy largos, añadir espaciado entre palabras
+  word-spacing: 0.1em;
+
+  // Mejorar el line-height para títulos multilinea
+  line-height: 1.3;
+}
+
+// ===============================
+// VARIANTE PARA TÍTULOS EXTREMADAMENTE LARGOS
+// ===============================
+
+@media (max-width: 576px) {
+  .breadcrumb-item.active {
+    // En pantallas muy pequeñas, reducir ligeramente el font-size
+    font-size: 0.75rem !important;
+    line-height: 1.2;
   }
 }
 
@@ -305,4 +525,27 @@
 
 .property-content {
   animation: fadeIn 0.5s ease-in-out;
+}
+
+// 🔧 ALTERNATIVA: Truncado inteligente solo cuando sea absolutamente necesario
+
+.breadcrumb-item.active {
+  color: #6c757d;
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+
+  // Mostrar texto completo por defecto
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
+
+  // Solo truncar en pantallas muy pequeñas Y con botón presente
+  @media (max-width: 400px) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

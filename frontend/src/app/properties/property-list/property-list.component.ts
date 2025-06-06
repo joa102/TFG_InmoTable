@@ -1,41 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Subject, BehaviorSubject } from 'rxjs';
-import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
-// 🔥 IMPORTAR ANGULAR MATERIAL
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-
-// 🔥 IMPORTAR SERVICIOS
+import { RouterModule } from '@angular/router';
 import { PropiedadesService } from '../../services/propiedades.service';
-import { AuthService } from '../../services/auth.service';
-
-// 🔥 INTERFACES
-interface Propiedad {
-  id: string;
-  fields: {[key: string]: any};
-}
-
-interface PropiedadesFiltros {
-  tipo?: string;
-  zona?: string;
-  precio_min?: number;
-  precio_max?: number;
-  habitaciones?: number;
-  estado?: string;
-  search?: string;
-  sort_by?: string;
-  sort_direction?: 'asc' | 'desc';
-}
-
-interface LoadingState {
-  loading: boolean;
-  error: string | null;
-  success: boolean;
-}
+import { Propiedad, PropiedadFields } from '../../models/airtable.interfaces';
+import { Subject } from 'rxjs';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-property-list',
@@ -43,54 +14,52 @@ interface LoadingState {
   imports: [
     CommonModule,
     FormsModule,
-    MatIconModule,
-    MatButtonModule
+    RouterModule,
+    NavbarComponent  // 🔥 AÑADIR NAVBAR
   ],
   templateUrl: './property-list.component.html',
   styleUrls: ['./property-list.component.scss']
 })
 export class PropertyListComponent implements OnInit, OnDestroy {
+
+  // ✅ DATOS
+  properties: Propiedad[] = [];
+  filteredProperties: Propiedad[] = [];
+  paginatedProperties: Propiedad[] = [];
+
+  // ✅ ESTADOS
+  loading = true;
+  error: string | null = null;
+
+  // ✅ FILTROS
+  searchText = '';
+  filterType = '';
+  filterStatus = '';
+  priceMin: number | null = null;
+  priceMax: number | null = null;
+
+  // ✅ VISTA
+  viewMode: 'grid' | 'list' = 'grid';
+
+  // ✅ PAGINACIÓN
+  currentPage = 1;
+  itemsPerPage = 12;
+
   private destroy$ = new Subject<void>();
-  private searchSubject = new BehaviorSubject<string>('');
+  private searchSubject = new Subject<string>();
 
-  // 📊 ESTADO DEL COMPONENTE
-  loadingState: LoadingState = { loading: true, error: null, success: false };
-  propiedades: Propiedad[] = [];
-  propiedadesOriginales: Propiedad[] = [];
-  propiedadesFiltradas: Propiedad[] = [];
-  estadisticas: any = null;
-
-  // 🔍 FILTROS Y BÚSQUEDA - SIN URL
-  filtros: PropiedadesFiltros = {};
-  terminoBusqueda = '';
-  mostrarFiltros = false;
-
-  // 📋 OPCIONES DE FILTROS
-  tiposDisponibles: string[] = [];
-  zonasDisponibles: string[] = [];
-
-  // 🔥 Precios vacíos por defecto
-  precioMin: number | null = null;
-  precioMax: number | null = null;
-  rangoPrecios = { min: 0, max: 1000000 };
-
-  // 📄 PAGINACIÓN Y ORDENAMIENTO
-  paginaActual = 1;
-  elementosPorPagina = 12;
-  totalElementos = 0;
-  ordenActual = { campo: 'Precio', direccion: 'desc' as 'asc' | 'desc' };
-
-  // 🎨 VISTA
-  vistaActual: 'grid' | 'list' = 'grid';
-
-  constructor(
-    private propiedadesService: PropiedadesService,
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private propiedadesService: PropiedadesService) {
+    // Configurar búsqueda con debounce
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.applyFilters();
+    });
+  }
 
   ngOnInit(): void {
-    this.setupSearch();
     this.loadProperties();
   }
 
@@ -99,344 +68,348 @@ export class PropertyListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // 🔍 CONFIGURAR BÚSQUEDA CON DEBOUNCE
-  private setupSearch(): void {
-    this.searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(termino => {
-      this.filtros.search = termino;
-      this.aplicarFiltrosLocales();
-    });
-  }
-
-  // 📊 CARGAR PROPIEDADES (SIN FILTROS)
+  /**
+   * ✅ CARGAR PROPIEDADES
+   */
   loadProperties(): void {
-    this.loadingState = { loading: true, error: null, success: false };
+    this.loading = true;
+    this.error = null;
 
-    // 🔥 CARGAR TODAS las propiedades sin filtros del servidor
-    this.propiedadesService.getAll({})
+    this.propiedadesService.getAll()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response: any) => {
+        next: (response) => {
           if (response.success) {
-            this.propiedadesOriginales = response.data || [];
-            this.propiedades = [...this.propiedadesOriginales];
-            this.estadisticas = response.estadisticas;
-
-            this.setupFilterOptions();
-            this.aplicarFiltrosLocales(); // Aplicar filtros localmente
-            this.loadingState = { loading: false, error: null, success: true };
+            this.properties = response.data;
+            this.applyFilters();
           } else {
-            this.handleError('Error al cargar las propiedades');
+            this.error = response.message || 'Error al cargar las propiedades';
           }
+          this.loading = false;
         },
-        error: (error: any) => {
+        error: (error) => {
           console.error('Error al cargar propiedades:', error);
-          this.handleError('Error de conexión al cargar las propiedades');
+          this.error = 'Error al cargar las propiedades';
+          this.loading = false;
         }
       });
   }
 
-  // ⚙️ CONFIGURAR OPCIONES DE FILTROS
-  private setupFilterOptions(): void {
-    if (this.propiedadesOriginales.length > 0) {
-      // Tipos únicos
-      const tipos = new Set<string>();
-      this.propiedadesOriginales.forEach(p => {
-        const tipo = p.fields['Tipo'];
-        if (tipo) tipos.add(tipo);
-      });
-      this.tiposDisponibles = Array.from(tipos);
-
-      // Zonas únicas
-      const zonas = new Set<string>();
-      this.propiedadesOriginales.forEach(p => {
-        const zona = p.fields['Zona'] || p.fields['Ubicación'];
-        if (zona) zonas.add(zona);
-      });
-      this.zonasDisponibles = Array.from(zonas);
-
-      // Calcular rango de precios
-      const precios = this.propiedadesOriginales
-        .map(p => p.fields['Precio'])
-        .filter(p => p && !isNaN(p))
-        .map(p => Number(p));
-
-      if (precios.length > 0) {
-        this.rangoPrecios = {
-          min: Math.min(...precios),
-          max: Math.max(...precios)
-        };
-      }
-    }
+  /**
+   * ✅ OBTENER VALOR DE CAMPO (EXACTO COMO PROPERTY-DETAIL)
+   */
+  getFieldAsString(property: Propiedad, field: keyof PropiedadFields): string {
+    const value = property?.fields[field];
+    return value ? String(value) : '';
   }
 
-  // 🔥 NUEVO: Aplicar filtros localmente (sin URL)
-  private aplicarFiltrosLocales(): void {
-    let propiedadesFiltradas = [...this.propiedadesOriginales];
-
-    // Filtro por búsqueda
-    if (this.filtros.search && this.filtros.search.trim()) {
-      const termino = this.filtros.search.toLowerCase().trim();
-      propiedadesFiltradas = propiedadesFiltradas.filter(p => {
-        const titulo = (p.fields['Título'] || p.fields['Titulo'] || '').toLowerCase();
-        const descripcion = (p.fields['Descripción'] || p.fields['Descripcion'] || '').toLowerCase();
-        const ubicacion = (p.fields['Ubicación'] || p.fields['Zona'] || '').toLowerCase();
-
-        return titulo.includes(termino) ||
-               descripcion.includes(termino) ||
-               ubicacion.includes(termino);
-      });
-    }
-
-    // Filtro por tipo
-    if (this.filtros.tipo && this.filtros.tipo.trim()) {
-      propiedadesFiltradas = propiedadesFiltradas.filter(p =>
-        p.fields['Tipo'] === this.filtros.tipo
-      );
-    }
-
-    // Filtro por zona
-    if (this.filtros.zona && this.filtros.zona.trim()) {
-      propiedadesFiltradas = propiedadesFiltradas.filter(p =>
-        (p.fields['Zona'] || p.fields['Ubicación']) === this.filtros.zona
-      );
-    }
-
-    // Filtro por habitaciones
-    if (this.filtros.habitaciones) {
-      propiedadesFiltradas = propiedadesFiltradas.filter(p => {
-        const habitaciones = p.fields['Habitaciones'] || p.fields['Dormitorios'];
-        return habitaciones && Number(habitaciones) >= this.filtros.habitaciones!;
-      });
-    }
-
-    // Filtro por precio mínimo
-    if (this.filtros.precio_min !== undefined && this.filtros.precio_min !== null) {
-      propiedadesFiltradas = propiedadesFiltradas.filter(p => {
-        const precio = Number(p.fields['Precio']);
-        return precio && precio >= this.filtros.precio_min!;
-      });
-    }
-
-    // Filtro por precio máximo
-    if (this.filtros.precio_max !== undefined && this.filtros.precio_max !== null) {
-      propiedadesFiltradas = propiedadesFiltradas.filter(p => {
-        const precio = Number(p.fields['Precio']);
-        return precio && precio <= this.filtros.precio_max!;
-      });
-    }
-
-    // Aplicar ordenamiento
-    if (this.filtros.sort_by) {
-      propiedadesFiltradas.sort((a, b) => {
-        let valorA = a.fields[this.filtros.sort_by!];
-        let valorB = b.fields[this.filtros.sort_by!];
-
-        // Convertir a números si es precio
-        if (this.filtros.sort_by === 'Precio') {
-          valorA = Number(valorA) || 0;
-          valorB = Number(valorB) || 0;
-        }
-
-        if (this.filtros.sort_direction === 'asc') {
-          return valorA > valorB ? 1 : -1;
-        } else {
-          return valorA < valorB ? 1 : -1;
-        }
-      });
-    }
-
-    this.propiedades = propiedadesFiltradas;
-    this.totalElementos = this.propiedades.length;
-    this.paginaActual = 1; // Resetear paginación
+  /**
+   * ✅ OBTENER VALOR NUMÉRICO (EXACTO COMO PROPERTY-DETAIL)
+   */
+  getFieldAsNumber(property: Propiedad, field: keyof PropiedadFields): number {
+    const value = property?.fields[field];
+    return typeof value === 'number' ? value : 0;
   }
 
-  // 🔄 MÉTODOS DE FILTRADO (SIN URL)
-  onSearchChange(termino: string): void {
-    this.terminoBusqueda = termino;
-    this.searchSubject.next(termino);
-  }
-
-  aplicarFiltros(): void {
-    // 🔥 Solo aplicar filtros localmente, SIN modificar URL
-    this.aplicarFiltrosLocales();
-  }
-
-  // 🔥 LIMPIAR FILTROS COMPLETAMENTE
-  limpiarFiltros(): void {
-    this.filtros = {};
-    this.terminoBusqueda = '';
-    this.precioMin = null;
-    this.precioMax = null;
-    this.searchSubject.next('');
-
-    // 🔥 NO modificar URL, solo limpiar filtros locales
-    this.aplicarFiltrosLocales();
-  }
-
-  // 🏷️ FILTROS ESPECÍFICOS
-  filtrarPorTipo(tipo: string): void {
-    this.filtros.tipo = tipo;
-    this.aplicarFiltros();
-  }
-
-  filtrarPorZona(zona: string): void {
-    this.filtros.zona = zona;
-    this.aplicarFiltros();
-  }
-
-  // 🔥 FILTRAR POR PRECIO
-  filtrarPorPrecio(): void {
-    if (this.precioMin !== null && !isNaN(this.precioMin) && this.precioMin >= 0) {
-      this.filtros.precio_min = this.precioMin;
-    } else {
-      delete this.filtros.precio_min;
-    }
-
-    if (this.precioMax !== null && !isNaN(this.precioMax) && this.precioMax > 0) {
-      this.filtros.precio_max = this.precioMax;
-    } else {
-      delete this.filtros.precio_max;
-    }
-
-    this.aplicarFiltros();
-  }
-
-  // 📊 ORDENAMIENTO
-  ordenarPor(campo: string): void {
-    if (this.ordenActual.campo === campo) {
-      this.ordenActual.direccion = this.ordenActual.direccion === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.ordenActual.campo = campo;
-      this.ordenActual.direccion = 'desc';
-    }
-
-    this.filtros.sort_by = campo;
-    this.filtros.sort_direction = this.ordenActual.direccion;
-    this.aplicarFiltros();
-  }
-
-  // 🎨 VISTA
-  cambiarVista(vista: 'grid' | 'list'): void {
-    this.vistaActual = vista;
-  }
-
-  toggleFiltros(): void {
-    this.mostrarFiltros = !this.mostrarFiltros;
-  }
-
-  // 🔗 NAVEGACIÓN
-  verDetalle(propiedad: Propiedad): void {
-    this.router.navigate(['/propiedades', propiedad.id]);
-  }
-
-  editarPropiedad(propiedad: Propiedad): void {
-    if (this.canEditProperties) {
-      this.router.navigate(['/propiedades', propiedad.id, 'editar']);
-    }
-  }
-
-  nuevaPropiedad(): void {
-    if (this.canEditProperties) {
-      this.router.navigate(['/propiedades/nueva']);
-    }
-  }
-
-  goToCreate(): void {
-    if (this.canEditProperties) {
-      this.router.navigate(['/propiedades/crear']);
-    }
-  }
-
-  // 💖 ACCIONES
-  solicitarCita(propiedad: Propiedad): void {
-    this.router.navigate(['/citas/solicitar'], {
-      queryParams: { propiedad_id: propiedad.id }
-    });
-  }
-
-  contactarPropiedad(propiedad: Propiedad): void {
-    this.router.navigate(['/contacto'], {
-      queryParams: { propiedad_id: propiedad.id }
-    });
-  }
-
-  // 🛠️ UTILIDADES
-  private handleError(message: string): void {
-    this.loadingState = { loading: false, error: message, success: false };
-  }
-
-  formatearPropiedad(propiedad: Propiedad): any {
-    return {
-      titulo: propiedad.fields['Título'] || propiedad.fields['Titulo'] || 'Sin título',
-      precio: this.formatPrice(propiedad.fields['Precio']),
-      direccion: propiedad.fields['Dirección'] || propiedad.fields['Direccion'] || propiedad.fields['Ubicación'] || 'Sin dirección',
-      habitaciones: propiedad.fields['Habitaciones'] || propiedad.fields['Dormitorios'],
-      banos: propiedad.fields['Baños'] || propiedad.fields['Banos'],
-      superficie: propiedad.fields['Superficie'] || 0
-    };
-  }
-
-  private formatPrice(precio: any): string {
-    if (!precio || isNaN(precio)) return 'Consultar precio';
+  /**
+   * ✅ FORMATEAR PRECIO (EXACTO COMO PROPERTY-DETAIL)
+   */
+  formatPrice(precio: number): string {
+    if (!precio) return 'Precio a consultar';
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'EUR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
-    }).format(Number(precio));
+    }).format(precio);
   }
 
-  // 🔐 PERMISOS
-  get canEditProperties(): boolean {
-    return this.authService.isAuthenticated &&
-           (this.authService.hasRole('admin') || this.authService.hasRole('agent'));
+  /**
+   * ✅ PRECIO POR M² (EXACTO COMO PROPERTY-DETAIL)
+   */
+  getPricePerSquareMeter(property: Propiedad): string {
+    const precio = this.getFieldAsNumber(property, 'Precio');
+    const superficie = this.getFieldAsNumber(property, 'Superficie');
+
+    if (precio && superficie) {
+      const precioM2 = precio / superficie;
+      return new Intl.NumberFormat('es-ES', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(precioM2);
+    }
+
+    return '';
   }
 
-  get isAuthenticated(): boolean {
-    return this.authService.isAuthenticated;
+  /**
+   * ✅ OBTENER IMAGEN (EXACTO COMO PROPERTY-DETAIL)
+   */
+  getPropertyImage(property: Propiedad): string {
+    const imagenes = property?.fields['Imágenes'];
+    if (Array.isArray(imagenes) && imagenes[0]) {
+      return imagenes[0].thumbnails?.large?.url || imagenes[0].url;
+    }
+    // ✅ USAR MISMA IMAGEN POR DEFECTO QUE PROPERTY-DETAIL
+    return this.getDefaultImage();
   }
 
-  // 📄 PAGINACIÓN
-  get propiedadesPaginadas(): Propiedad[] {
-    const inicio = (this.paginaActual - 1) * this.elementosPorPagina;
-    const fin = inicio + this.elementosPorPagina;
-    return this.propiedades.slice(inicio, fin);
+  /**
+   * ✅ IMAGEN POR DEFECTO IDÉNTICA A PROPERTY-DETAIL
+   */
+  private getDefaultImage(): string {
+    // Data URL de una imagen placeholder simple (1x1 pixel gris transparente)
+    return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZjNzU3ZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPgogICAgPHRzcGFuPjxmYSBjbGFzcz0iZmFzIGZhLWhvbWUiLz4gU2luIGltYWdlbjwvdHNwYW4+CiAgPC90ZXh0Pgo8L3N2Zz4K';
   }
 
-  get totalPaginas(): number {
-    return Math.ceil(this.propiedades.length / this.elementosPorPagina);
+  /**
+   * ✅ MANEJAR ERROR DE IMAGEN (EXACTO COMO PROPERTY-DETAIL)
+   */
+  onImageError(event: any): void {
+    // Evitar bucle infinito
+    if (event.target.src !== this.getDefaultImage()) {
+      event.target.src = this.getDefaultImage();
+    }
   }
 
-  cambiarPagina(pagina: number): void {
-    if (pagina >= 1 && pagina <= this.totalPaginas) {
-      this.paginaActual = pagina;
+  /**
+   * ✅ OBTENER RATING ENERGÉTICO
+   */
+  getEnergyRating(property: Propiedad): string {
+    const fields = property.fields as any;
+    return fields['Clasificación Energética'] ||
+           fields['Rating Energético'] ||
+           fields['Eficiencia Energética'] ||
+           '';
+  }
+
+  /**
+   * ✅ OBTENER NÚMERO DE IMÁGENES
+   */
+  getImageCount(property: Propiedad): number {
+    const imagenes = property?.fields['Imágenes'];
+    return Array.isArray(imagenes) ? imagenes.length : 0;
+  }
+
+  /**
+   * ✅ CLASE CSS PARA BADGE DE ESTADO
+   */
+  getStatusBadgeClass(property: Propiedad): string {
+    const estado = this.getFieldAsString(property, 'Estado').toLowerCase();
+    switch (estado) {
+      case 'disponible':
+      case 'available':
+        return 'bg-success';
+      case 'vendido':
+      case 'sold':
+        return 'bg-danger';
+      case 'alquilado':
+      case 'rented':
+        return 'bg-warning';
+      case 'reservado':
+      case 'reserved':
+        return 'bg-info';
+      default:
+        return 'bg-secondary';
+    }
+  }
+
+  /**
+   * ✅ CLASE CSS PARA BADGE ENERGÉTICO
+   */
+  getEnergyBadgeClass(property: Propiedad): string {
+    const rating = this.getEnergyRating(property).toUpperCase();
+    switch (rating) {
+      case 'A': return 'bg-success';
+      case 'B': return 'bg-success bg-opacity-75';
+      case 'C': return 'bg-warning';
+      case 'D': return 'bg-warning bg-opacity-75';
+      case 'E': return 'bg-danger bg-opacity-75';
+      case 'F': return 'bg-danger';
+      case 'G': return 'bg-dark';
+      default: return 'bg-secondary';
+    }
+  }
+
+  /**
+   * ✅ CAMBIO EN BÚSQUEDA
+   */
+  onSearchChange(): void {
+    this.searchSubject.next(this.searchText);
+  }
+
+  /**
+   * ✅ APLICAR FILTROS
+   */
+  applyFilters(): void {
+    let filtered = [...this.properties];
+
+    // Filtro por texto
+    if (this.searchText.trim()) {
+      const searchLower = this.searchText.toLowerCase();
+      filtered = filtered.filter(property =>
+        this.getFieldAsString(property, 'Título').toLowerCase().includes(searchLower) ||
+        this.getFieldAsString(property, 'Descripción').toLowerCase().includes(searchLower) ||
+        this.getFieldAsString(property, 'Dirección').toLowerCase().includes(searchLower) ||
+        this.getFieldAsString(property, 'Tipo').toLowerCase().includes(searchLower)
+      );
+    }
+
+    // Filtro por tipo
+    if (this.filterType) {
+      filtered = filtered.filter(property =>
+        this.getFieldAsString(property, 'Tipo') === this.filterType
+      );
+    }
+
+    // Filtro por estado
+    if (this.filterStatus) {
+      filtered = filtered.filter(property =>
+        this.getFieldAsString(property, 'Estado') === this.filterStatus
+      );
+    }
+
+    // Filtro por precio mínimo
+    if (this.priceMin !== null && this.priceMin > 0) {
+      filtered = filtered.filter(property =>
+        this.getFieldAsNumber(property, 'Precio') >= this.priceMin!
+      );
+    }
+
+    // Filtro por precio máximo
+    if (this.priceMax !== null && this.priceMax > 0) {
+      filtered = filtered.filter(property =>
+        this.getFieldAsNumber(property, 'Precio') <= this.priceMax!
+      );
+    }
+
+    this.filteredProperties = filtered;
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  /**
+   * ✅ LIMPIAR FILTROS
+   */
+  clearFilters(): void {
+    this.searchText = '';
+    this.filterType = '';
+    this.filterStatus = '';
+    this.priceMin = null;
+    this.priceMax = null;
+    this.applyFilters();
+  }
+
+  /**
+   * ✅ ALTERNAR VISTA
+   */
+  toggleView(): void {
+    this.viewMode = this.viewMode === 'grid' ? 'list' : 'grid';
+  }
+
+  /**
+   * ✅ REFRESCAR PROPIEDADES
+   */
+  refreshProperties(): void {
+    this.loadProperties();
+  }
+
+  /**
+   * ✅ ESTADÍSTICAS (EXACTO COMO PROPERTY-DETAIL)
+   */
+  getTotalProperties(): number {
+    return this.properties.length;
+  }
+
+  getAvailableProperties(): number {
+    return this.properties.filter(p => {
+      const estado = this.getFieldAsString(p, 'Estado').toLowerCase();
+      return estado === 'disponible' || estado === 'available';
+    }).length;
+  }
+
+  getAveragePrice(): string {
+    if (this.properties.length === 0) return '€0';
+
+    const propertiesWithPrice = this.properties.filter(p => this.getFieldAsNumber(p, 'Precio') > 0);
+    if (propertiesWithPrice.length === 0) return '€0';
+
+    const total = propertiesWithPrice.reduce((sum, property) =>
+      sum + this.getFieldAsNumber(property, 'Precio'), 0
+    );
+
+    const average = total / propertiesWithPrice.length;
+    return this.formatPrice(average);
+  }
+
+  /**
+   * ✅ PAGINACIÓN (EXACTO COMO PROPERTY-DETAIL)
+   */
+  updatePagination(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedProperties = this.filteredProperties.slice(startIndex, endIndex);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.getTotalPages()) {
+      this.currentPage = page;
+      this.updatePagination();
+      // Scroll al inicio
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
-  // 📊 GETTERS
-  get hayResultados(): boolean {
-    return this.propiedades.length > 0;
+  getTotalPages(): number {
+    return Math.ceil(this.filteredProperties.length / this.itemsPerPage);
   }
 
-  get hayFiltrosActivos(): boolean {
-    return Object.values(this.filtros).some(valor =>
-      valor !== undefined && valor !== null && valor !== ''
-    ) || this.precioMin !== null || this.precioMax !== null;
-  }
+  getPageNumbers(): number[] {
+    const totalPages = this.getTotalPages();
+    const pages: number[] = [];
+    const maxPages = 5;
 
-  get mensajeResultados(): string {
-    if (this.loadingState.loading) return 'Cargando propiedades...';
-    if (this.loadingState.error) return this.loadingState.error;
-    if (!this.hayResultados) {
-      return this.hayFiltrosActivos ?
-        'No se encontraron propiedades con los filtros aplicados' :
-        'No hay propiedades disponibles';
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPages / 2));
+    let endPage = Math.min(totalPages, startPage + maxPages - 1);
+
+    if (endPage - startPage < maxPages - 1) {
+      startPage = Math.max(1, endPage - maxPages + 1);
     }
-    return `Se encontraron ${this.propiedades.length} propiedades`;
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+
+  getStartIndex(): number {
+    return (this.currentPage - 1) * this.itemsPerPage;
+  }
+
+  getEndIndex(): number {
+    return Math.min(this.getStartIndex() + this.itemsPerPage, this.filteredProperties.length);
+  }
+
+  /**
+   * ✅ TRACKBY PARA PERFORMANCE
+   */
+  trackByProperty(index: number, property: Propiedad): string {
+    return property.id;
+  }
+
+  /**
+   * ✅ ACCIONES
+   */
+  contactProperty(property: Propiedad): void {
+    console.log('Contactar propiedad:', property.id);
+    // TODO: Implementar modal de contacto
+  }
+
+  toggleFavorite(property: Propiedad): void {
+    console.log('Toggle favorito:', property.id);
+    // TODO: Implementar sistema de favoritos
   }
 }

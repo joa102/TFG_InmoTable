@@ -243,3 +243,22 @@ export interface LoadingState {
   error?: string | null;
   success?: boolean;
 }
+
+// NAVBAR DE EMPRESA
+export interface Empresa {
+  id: string;
+  recordId: string;
+  idEmpresa: string;
+  nombre: string;
+  logo: string;
+  estado: 'Activo' | 'Inactivo';
+  createdTime?: string;
+}
+
+// NAVBAR DE EMPRESA
+export interface EmpresaFormData {
+  idEmpresa: string;
+  nombre: string;
+  logo: string;
+  estado: 'Activo' | 'Inactivo';
+}

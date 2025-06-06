@@ -1,17 +1,25 @@
+// ===============================
+// NAVBAR - ESTILOS ESPECÍFICOS
+// ===============================
+.pt-navbar {
+    padding-top: 6rem !important;
+}
+
 .property-card {
   width: 100%;
   border-radius: 10px;
-  transition: 0.3s;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   cursor: pointer; // 🔥 Cursor pointer para indicar que es clickeable
   position: relative; // 🔥 Para el badge de estado
+  border: 1px solid rgba(0, 0, 0, 0.125);
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
   }
 
   .property-image {
@@ -138,7 +146,7 @@
     }
   }
 
-  mat-card-actions {
+  mat-card_actions {
     padding: 8px 16px;
 
     button {
@@ -712,4 +720,31 @@
       }
     }
   }
+}
+
+// 🔥 ESPACIO PARA NAVBAR FIJO
+.main-content {
+  padding-top: 80px; // Espacio para el navbar fijo
+  min-height: 100vh;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+}
+
+.energy-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.x-small {
+  font-size: 0.65rem;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.page-link {
+  cursor: pointer;
 }

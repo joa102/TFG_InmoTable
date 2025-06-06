@@ -1,1 +1,250 @@
-<p>appointment-list works!</p>
+<!-- 🔥 NAVBAR HEADER -->
+<app-navbar></app-navbar>
+
+<div class="appointment-detail-container pt-navbar">
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container d-flex flex-column align-items-center justify-content-center py-5">
+    <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+    <p class="mt-3 text-muted">Preparando formulario de cita...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading" class="container-fluid">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/propiedades" class="text-decoration-none">
+            <i class="fas fa-home me-1"></i>
+            Propiedades
+          </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          <i class="fas fa-calendar-plus me-1"></i>
+          Solicitar Cita
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="appointment-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="appointment-title display-5 fw-bold mb-2">
+            <i class="fas fa-calendar-plus text-primary me-3"></i>
+            Solicitar Cita
+          </h1>
+          <p class="lead text-muted mb-0">
+            {{ propertyRecordId ? 'Complete el formulario para solicitar una cita de visita' : 'Solicite una cita para visitar nuestras propiedades' }}
+          </p>
+
+          <!-- 🔥 USER INFO BANNER -->
+          <div class="user-info-banner mt-3" *ngIf="currentUser">
+            <div class="alert alert-info d-flex align-items-center mb-0">
+              <i class="fas fa-user-circle fa-2x me-3"></i>
+              <div>
+                <h6 class="alert-heading mb-1">
+                  <i class="fas fa-check-circle me-2"></i>
+                  Usuario Conectado
+                </h6>
+                <p class="mb-0">
+                  <strong>{{ currentUser.nombre }}</strong>
+                  <span class="text-muted ms-2">({{ getRoleLabel() }})</span>
+                  <span class="badge bg-{{ getRoleClass() }} ms-2">
+                    {{ currentUser.email }}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <div class="appointment-actions">
+            <button class="btn btn-outline-secondary me-2" (click)="goToAppointmentCalendar()" *ngIf="currentUser">
+              <i class="fas fa-calendar-alt me-2"></i>
+              Ver Calendario
+            </button>
+            <button class="btn btn-primary" (click)="goBack()">
+              <i class="fas fa-arrow-left me-2"></i>
+              Volver
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔥 PROPERTY INFO BANNER (si hay propertyRecordId) -->
+    <div *ngIf="propertyRecordId" class="property-info-banner mb-4">
+      <div class="alert alert-success d-flex align-items-center">
+        <i class="fas fa-home fa-2x me-3"></i>
+        <div>
+          <h6 class="alert-heading mb-1">
+            <i class="fas fa-check-circle me-2"></i>
+            Propiedad Seleccionada
+          </h6>
+          <p class="mb-0">
+            El formulario se ha configurado automáticamente para la propiedad que seleccionó.
+            Complete los datos restantes para solicitar su cita.
+            <small class="d-block text-muted mt-2">
+              <i class="fas fa-tag me-1"></i>
+              ID de Propiedad: <code>{{ propertyRecordId }}</code>
+            </small>
+          </p>
+        </div>
+        <div class="ms-auto">
+          <button class="btn btn-outline-primary btn-sm" (click)="goToProperty()">
+            <i class="fas fa-eye me-2"></i>
+            Ver Propiedades
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content: Formulario -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card appointment-form-card">
+          <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">
+                <i class="fas fa-form me-2"></i>
+                Formulario de Solicitud de Cita
+              </h5>
+              <small *ngIf="propertyRecordId">
+                <i class="fas fa-home me-1"></i>
+                Propiedad preseleccionada
+              </small>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <iframe
+              class="airtable-embed"
+              [src]="iframeUrl"
+              frameborder="0"
+              onmousewheel=""
+              width="100%"
+              height="600"
+              style="background: transparent;"
+              title="Formulario de solicitud de cita">
+            </iframe>
+          </div>
+          <div class="card-footer bg-light">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <small class="text-muted">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Todos los campos marcados con * son obligatorios.
+                  Nos pondremos en contacto con usted en las próximas 24 horas.
+                </small>
+              </div>
+              <div class="col-md-4 text-md-end">
+                <small class="text-muted">
+                  <i class="fas fa-shield-alt me-1"></i>
+                  Sus datos están protegidos
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Info Section -->
+    <div class="row mt-4">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-clock text-primary me-2"></i>
+              ¿Qué sucede después?
+            </h6>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-paper-plane fa-2x text-primary mb-2"></i>
+                  <h6>1. Envío</h6>
+                  <small class="text-muted">Su solicitud se envía a nuestro equipo</small>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-phone fa-2x text-success mb-2"></i>
+                  <h6>2. Contacto</h6>
+                  <small class="text-muted">Le llamaremos en 24 horas</small>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-calendar-check fa-2x text-info mb-2"></i>
+                  <h6>3. Cita</h6>
+                  <small class="text-muted">Confirmamos fecha y hora</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-info-circle text-primary me-2"></i>
+              Información de la Solicitud
+            </h6>
+
+            <!-- Información del usuario -->
+            <div class="mb-3" *ngIf="currentUser">
+              <strong>Cliente:</strong>
+              <span class="text-muted ms-2">{{ currentUser.nombre }}</span>
+              <div class="small text-muted">{{ currentUser.email }}</div>
+              <div class="small text-muted" *ngIf="currentUser.recordId">
+                ID: {{ currentUser.recordId }}
+              </div>
+            </div>
+
+            <!-- Información de la propiedad -->
+            <div class="mb-3" *ngIf="propertyRecordId">
+              <strong>Propiedad:</strong>
+              <div class="small text-muted">ID: {{ propertyRecordId }}</div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="d-grid gap-2 mt-3">
+              <button class="btn btn-outline-primary btn-sm" (click)="goToAppointmentCalendar()" *ngIf="currentUser">
+                <i class="fas fa-calendar-alt me-2"></i>
+                Ver Calendario
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" (click)="goToProperty()">
+                <i class="fas fa-home me-2"></i>
+                Ver Propiedades
+              </button>
+            </div>
+
+            <!-- Información de contacto -->
+            <hr class="my-3">
+            <h6 class="card-title">
+              <i class="fas fa-headset text-primary me-2"></i>
+              ¿Necesita ayuda?
+            </h6>
+            <p class="card-text small text-muted mb-3">
+              Si tiene alguna duda o problema con el formulario, no dude en contactarnos.
+            </p>
+            <div class="d-grid gap-2">
+              <a href="tel:+34900000000" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-phone me-2"></i>
+                Llamar ahora
+              </a>
+              <a href="mailto:info@ejemplo.com" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-envelope me-2"></i>
+                Enviar email
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

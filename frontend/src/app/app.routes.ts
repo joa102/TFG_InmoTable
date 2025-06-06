@@ -41,6 +41,11 @@ export const routes: Routes = [
     loadComponent: () => import('./components/appointments/appointment-list/appointment-list.component')
       .then(c => c.AppointmentListComponent)
   },
+  {
+    path: 'calendario',
+    loadComponent: () => import('./components/appointments/appointment-calendar/appointment-calendar.component')
+      .then(c => c.AppointmentCalendarComponent)
+  },
 
   // Autenticación
   {

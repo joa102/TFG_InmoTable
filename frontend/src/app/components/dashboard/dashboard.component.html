@@ -1,17 +1,75 @@
 <div class="dashboard-container">
 
-  <!-- HEADER -->
+  <!-- HEADER CON INFORMACIÓN DEL USUARIO -->
   <div class="dashboard-header">
     <div class="header-content">
-      <h1>Dashboard</h1>
-      <p class="subtitle">Panel de control del sistema inmobiliario</p>
+      <h1>
+        <i class="fas fa-tachometer-alt me-2"></i>
+        Dashboard
+      </h1>
+      <p class="subtitle" *ngIf="currentUser">
+        Bienvenido/a, <strong>{{ currentUser.nombre }}</strong>
+        <span class="badge ms-2" [class]="'badge-' + currentUser.rol">
+          {{ getRoleLabel() }}
+        </span>
+      </p>
+      <div class="user-info" *ngIf="currentUser">
+        <small class="text-muted">
+          <i class="fas fa-envelope me-1"></i>{{ currentUser.email }} |
+          <i class="fas fa-phone ms-2 me-1"></i>{{ currentUser.telefono }} |
+          <i class="fas fa-clock ms-2 me-1"></i>{{ getTimeSinceLastLogin() }}
+        </small>
+      </div>
     </div>
 
     <div class="header-actions">
-      <button class="btn btn-outline-primary" (click)="refreshData()">
-        <i class="fas fa-sync"></i>
+      <button class="btn btn-outline-primary me-2" (click)="refreshData()" [disabled]="loading">
+        <i class="fas fa-sync" [class.fa-spin]="loading"></i>
         Actualizar
       </button>
+      <button
+        class="btn btn-outline-danger"
+        (click)="logout()"
+        [disabled]="logoutLoading"
+      >
+        <span *ngIf="logoutLoading" class="spinner-border spinner-border-sm me-2"></span>
+        <i *ngIf="!logoutLoading" class="fas fa-sign-out-alt me-2"></i>
+        {{ logoutLoading ? 'Cerrando...' : 'Cerrar Sesión' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- BANNER DE INFORMACIÓN DEL USUARIO -->
+  <div class="user-banner mb-4" *ngIf="currentUser">
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h5 class="mb-1">
+          <i class="fas fa-user-circle me-2"></i>
+          Sesión Activa: {{ currentUser.nombre }}
+        </h5>
+        <div class="user-details">
+          <span class="badge badge-{{ currentUser.rol }} me-2">{{ getRoleLabel() }}</span>
+          <span class="badge badge-outline-success me-2">
+            <i class="fas fa-check-circle me-1"></i>{{ currentUser.estado }}
+          </span>
+          <span class="badge badge-outline-info">
+            <i class="fas fa-id-card me-1"></i>ID: {{ currentUser.recordId }}
+          </span>
+        </div>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <div class="session-info">
+          <small class="text-muted">
+            <i class="fas fa-calendar me-1"></i>
+            Registro: {{ currentUser.fechaRegistro | date:'dd/MM/yyyy' }}
+          </small>
+          <br>
+          <small class="text-muted" *ngIf="currentUser.ultimoLogin">
+            <i class="fas fa-clock me-1"></i>
+            Último acceso: {{ currentUser.ultimoLogin | date:'dd/MM/yyyy HH:mm' }}
+          </small>
+        </div>
+      </div>
     </div>
   </div>
 
