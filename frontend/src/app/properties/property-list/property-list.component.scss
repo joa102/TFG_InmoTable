@@ -5,27 +5,63 @@
     padding-top: 6rem !important;
 }
 
-.property-card {
+// 🔥 CARD CLICKEABLE
+.clickeable-card {
   width: 100%;
   border-radius: 10px;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition: all 0.3s ease;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  cursor: pointer; // 🔥 Cursor pointer para indicar que es clickeable
-  position: relative; // 🔥 Para el badge de estado
+  cursor: pointer;
+  position: relative;
   border: 1px solid rgba(0, 0, 0, 0.125);
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+    border-color: #007bff;
+
+    .card-hover-overlay {
+      opacity: 1;
+    }
   }
 
   .property-image {
     height: 200px;
     object-fit: cover;
     width: 100%;
+  }
+
+  // 🔥 OVERLAY DE HOVER
+  .card-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 123, 255, 0.85);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10;
+    font-weight: 600;
+
+    i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    span {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
   }
 
   // 🔥 BADGE DE ESTADO CON LOS COLORES CORRECTOS
@@ -43,22 +79,18 @@
     letter-spacing: 0.5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 
-    // 🔥 DISPONIBLE = VERDE
     &.status-disponible {
       background-color: #4caf50;
     }
 
-    // 🔥 VENDIDA = ROJO (en femenino como en tu HTML)
     &.status-vendida {
       background-color: #f44336;
     }
 
-    // 🔥 ALQUILADA = NARANJA (en femenino como en tu HTML)
     &.status-alquilada {
       background-color: #ff9800;
     }
 
-    // 🔥 RESERVADA = AZUL (en femenino como en tu HTML)
     &.status-reservada {
       background-color: #2196f3;
     }
@@ -155,6 +187,18 @@
   }
 }
 
+// 🔥 FILA CLICKEABLE PARA TABLA
+.clickeable-row {
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(0, 123, 255, 0.08) !important;
+    transform: scale(1.01);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
 // 🔥 Estilos para filtros
 .filters {
   display: flex;
@@ -165,11 +209,6 @@
   background: #f5f5f5;
   border-radius: 8px;
 
-  mat-form-field {
-    flex: 1;
-    min-width: 200px;
-  }
-
   .price-filters,
   .surface-filters {
     display: flex;
@@ -179,14 +218,6 @@
       width: 80px;
     }
   }
-}
-
-// 🔥 Botón flotante para añadir
-.add-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
 }
 
 // 🔥 Grid responsive para las tarjetas
@@ -286,445 +317,9 @@
   }
 }
 
-.property-detail-container {
-  min-height: 100vh;
-  background-color: #f8f9fa;
-
-  // HEADER
-  .property-header {
-    background: white;
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem 0;
-    margin-bottom: 2rem;
-
-    .page-title {
-      color: #2c3e50;
-      font-size: 1.8rem;
-      font-weight: 600;
-    }
-  }
-
-  // LOADING
-  .loading-container {
-    min-height: 50vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  // SECCIONES
-  .section-title {
-    color: #2c3e50;
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #3498db;
-  }
-
-  // RESUMEN DE LA PROPIEDAD
-  .property-summary {
-    margin-bottom: 3rem;
-
-    .summary-card {
-      background: white;
-      border-radius: 15px;
-      padding: 2rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-      border: 1px solid #e9ecef;
-    }
-
-    .property-title {
-      color: #2c3e50;
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-
-    .property-price {
-      color: #e74c3c;
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 1.5rem;
-    }
-
-    .property-quick-info {
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
-
-      .info-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #6c757d;
-        font-weight: 500;
-
-        i {
-          color: #3498db;
-          font-size: 1.1rem;
-        }
-      }
-    }
-  }
-
-  // BOTÓN PEDIR CITA
-  .btn-cita {
-    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 1rem 2rem;
-    font-weight: 600;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
-      background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-      color: white;
-    }
-  }
-
-  // GALERÍA
-  .property-gallery {
-    margin-bottom: 3rem;
-
-    .gallery-container {
-      background: white;
-      border-radius: 15px;
-      padding: 2rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .main-image-container {
-      position: relative;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-bottom: 1rem;
-
-      .main-image {
-        width: 100%;
-        height: 400px;
-        object-fit: cover;
-        display: block;
-      }
-    }
-
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      border: none;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
-      z-index: 10;
-
-      &:hover {
-        background: rgba(0, 0, 0, 0.9);
-        transform: translateY(-50%) scale(1.1);
-      }
-
-      &.carousel-btn-prev {
-        left: 20px;
-      }
-
-      &.carousel-btn-next {
-        right: 20px;
-      }
-    }
-
-    .thumbnails {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      padding: 0.5rem 0;
-
-      .thumbnail {
-        flex-shrink: 0;
-        width: 80px;
-        height: 60px;
-        border-radius: 8px;
-        overflow: hidden;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-
-        &.active {
-          border-color: #3498db;
-          transform: scale(1.05);
-        }
-
-        &:hover {
-          border-color: #3498db;
-          opacity: 0.8;
-        }
-
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-    }
-  }
-
-  // CARACTERÍSTICAS
-  .property-characteristics {
-    margin-bottom: 3rem;
-
-    .characteristics-table {
-      background: white;
-      border-radius: 15px;
-      padding: 2rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-
-      .table {
-        margin: 0;
-
-        td {
-          padding: 0.75rem 0;
-          border: none;
-
-          &:first-child {
-            width: 40%;
-            color: #6c757d;
-          }
-
-          &.price-highlight {
-            color: #e74c3c;
-            font-weight: 700;
-            font-size: 1.1rem;
-          }
-        }
-      }
-    }
-
-    .energy-rating-container {
-      background: white;
-      border-radius: 15px;
-      padding: 2rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-
-      .energy-title {
-        color: #2c3e50;
-        font-weight: 600;
-        margin-bottom: 1rem;
-      }
-
-      .energy-labels {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        margin-bottom: 1.5rem;
-
-        small {
-          font-size: 0.85rem;
-        }
-      }
-
-      .energy-scale {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        margin-bottom: 1rem;
-      }
-
-      .energy-rating {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-weight: 600;
-        color: white;
-        position: relative;
-
-        .rating-letter {
-          font-size: 1.1rem;
-        }
-
-        .rating-marker {
-          font-size: 1.2rem;
-          font-weight: 900;
-        }
-
-        &.energy-a { background-color: #00a651; }
-        &.energy-b { background-color: #4bb848; }
-        &.energy-c { background-color: #a3c617; }
-        &.energy-d { background-color: #fff100; color: #333; }
-        &.energy-e { background-color: #ffa500; }
-        &.energy-f { background-color: #ff6600; }
-        &.energy-g { background-color: #e60000; }
-
-        &.active {
-          transform: scale(1.05);
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-      }
-
-      .energy-values {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-
-        small {
-          color: #6c757d;
-          font-size: 0.85rem;
-        }
-      }
-    }
-  }
-
-  // DESCRIPCIÓN
-  .property-description {
-    margin-bottom: 3rem;
-
-    .description-content {
-      background: white;
-      border-radius: 15px;
-      padding: 2rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-
-      p {
-        color: #495057;
-        font-size: 1rem;
-        line-height: 1.6;
-        margin: 0;
-      }
-    }
-  }
-
-  // GRÁFICO DE VISITAS
-  .property-visits {
-    margin-bottom: 3rem;
-
-    .chart-container {
-      background: white;
-      border-radius: 15px;
-      padding: 2rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-
-      .chart-wrapper {
-        height: 300px;
-        position: relative;
-      }
-    }
-  }
-
-  // MAPA
-  .property-map {
-    margin-bottom: 3rem;
-
-    .map-container {
-      background: white;
-      border-radius: 15px;
-      padding: 2rem;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-
-      .leaflet-map {
-        height: 400px;
-        border-radius: 12px;
-        overflow: hidden;
-      }
-    }
-  }
-
-  // RESPONSIVE
-  @media (max-width: 768px) {
-    .property-summary {
-      .summary-card {
-        padding: 1.5rem;
-      }
-
-      .property-title {
-        font-size: 1.5rem;
-      }
-
-      .property-price {
-        font-size: 2rem;
-      }
-
-      .property-quick-info {
-        gap: 1rem;
-      }
-
-      .btn-cita {
-        width: 100%;
-        margin-top: 1rem;
-      }
-    }
-
-    .gallery-container,
-    .characteristics-table,
-    .energy-rating-container,
-    .description-content,
-    .chart-container,
-    .map-container {
-      padding: 1.5rem;
-    }
-
-    .main-image-container .main-image {
-      height: 250px;
-    }
-
-    .carousel-btn {
-      width: 40px;
-      height: 40px;
-      font-size: 1rem;
-
-      &.carousel-btn-prev {
-        left: 10px;
-      }
-
-      &.carousel-btn-next {
-        right: 10px;
-      }
-    }
-
-    .thumbnails .thumbnail {
-      width: 60px;
-      height: 45px;
-    }
-  }
-
-  // POPUP DEL MAPA
-  ::ng-deep .map-popup {
-    h6 {
-      color: #2c3e50;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      margin-bottom: 0.25rem;
-      color: #6c757d;
-
-      i {
-        color: #e74c3c;
-        margin-right: 0.5rem;
-      }
-
-      strong {
-        color: #e74c3c;
-      }
-    }
-  }
-}
-
 // 🔥 ESPACIO PARA NAVBAR FIJO
 .main-content {
-  padding-top: 80px; // Espacio para el navbar fijo
+  padding-top: 80px;
   min-height: 100vh;
 }
 
@@ -747,4 +342,56 @@
 
 .page-link {
   cursor: pointer;
+}
+
+// 🔥 MEJORAS RESPONSIVE
+@media (max-width: 768px) {
+  .clickeable-card {
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+
+  .card-hover-overlay {
+    i {
+      font-size: 1.5rem;
+    }
+
+    span {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// 🔥 ANIMACIONES SUAVES
+@keyframes cardPulse {
+  0% {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+  100% {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.clickeable-card:focus-within {
+  animation: cardPulse 2s infinite;
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+// 🔥 ESTADOS DE ACCESIBILIDAD
+.clickeable-card:focus,
+.clickeable-row:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+// 🔥 MEJORAS EN BOTONES DENTRO DE CARDS
+.clickeable-card .btn,
+.clickeable-row .btn {
+  position: relative;
+  z-index: 20; // Asegurar que los botones estén por encima del overlay
 }

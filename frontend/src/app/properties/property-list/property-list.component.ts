@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { PropiedadesService } from '../../services/propiedades.service';
 import { Propiedad, PropiedadFields } from '../../models/airtable.interfaces';
 import { Subject } from 'rxjs';
@@ -15,7 +15,7 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
     CommonModule,
     FormsModule,
     RouterModule,
-    NavbarComponent  // 🔥 AÑADIR NAVBAR
+    NavbarComponent
   ],
   templateUrl: './property-list.component.html',
   styleUrls: ['./property-list.component.scss']
@@ -45,10 +45,16 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   currentPage = 1;
   itemsPerPage = 12;
 
+  // 🔥 FAVORITOS (SIMULADO - EN FUTURO USAR SERVICIO)
+  private favoriteIds: Set<string> = new Set();
+
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
 
-  constructor(private propiedadesService: PropiedadesService) {
+  constructor(
+    private propiedadesService: PropiedadesService,
+    private router: Router
+  ) {
     // Configurar búsqueda con debounce
     this.searchSubject.pipe(
       debounceTime(300),
@@ -93,6 +99,14 @@ export class PropertyListComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
       });
+  }
+
+  /**
+   * 🔥 NAVEGAR AL DETALLE DE LA PROPIEDAD
+   */
+  navigateToDetail(property: Propiedad): void {
+    console.log('🏠 Navegando al detalle de:', property.id);
+    this.router.navigate(['/propiedades', property.id]);
   }
 
   /**
@@ -152,7 +166,6 @@ export class PropertyListComponent implements OnInit, OnDestroy {
     if (Array.isArray(imagenes) && imagenes[0]) {
       return imagenes[0].thumbnails?.large?.url || imagenes[0].url;
     }
-    // ✅ USAR MISMA IMAGEN POR DEFECTO QUE PROPERTY-DETAIL
     return this.getDefaultImage();
   }
 
@@ -160,7 +173,6 @@ export class PropertyListComponent implements OnInit, OnDestroy {
    * ✅ IMAGEN POR DEFECTO IDÉNTICA A PROPERTY-DETAIL
    */
   private getDefaultImage(): string {
-    // Data URL de una imagen placeholder simple (1x1 pixel gris transparente)
     return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZjNzU3ZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPgogICAgPHRzcGFuPjxmYSBjbGFzcz0iZmFzIGZhLWhvbWUiLz4gU2luIGltYWdlbjwvdHNwYW4+CiAgPC90ZXh0Pgo8L3N2Zz4K';
   }
 
@@ -168,7 +180,6 @@ export class PropertyListComponent implements OnInit, OnDestroy {
    * ✅ MANEJAR ERROR DE IMAGEN (EXACTO COMO PROPERTY-DETAIL)
    */
   onImageError(event: any): void {
-    // Evitar bucle infinito
     if (event.target.src !== this.getDefaultImage()) {
       event.target.src = this.getDefaultImage();
     }
@@ -246,7 +257,6 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   applyFilters(): void {
     let filtered = [...this.properties];
 
-    // Filtro por texto
     if (this.searchText.trim()) {
       const searchLower = this.searchText.toLowerCase();
       filtered = filtered.filter(property =>
@@ -257,28 +267,24 @@ export class PropertyListComponent implements OnInit, OnDestroy {
       );
     }
 
-    // Filtro por tipo
     if (this.filterType) {
       filtered = filtered.filter(property =>
         this.getFieldAsString(property, 'Tipo') === this.filterType
       );
     }
 
-    // Filtro por estado
     if (this.filterStatus) {
       filtered = filtered.filter(property =>
         this.getFieldAsString(property, 'Estado') === this.filterStatus
       );
     }
 
-    // Filtro por precio mínimo
     if (this.priceMin !== null && this.priceMin > 0) {
       filtered = filtered.filter(property =>
         this.getFieldAsNumber(property, 'Precio') >= this.priceMin!
       );
     }
 
-    // Filtro por precio máximo
     if (this.priceMax !== null && this.priceMax > 0) {
       filtered = filtered.filter(property =>
         this.getFieldAsNumber(property, 'Precio') <= this.priceMax!
@@ -317,7 +323,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ ESTADÍSTICAS (EXACTO COMO PROPERTY-DETAIL)
+   * ✅ ESTADÍSTICAS
    */
   getTotalProperties(): number {
     return this.properties.length;
@@ -345,7 +351,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ PAGINACIÓN (EXACTO COMO PROPERTY-DETAIL)
+   * ✅ PAGINACIÓN
    */
   updatePagination(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
@@ -357,7 +363,6 @@ export class PropertyListComponent implements OnInit, OnDestroy {
     if (page >= 1 && page <= this.getTotalPages()) {
       this.currentPage = page;
       this.updatePagination();
-      // Scroll al inicio
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
@@ -401,15 +406,51 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ ACCIONES
+   * 🔥 CONTACTAR PROPIEDAD (CON STOP PROPAGATION)
    */
-  contactProperty(property: Propiedad): void {
-    console.log('Contactar propiedad:', property.id);
-    // TODO: Implementar modal de contacto
+  contactProperty(property: Propiedad, event?: Event): void {
+    // Evitar que se propague el click al contenedor padre
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    console.log('📞 Contactar propiedad:', property.id);
+    
+    // TODO: Implementar modal de contacto o navegación
+    const propertyTitle = this.getFieldAsString(property, 'Título');
+    const propertyAddress = this.getFieldAsString(property, 'Dirección');
+    
+    alert(`📞 Contactar sobre: ${propertyTitle}\n📍 Ubicación: ${propertyAddress}\n\n🚧 Funcionalidad en desarrollo.\n\nPróximamente podrás:\n• Enviar mensaje directo\n• Programar visita\n• Solicitar más información`);
   }
 
-  toggleFavorite(property: Propiedad): void {
-    console.log('Toggle favorito:', property.id);
-    // TODO: Implementar sistema de favoritos
+  /**
+   * 🔥 TOGGLE FAVORITO (CON STOP PROPAGATION)
+   */
+  toggleFavorite(property: Propiedad, event?: Event): void {
+    // Evitar que se propague el click al contenedor padre
+    if (event) {
+      event.stopPropagation();
+    }
+
+    const propertyId = property.id;
+    const propertyTitle = this.getFieldAsString(property, 'Título');
+    
+    if (this.favoriteIds.has(propertyId)) {
+      this.favoriteIds.delete(propertyId);
+      console.log('💔 Eliminado de favoritos:', propertyTitle);
+    } else {
+      this.favoriteIds.add(propertyId);
+      console.log('❤️ Agregado a favoritos:', propertyTitle);
+    }
+    
+    // TODO: En el futuro, conectar con el servicio de favoritos
+    console.log('🔥 Favoritos actuales:', Array.from(this.favoriteIds));
+  }
+
+  /**
+   * 🔥 VERIFICAR SI ES FAVORITO
+   */
+  isFavorite(property: Propiedad): boolean {
+    return this.favoriteIds.has(property.id);
   }
 }
