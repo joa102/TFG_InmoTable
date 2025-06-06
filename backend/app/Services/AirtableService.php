@@ -3,235 +3,293 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AirtableService
 {
-    const AUTHORIZATION_PREFIX = 'Bearer ';
-    const CONTENT_TYPE_JSON = 'application/json';
-
-    protected $accessToken;
-    protected $baseId;
+    private $token; // 🔥 CAMBIAR DE apiKey a token
+    private $baseId;
+    private $baseUrl = 'https://api.airtable.com/v0';
 
     public function __construct()
     {
-        $this->accessToken = config('services.airtable.token');
-        $this->baseId = config('services.airtable.base_id');
+        $this->token = env('AIRTABLE_TOKEN'); // 🔥 USAR AIRTABLE_TOKEN en lugar de AIRTABLE_API_KEY
+        $this->baseId = env('AIRTABLE_BASE_ID');
+
+        if (!$this->token || !$this->baseId) {
+            throw new \Exception('Airtable Token y Base ID son requeridos'); // 🔥 CAMBIAR MENSAJE
+        }
     }
 
     /**
-     * Obtener todos los registros de una tabla específica
+     * Obtener registros de una tabla
      */
-    public function getRecords(string $tableName, array $filters = [])
+    public function getRecords($tableName, $filters = [])
     {
-        $allRecords = [];
-        $offset = null;
-        $requestCount = 0;
-        $maxRequests = 20;
+        try {
+            $url = "{$this->baseUrl}/{$this->baseId}/{$tableName}";
 
-        do {
-            $requestCount++;
-            if ($requestCount > $maxRequests) {
-                \Log::warning("Airtable: Máximo número de requests alcanzado ({$maxRequests}). Total registros obtenidos: " . count($allRecords));
-                break;
-            }
-
-            $url = "https://api.airtable.com/v0/{$this->baseId}/{$tableName}";
-
-            $queryParams = [
-                'pageSize' => 100,
-            ];
-
-            // Agregar filtros si existen
-            if (!empty($filters)) {
-                $queryParams = array_merge($queryParams, $filters);
-            }
-
-            if ($offset) {
-                $queryParams['offset'] = $offset;
-            }
-
-            \Log::info("Airtable request #{$requestCount}" . ($offset ? " con offset: {$offset}" : " (primera página)"));
+            Log::info("🔍 Consultando Airtable", [
+                'url' => $url,
+                'table' => $tableName,
+                'filters' => $filters
+            ]);
 
             $response = Http::withHeaders([
-                'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-                'Content-Type'  => self::CONTENT_TYPE_JSON
-            ])->get($url, $queryParams);
+                'Authorization' => 'Bearer ' . $this->token, // 🔥 USAR token en lugar de apiKey
+            ])->get($url, $filters);
 
-            if ($response->failed()) {
-                \Log::error('Error en petición a Airtable: ' . $response->body());
-                throw new \Exception('Error al obtener los registros de Airtable: ' . $response->body());
+            if ($response->successful()) {
+                $data = $response->json();
+                $records = collect($data['records'] ?? [])->map(function ($record) {
+                    return [
+                        'id' => $record['id'],
+                        'recordId' => $record['id'],
+                        'createdTime' => $record['createdTime'] ?? null,
+                        ...$this->transformFields($record['fields'] ?? [])
+                    ];
+                })->toArray();
+
+                Log::info("✅ Registros obtenidos exitosamente", [
+                    'count' => count($records),
+                    'records' => $records
+                ]);
+
+                return $records;
+            } else {
+                Log::error("❌ Error en respuesta de Airtable", [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                throw new \Exception("Error al obtener registros: " . $response->body());
             }
-
-            $data = $response->json();
-
-            if (isset($data['records']) && is_array($data['records'])) {
-                $allRecords = array_merge($allRecords, $data['records']);
-                \Log::info("Registros obtenidos en request #{$requestCount}: " . count($data['records']));
-            }
-
-            $offset = $data['offset'] ?? null;
-
-        } while ($offset && $requestCount < $maxRequests);
-
-        \Log::info("Total final de registros de {$tableName}: " . count($allRecords));
-
-        return $allRecords;
+        } catch (\Exception $e) {
+            Log::error("❌ Error en getRecords", [
+                'exception' => $e->getMessage(),
+                'table' => $tableName,
+                'filters' => $filters
+            ]);
+            throw $e;
+        }
     }
 
     /**
-     * Obtener un registro específico por ID
+     * Obtener un registro específico
      */
-    public function getRecord(string $tableName, string $recordId)
+    public function getRecord($tableName, $recordId)
     {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$tableName}/{$recordId}";
+        try {
+            $url = "{$this->baseUrl}/{$this->baseId}/{$tableName}/{$recordId}";
 
-        $response = Http::withHeaders([
-            'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-            'Content-Type'  => self::CONTENT_TYPE_JSON
-        ])->get($url);
+            Log::info("🔍 Consultando registro específico", [
+                'url' => $url,
+                'table' => $tableName,
+                'recordId' => $recordId
+            ]);
 
-        if ($response->failed()) {
-            \Log::error('Error al obtener registro de Airtable: ' . $response->body());
-            throw new \Exception('Error al obtener el registro: ' . $response->body());
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->token, // 🔥 USAR token
+            ])->get($url);
+
+            if ($response->successful()) {
+                $record = $response->json();
+                $result = [
+                    'id' => $record['id'],
+                    'recordId' => $record['id'],
+                    'createdTime' => $record['createdTime'] ?? null,
+                    ...$this->transformFields($record['fields'] ?? [])
+                ];
+
+                Log::info("✅ Registro obtenido exitosamente", $result);
+                return $result;
+            } else {
+                Log::error("❌ Error al obtener registro", [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                return null;
+            }
+        } catch (\Exception $e) {
+            Log::error("❌ Error en getRecord", [
+                'exception' => $e->getMessage(),
+                'table' => $tableName,
+                'recordId' => $recordId
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Transformar campos de Airtable al formato esperado
+     */
+    private function transformFields($fields)
+    {
+        $transformed = [];
+
+        foreach ($fields as $key => $value) {
+            // Convertir nombres de campos a camelCase
+            $fieldName = $this->transformFieldName($key);
+            $transformed[$fieldName] = $value;
         }
 
-        return $response->json();
+        return $transformed;
+    }
+
+    /**
+     * Transformar nombre de campo
+     */
+    private function transformFieldName($fieldName)
+    {
+        // Mapeo específico para empresas
+        $mapping = [
+            'ID Empresa' => 'idEmpresa',
+            'Nombre' => 'nombre',
+            'Logo' => 'logo',
+            'Estado' => 'estado'
+        ];
+
+        return $mapping[$fieldName] ?? strtolower(str_replace(' ', '_', $fieldName));
     }
 
     /**
      * Crear un nuevo registro
      */
-    public function createRecord(string $tableName, array $fields)
+    public function createRecord($tableName, $fields)
     {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$tableName}";
+        try {
+            $url = "{$this->baseUrl}/{$this->baseId}/{$tableName}";
 
-        $data = [
-            'fields' => $fields
-        ];
+            $data = [
+                'fields' => $fields
+            ];
 
-        $response = Http::withHeaders([
-            'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-            'Content-Type'  => self::CONTENT_TYPE_JSON
-        ])->post($url, $data);
+            Log::info("🔨 Creando registro en Airtable", [
+                'url' => $url,
+                'table' => $tableName,
+                'data' => $data
+            ]);
 
-        if ($response->failed()) {
-            \Log::error('Error al crear registro en Airtable: ' . $response->body());
-            throw new \Exception('Error al crear el registro: ' . $response->body());
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->token, // 🔥 USAR token
+                'Content-Type' => 'application/json',
+            ])->post($url, $data);
+
+            if ($response->successful()) {
+                $record = $response->json();
+                $result = [
+                    'id' => $record['id'],
+                    'recordId' => $record['id'],
+                    'createdTime' => $record['createdTime'] ?? null,
+                    ...$this->transformFields($record['fields'] ?? [])
+                ];
+
+                Log::info("✅ Registro creado exitosamente", $result);
+                return $result;
+            } else {
+                Log::error("❌ Error al crear registro", [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                throw new \Exception("Error al crear registro: " . $response->body());
+            }
+        } catch (\Exception $e) {
+            Log::error("❌ Error en createRecord", [
+                'exception' => $e->getMessage(),
+                'table' => $tableName,
+                'fields' => $fields
+            ]);
+            throw $e;
         }
-
-        \Log::info("Registro creado en {$tableName}: " . $response->json()['id']);
-
-        return $response->json();
     }
 
     /**
-     * Actualizar un registro existente
+     * Actualizar un registro
      */
-    public function updateRecord(string $tableName, string $recordId, array $fields)
+    public function updateRecord($tableName, $recordId, $fields)
     {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$tableName}/{$recordId}";
+        try {
+            $url = "{$this->baseUrl}/{$this->baseId}/{$tableName}/{$recordId}";
 
-        $data = [
-            'fields' => $fields
-        ];
+            $data = [
+                'fields' => $fields
+            ];
 
-        $response = Http::withHeaders([
-            'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-            'Content-Type'  => self::CONTENT_TYPE_JSON
-        ])->patch($url, $data);
+            Log::info("📝 Actualizando registro en Airtable", [
+                'url' => $url,
+                'table' => $tableName,
+                'recordId' => $recordId,
+                'data' => $data
+            ]);
 
-        if ($response->failed()) {
-            \Log::error('Error al actualizar registro en Airtable: ' . $response->body());
-            throw new \Exception('Error al actualizar el registro: ' . $response->body());
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->token, // 🔥 USAR token
+                'Content-Type' => 'application/json',
+            ])->patch($url, $data);
+
+            if ($response->successful()) {
+                $record = $response->json();
+                $result = [
+                    'id' => $record['id'],
+                    'recordId' => $record['id'],
+                    'createdTime' => $record['createdTime'] ?? null,
+                    ...$this->transformFields($record['fields'] ?? [])
+                ];
+
+                Log::info("✅ Registro actualizado exitosamente", $result);
+                return $result;
+            } else {
+                Log::error("❌ Error al actualizar registro", [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                throw new \Exception("Error al actualizar registro: " . $response->body());
+            }
+        } catch (\Exception $e) {
+            Log::error("❌ Error en updateRecord", [
+                'exception' => $e->getMessage(),
+                'table' => $tableName,
+                'recordId' => $recordId,
+                'fields' => $fields
+            ]);
+            throw $e;
         }
-
-        \Log::info("Registro actualizado en {$tableName}: " . $recordId);
-
-        return $response->json();
     }
 
     /**
      * Eliminar un registro
      */
-    public function deleteRecord(string $tableName, string $recordId)
+    public function deleteRecord($tableName, $recordId)
     {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$tableName}/{$recordId}";
+        try {
+            $url = "{$this->baseUrl}/{$this->baseId}/{$tableName}/{$recordId}";
 
-        $response = Http::withHeaders([
-            'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-            'Content-Type'  => self::CONTENT_TYPE_JSON
-        ])->delete($url);
-
-        if ($response->failed()) {
-            \Log::error('Error al eliminar registro en Airtable: ' . $response->body());
-            throw new \Exception('Error al eliminar el registro: ' . $response->body());
-        }
-
-        \Log::info("Registro eliminado en {$tableName}: " . $recordId);
-
-        return $response->json();
-    }
-
-    /**
-     * Crear múltiples registros de una vez (batch)
-     */
-    public function createMultipleRecords(string $tableName, array $recordsData)
-    {
-        $url = "https://api.airtable.com/v0/{$this->baseId}/{$tableName}";
-
-        // Airtable permite máximo 10 registros por batch
-        $chunks = array_chunk($recordsData, 10);
-        $allCreatedRecords = [];
-
-        foreach ($chunks as $chunk) {
-            $data = [
-                'records' => array_map(function($fields) {
-                    return ['fields' => $fields];
-                }, $chunk)
-            ];
+            Log::info("🗑️ Eliminando registro en Airtable", [
+                'url' => $url,
+                'table' => $tableName,
+                'recordId' => $recordId
+            ]);
 
             $response = Http::withHeaders([
-                'Authorization' => self::AUTHORIZATION_PREFIX . $this->accessToken,
-                'Content-Type'  => self::CONTENT_TYPE_JSON
-            ])->post($url, $data);
+                'Authorization' => 'Bearer ' . $this->token, // 🔥 USAR token
+            ])->delete($url);
 
-            if ($response->failed()) {
-                \Log::error('Error al crear registros batch en Airtable: ' . $response->body());
-                throw new \Exception('Error al crear los registros: ' . $response->body());
+            if ($response->successful()) {
+                Log::info("✅ Registro eliminado exitosamente");
+                return true;
+            } else {
+                Log::error("❌ Error al eliminar registro", [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                throw new \Exception("Error al eliminar registro: " . $response->body());
             }
-
-            $result = $response->json();
-            if (isset($result['records'])) {
-                $allCreatedRecords = array_merge($allCreatedRecords, $result['records']);
-            }
+        } catch (\Exception $e) {
+            Log::error("❌ Error en deleteRecord", [
+                'exception' => $e->getMessage(),
+                'table' => $tableName,
+                'recordId' => $recordId
+            ]);
+            throw $e;
         }
-
-        \Log::info("Registros batch creados en {$tableName}: " . count($allCreatedRecords));
-
-        return $allCreatedRecords;
-    }
-
-    /**
-     * Buscar registros con filtros específicos
-     */
-    public function searchRecords(string $tableName, string $filterFormula)
-    {
-        return $this->getRecords($tableName, [
-            'filterByFormula' => $filterFormula
-        ]);
-    }
-
-    /**
-     * Obtener registros ordenados
-     */
-    public function getRecordsOrdered(string $tableName, array $sort = [])
-    {
-        $filters = [];
-
-        if (!empty($sort)) {
-            $filters['sort'] = $sort;
-        }
-
-        return $this->getRecords($tableName, $filters);
     }
 }

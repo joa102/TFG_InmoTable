@@ -1,0 +1,206 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+  <div class="container-fluid">
+
+    <!-- 🏠 LOGO Y BRAND DINÁMICO -->
+    <a class="navbar-brand d-flex align-items-center" (click)="navigateToHome()" style="cursor: pointer;">
+
+      <!-- 🔥 Logo como imagen (SIEMPRE VISIBLE SI ES IMAGEN) -->
+      <img *ngIf="isLogoImage()"
+           [src]="getEmpresaLogo()"
+           [alt]="empresaNombre + ' Logo'"
+           class="me-2 navbar-logo"
+           style="height: 42px; width: auto; max-width: 40px; object-fit: contain; transition: all 0.3s ease;"
+           (error)="onLogoImageError($event)"
+           (load)="onLogoImageLoad()"
+           [title]="empresaNombre + ' - Logo'">
+
+      <!-- 🔥 Logo como icono (SIEMPRE VISIBLE SI ES ICONO) -->
+      <i *ngIf="isLogoIcon()"
+         [class]="getEmpresaLogo() + ' me-2 fs-4'"
+         style="transition: all 0.3s ease;"
+         [title]="empresaNombre + ' - Icono'"></i>
+
+      <!-- 🔥 Nombre de la empresa (con animación) -->
+      <span class="fw-bold"
+            style="transition: all 0.3s ease;"
+            [class.text-warning]="fallbackUsed"
+            [title]="fallbackUsed ? 'Usando configuración por defecto' : empresaNombre">
+        {{ empresaNombre }}
+      </span>
+
+      <!-- 🔥 Indicador pequeño si está usando fallback (SOLO EN DESARROLLO) -->
+      <small *ngIf="fallbackUsed" class="ms-1 text-warning opacity-75" title="Configuración por defecto">
+        <i class="fas fa-exclamation-circle"></i>
+      </small>
+    </a>
+
+    <!-- 📱 TOGGLE BUTTON PARA MÓVILES -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- 🔗 NAVEGACIÓN -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+
+      <!-- ENLACES PRINCIPALES -->
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateToHome()" style="cursor: pointer;" title="Ir a página de inicio">
+            <i class="fas fa-home me-1"></i>
+            Inicio
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateToProperties()" style="cursor: pointer;" title="Ver todas las propiedades">
+            <i class="fas fa-building me-1"></i>
+            Propiedades
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="navigateToContact()" style="cursor: pointer;" title="Información de contacto">
+            <i class="fas fa-envelope me-1"></i>
+            Contacto
+          </a>
+        </li>
+      </ul>
+
+      <!-- 👤 SECCIÓN DE USUARIO -->
+      <ul class="navbar-nav">
+
+        <!-- 🔐 SI NO ESTÁ LOGUEADO -->
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link btn btn-outline-light px-3" (click)="navigateToLogin()" style="cursor: pointer;" title="Iniciar sesión en el sistema">
+            <i class="fas fa-sign-in-alt me-1"></i>
+            Iniciar sesión
+          </a>
+        </li>
+
+        <!-- 👤 SI ESTÁ LOGUEADO -->
+        <li class="nav-item dropdown position-relative" *ngIf="isLoggedIn"
+            [class.show]="showUserDropdown">
+
+          <!-- BOTÓN DEL USUARIO -->
+          <a class="nav-link dropdown-toggle user-dropdown"
+             (click)="toggleUserDropdown()"
+             style="cursor: pointer;"
+             [attr.aria-expanded]="showUserDropdown"
+             [title]="'Menú de ' + getDisplayName()">
+
+            <!-- AVATAR CON INICIALES -->
+            <div class="user-avatar me-2">
+              {{ getUserInitials() }}
+            </div>
+
+            <!-- NOMBRE Y ROL -->
+            <div class="user-info d-none d-md-inline-block">
+              <div class="user-name">{{ getDisplayName() }}</div>
+              <small class="user-role text-light-50">{{ getRoleLabel() }}</small>
+            </div>
+          </a>
+
+          <!-- 📋 DROPDOWN MENU -->
+          <ul class="dropdown-menu dropdown-menu-end"
+              [class.show]="showUserDropdown">
+
+            <!-- HEADER DEL DROPDOWN -->
+            <li class="dropdown-header">
+              <div class="d-flex align-items-center">
+                <div class="user-avatar-large me-2">
+                  {{ getUserInitials() }}
+                </div>
+                <div>
+                  <div class="fw-semibold">{{ currentUser?.nombre }}</div>
+                  <small class="text-muted">{{ currentUser?.email }}</small>
+                  <div>
+                    <span class="badge bg-{{ getRoleClass() }} mt-1">{{ getRoleLabel() }}</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <!-- OPCIONES DEL MENU -->
+            <li>
+              <a class="dropdown-item" (click)="navigateToUserProfile()" style="cursor: pointer;" title="Ver y editar datos personales">
+                <i class="fas fa-user me-2 text-primary"></i>
+                <span>Datos del usuario</span>
+                <small class="text-muted d-block">Perfil y configuración</small>
+              </a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" (click)="navigateToInterestedProperties()" style="cursor: pointer;" title="Ver propiedades marcadas como favoritas">
+                <i class="fas fa-heart me-2 text-danger"></i>
+                <span>Propiedades interesadas</span>
+                <small class="text-muted d-block">Tus favoritos</small>
+              </a>
+            </li>
+
+            <li>
+              <a class="dropdown-item" (click)="navigateToAppointments()" style="cursor: pointer;" title="Visualizar citas y visitas">
+                <i class="fas fa-calendar-alt me-2 text-success"></i>
+                <span>Citas</span>
+                <small class="text-muted d-block">Visualizar visitas</small>
+              </a>
+            </li>
+
+            <!-- SEPARADOR PARA ADMIN/AGENTE -->
+            <li *ngIf="isAdmin() || isAgent()">
+              <hr class="dropdown-divider">
+            </li>
+
+            <!-- OPCIONES ADICIONALES PARA ADMIN/AGENTE -->
+            <li *ngIf="isAdmin() || isAgent()">
+              <a class="dropdown-item" (click)="navigateToDashboard()" style="cursor: pointer;" title="Panel de administración">
+                <i class="fas fa-tachometer-alt me-2 text-info"></i>
+                <span>Dashboard</span>
+                <small class="text-muted d-block">Panel de control</small>
+              </a>
+            </li>
+
+            <!-- 🔥 OPCIÓN DE DEBUG PARA CACHE (SOLO EN DESARROLLO) -->
+            <li *ngIf="isAdmin()">
+              <hr class="dropdown-divider">
+            </li>
+
+            <li *ngIf="isAdmin()">
+              <a class="dropdown-item" (click)="showCacheStats()" style="cursor: pointer;" title="Ver estadísticas del caché">
+                <i class="fas fa-chart-bar me-2 text-secondary"></i>
+                <span>Caché Stats</span>
+                <small class="text-muted d-block">Debug + Precarga</small>
+              </a>
+            </li>
+
+            <li *ngIf="isAdmin()">
+              <a class="dropdown-item" (click)="clearCache()" style="cursor: pointer;" title="Limpiar caché de empresa">
+                <i class="fas fa-broom me-2 text-warning"></i>
+                <span>Limpiar Caché</span>
+                <small class="text-muted d-block">Recargar empresa</small>
+              </a>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <!-- CERRAR SESIÓN -->
+            <li>
+              <a class="dropdown-item text-danger" (click)="logout()" style="cursor: pointer;" title="Cerrar sesión actual">
+                <i class="fas fa-sign-out-alt me-2"></i>
+                <span>Cerrar sesión</span>
+                <small class="text-muted d-block">Salir del sistema</small>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

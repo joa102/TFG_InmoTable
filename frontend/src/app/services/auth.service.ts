@@ -1,135 +1,163 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap, map, catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { delay, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { ApiService } from './api.service';
-import {
-  User,
-  AuthResponse,
-  LoginData,
-  RegisterData,
-  ApiResponse
-} from '../interfaces/api.interfaces';
+
+// 🔥 INTERFACES SIMPLES PARA LOGIN FALSO
+export interface User {
+  id: number;
+  email: string;
+  password: string;
+  rol: 'admin' | 'agente' | 'cliente';
+  estado: 'Activo' | 'Inactivo';
+  nombre: string;
+  telefono: string;
+  clientes?: string[];
+  agentes?: string[];
+  fechaRegistro: string;
+  ultimoLogin?: string;
+  recordId: string;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  user: User;
+  token: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  // 🔥 USUARIOS DE PRUEBA (Definirás los datos después)
+  private readonly USUARIOS_PRUEBA: User[] = [
+    {
+      id: 1,
+      email: 'admin@inmotable.com',
+      password: 'admin123',
+      rol: 'admin',
+      estado: 'Activo',
+      nombre: 'Administrador del Sistema',
+      telefono: '+34900000001',
+      clientes: [],
+      agentes: [],
+      fechaRegistro: '2024-01-01T10:00:00.000Z',
+      ultimoLogin: undefined,
+      recordId: 'recZqPUvF8iL6vr8t'
+    },
+    {
+      id: 2,
+      email: 'luísbilbao-vara@inmotable.com',
+      password: 'agente123',
+      rol: 'agente',
+      estado: 'Activo',
+      nombre: 'Luís Bilbao-Vara',
+      telefono: '634929311',
+      clientes: [],
+      agentes: ['6'],
+      fechaRegistro: '2024-01-15T10:00:00.000Z',
+      ultimoLogin: undefined,
+      recordId: 'rectky7CqkrJSVGbg'
+    },
+    {
+      id: 56,
+      email: 'mireiabayona@fajardo-tamarit.es',
+      password: 'cliente123',
+      rol: 'cliente',
+      estado: 'Activo',
+      nombre: 'Héctor Núñez Ferrán',
+      telefono: '619015987',
+      clientes: ['45'],
+      agentes: [],
+      fechaRegistro: '2024-02-01T10:00:00.000Z',
+      ultimoLogin: undefined,
+      recordId: 'recXNz6ABzdQ04Bre'
+    }
+  ];
+
+  // 🔥 ESTADO DE LA APLICACIÓN
   private currentUserSubject = new BehaviorSubject<User | null>(this.getStoredUser());
   public currentUser$ = this.currentUserSubject.asObservable();
+  private tokenSubject = new BehaviorSubject<string | null>(this.getStoredToken());
 
-  constructor(
-    private apiService: ApiService,
-    private router: Router
-  ) {}
-
-  // 🔥 OBTENER USUARIO ALMACENADO
-  private getStoredUser(): User | null {
-    const userStr = localStorage.getItem('current_user');
-    return userStr ? JSON.parse(userStr) : null;
+  constructor(private router: Router) {
+    console.log('🔥 AuthService inicializado con', this.USUARIOS_PRUEBA.length, 'usuarios de prueba');
   }
 
-  // 🔥 ALMACENAR USUARIO
-  private setStoredUser(user: User): void {
-    localStorage.setItem('current_user', JSON.stringify(user));
-    this.currentUserSubject.next(user);
-  }
+  // 🔥 LOGIN FALSO CON SIMULACIÓN DE DELAY
+  login(credentials: LoginCredentials): Observable<AuthResponse> {
+    console.log('🔐 Intentando login falso con:', credentials.email);
 
-  // 🔥 LIMPIAR USUARIO ALMACENADO
-  private removeStoredUser(): void {
-    localStorage.removeItem('current_user');
-    this.currentUserSubject.next(null);
-  }
+    // Simular delay de red
+    return of(null).pipe(
+      delay(1000), // 1 segundo de "carga"
+      map(() => {
+        // Buscar usuario
+        const usuario = this.USUARIOS_PRUEBA.find(u =>
+          u.email === credentials.email && u.password === credentials.password
+        );
 
-  // 🔥 REGISTRO DE USUARIO
-  register(userData: RegisterData): Observable<AuthResponse> {
-    return this.apiService.post<AuthResponse>('auth/register', userData)
-      .pipe(
-        tap(response => {
-          if (response.success && response.data) {
-            this.apiService.setToken(response.data.token);
-            this.setStoredUser(response.data.user);
-          }
-        }),
-        map(response => response.data!),
-        catchError(error => {
-          console.error('Error en registro:', error);
-          throw error;
-        })
-      );
-  }
+        if (!usuario) {
+          throw new Error('Credenciales incorrectas');
+        }
 
-  // 🔥 LOGIN
-  login(credentials: LoginData): Observable<AuthResponse> {
-    return this.apiService.post<AuthResponse>('auth/login', credentials)
-      .pipe(
-        tap(response => {
-          if (response.success && response.data) {
-            this.apiService.setToken(response.data.token);
-            this.setStoredUser(response.data.user);
-          }
-        }),
-        map(response => response.data!),
-        catchError(error => {
-          console.error('Error en login:', error);
-          throw error;
-        })
-      );
+        if (usuario.estado !== 'Activo') {
+          throw new Error('Usuario inactivo');
+        }
+
+        // Actualizar último login
+        usuario.ultimoLogin = new Date().toISOString();
+
+        // Generar token falso
+        const token = this.generateFakeToken(usuario);
+
+        // Guardar en memoria/localStorage
+        this.setStoredUser(usuario);
+        this.setStoredToken(token);
+
+        const response: AuthResponse = {
+          success: true,
+          message: 'Login exitoso',
+          user: usuario,
+          token: token
+        };
+
+        console.log('✅ Login falso exitoso:', response);
+        return response;
+      })
+    );
   }
 
   // 🔥 LOGOUT
   logout(): Observable<any> {
-    return this.apiService.post('auth/logout', {})
-      .pipe(
-        tap(() => {
-          this.apiService.removeToken();
-          this.removeStoredUser();
-          this.router.navigate(['/login']);
-        }),
-        catchError(error => {
-          // Limpiar datos locales aunque falle la request
-          this.apiService.removeToken();
-          this.removeStoredUser();
-          this.router.navigate(['/login']);
-          throw error;
-        })
-      );
+    console.log('🚪 Cerrando sesión...');
+
+    return of(null).pipe(
+      delay(500),
+      map(() => {
+        this.clearStoredUser();
+        this.clearStoredToken();
+        this.router.navigate(['/login']);
+        return { success: true, message: 'Sesión cerrada' };
+      })
+    );
   }
 
   // 🔥 OBTENER USUARIO ACTUAL
-  getCurrentUser(): Observable<User> {
-    return this.apiService.get<{ user: User; airtable_data: any }>('auth/user')
-      .pipe(
-        tap(response => {
-          if (response.success && response.data) {
-            this.setStoredUser(response.data.user);
-          }
-        }),
-        map(response => response.data!.user),
-        catchError(error => {
-          if (error.status === 401) {
-            this.forceLogout();
-          }
-          throw error;
-        })
-      );
-  }
-
-  // 🔥 SINCRONIZAR CON AIRTABLE
-  syncWithAirtable(): Observable<any> {
-    return this.apiService.post('auth/sync', {});
-  }
-
-  // 🔥 FORZAR LOGOUT (cuando token expira)
-  forceLogout(): void {
-    this.apiService.removeToken();
-    this.removeStoredUser();
-    this.router.navigate(['/login']);
+  getCurrentUser(): Observable<User | null> {
+    return this.currentUser$;
   }
 
   // 🔥 VERIFICAR SI ESTÁ AUTENTICADO
   get isAuthenticated(): boolean {
-    return this.apiService.isAuthenticated && !!this.currentUserSubject.value;
+    return !!this.currentUserSubject.value && !!this.tokenSubject.value;
   }
 
   // 🔥 OBTENER USUARIO ACTUAL (SINCRÓNICO)
@@ -137,45 +165,90 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  // 🔥 VERIFICAR ROL
-  hasRole(role: string): boolean {
-    const user = this.currentUserValue;
-    return user ? user.role === role : false;
-  }
-
-  // 🔥 VERIFICAR MÚLTIPLES ROLES
-  hasAnyRole(roles: string[]): boolean {
-    const user = this.currentUserValue;
-    return user ? roles.includes(user.role) : false;
-  }
-
-  // 🔥 VERIFICAR SI ES ADMIN
+  // 🔥 VERIFICACIONES DE ROL
   get isAdmin(): boolean {
-    return this.hasRole('admin');
+    return this.currentUserValue?.rol === 'admin';
   }
 
-  // 🔥 VERIFICAR SI ES AGENTE
   get isAgent(): boolean {
-    return this.hasRole('agente');
+    return this.currentUserValue?.rol === 'agente';
   }
 
-  // 🔥 VERIFICAR SI ES CLIENTE
   get isClient(): boolean {
-    return this.hasRole('cliente');
+    return this.currentUserValue?.rol === 'cliente';
   }
 
-  // 🔥 VERIFICAR SI PUEDE GESTIONAR PROPIEDADES
-  canManageProperties(): boolean {
-    return this.hasAnyRole(['admin', 'agente']);
+  hasRole(role: string): boolean {
+    return this.currentUserValue?.rol === role;
   }
 
-  // 🔥 VERIFICAR SI PUEDE GESTIONAR USUARIOS
-  canManageUsers(): boolean {
-    return this.isAdmin;
+  hasAnyRole(roles: string[]): boolean {
+    const userRole = this.currentUserValue?.rol;
+    return userRole ? roles.includes(userRole) : false;
   }
 
-  // 🔥 VERIFICAR SI PUEDE VER TODAS LAS CITAS
-  canViewAllCitas(): boolean {
-    return this.hasAnyRole(['admin', 'agente']);
+  // 🔥 MÉTODOS DE STORAGE
+  private setStoredUser(user: User): void {
+    localStorage.setItem('fake_user', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+
+  private getStoredUser(): User | null {
+    const userData = localStorage.getItem('fake_user');
+    return userData ? JSON.parse(userData) : null;
+  }
+
+  private clearStoredUser(): void {
+    localStorage.removeItem('fake_user');
+    this.currentUserSubject.next(null);
+  }
+
+  private setStoredToken(token: string): void {
+    localStorage.setItem('fake_token', token);
+    this.tokenSubject.next(token);
+  }
+
+  private getStoredToken(): string | null {
+    return localStorage.getItem('fake_token');
+  }
+
+  private clearStoredToken(): void {
+    localStorage.removeItem('fake_token');
+    this.tokenSubject.next(null);
+  }
+
+  // 🔥 GENERAR TOKEN FALSO
+  private generateFakeToken(user: User): string {
+    const payload = {
+      user_id: user.id,
+      email: user.email,
+      role: user.rol,
+      exp: Date.now() + (24 * 60 * 60 * 1000), // 24 horas
+      iat: Date.now()
+    };
+
+    // Token base64 falso (solo para demo)
+    return 'fake_jwt_' + btoa(JSON.stringify(payload));
+  }
+
+  // 🔥 OBTENER TODOS LOS USUARIOS (PARA ADMIN)
+  getAllUsers(): User[] {
+    return this.isAdmin ? [...this.USUARIOS_PRUEBA] : [];
+  }
+
+  // 🔥 BUSCAR USUARIO POR EMAIL
+  getUserByEmail(email: string): User | undefined {
+    return this.USUARIOS_PRUEBA.find(u => u.email === email);
+  }
+
+  // 🔥 ACTUALIZAR ÚLTIMO LOGIN (SIMULADO)
+  updateLastLogin(userId: number): void {
+    const user = this.USUARIOS_PRUEBA.find(u => u.id === userId);
+    if (user) {
+      user.ultimoLogin = new Date().toISOString();
+      if (this.currentUserValue?.id === userId) {
+        this.setStoredUser(user);
+      }
+    }
   }
 }
