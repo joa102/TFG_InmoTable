@@ -57,7 +57,7 @@
                 </h6>
                 <p class="mb-0">
                   <strong>{{ currentUser.nombre }}</strong>
-                  <span class="text-muted ms-2">({{ currentUser.rol }})</span>
+                  <span class="text-muted ms-2">({{ getRoleLabel() }})</span>
                   <span class="badge bg-primary ms-2" *ngIf="clienteRecordId">
                     Cliente ID: {{ clienteRecordId }}
                   </span>

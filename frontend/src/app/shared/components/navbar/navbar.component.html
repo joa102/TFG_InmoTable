@@ -1,10 +1,37 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
   <div class="container-fluid">
 
-    <!-- 🏠 LOGO Y BRAND -->
+    <!-- 🏠 LOGO Y BRAND DINÁMICO -->
     <a class="navbar-brand d-flex align-items-center" (click)="navigateToHome()" style="cursor: pointer;">
-      <i class="fas fa-home me-2 fs-4"></i>
-      <span class="fw-bold">InmoTable</span>
+
+      <!-- 🔥 Logo como imagen (SIEMPRE VISIBLE SI ES IMAGEN) -->
+      <img *ngIf="isLogoImage()"
+           [src]="getEmpresaLogo()"
+           [alt]="empresaNombre + ' Logo'"
+           class="me-2 navbar-logo"
+           style="height: 42px; width: auto; max-width: 40px; object-fit: contain; transition: all 0.3s ease;"
+           (error)="onLogoImageError($event)"
+           (load)="onLogoImageLoad()"
+           [title]="empresaNombre + ' - Logo'">
+
+      <!-- 🔥 Logo como icono (SIEMPRE VISIBLE SI ES ICONO) -->
+      <i *ngIf="isLogoIcon()"
+         [class]="getEmpresaLogo() + ' me-2 fs-4'"
+         style="transition: all 0.3s ease;"
+         [title]="empresaNombre + ' - Icono'"></i>
+
+      <!-- 🔥 Nombre de la empresa (con animación) -->
+      <span class="fw-bold"
+            style="transition: all 0.3s ease;"
+            [class.text-warning]="fallbackUsed"
+            [title]="fallbackUsed ? 'Usando configuración por defecto' : empresaNombre">
+        {{ empresaNombre }}
+      </span>
+
+      <!-- 🔥 Indicador pequeño si está usando fallback (SOLO EN DESARROLLO) -->
+      <small *ngIf="fallbackUsed" class="ms-1 text-warning opacity-75" title="Configuración por defecto">
+        <i class="fas fa-exclamation-circle"></i>
+      </small>
     </a>
 
     <!-- 📱 TOGGLE BUTTON PARA MÓVILES -->
@@ -137,6 +164,27 @@
                 <i class="fas fa-tachometer-alt me-2 text-info"></i>
                 <span>Dashboard</span>
                 <small class="text-muted d-block">Panel de control</small>
+              </a>
+            </li>
+
+            <!-- 🔥 OPCIÓN DE DEBUG PARA CACHE (SOLO EN DESARROLLO) -->
+            <li *ngIf="isAdmin()">
+              <hr class="dropdown-divider">
+            </li>
+
+            <li *ngIf="isAdmin()">
+              <a class="dropdown-item" (click)="showCacheStats()" style="cursor: pointer;" title="Ver estadísticas del caché">
+                <i class="fas fa-chart-bar me-2 text-secondary"></i>
+                <span>Caché Stats</span>
+                <small class="text-muted d-block">Debug + Precarga</small>
+              </a>
+            </li>
+
+            <li *ngIf="isAdmin()">
+              <a class="dropdown-item" (click)="clearCache()" style="cursor: pointer;" title="Limpiar caché de empresa">
+                <i class="fas fa-broom me-2 text-warning"></i>
+                <span>Limpiar Caché</span>
+                <small class="text-muted d-block">Recargar empresa</small>
               </a>
             </li>
 

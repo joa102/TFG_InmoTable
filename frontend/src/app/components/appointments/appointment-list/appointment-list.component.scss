@@ -67,7 +67,8 @@
 // BANNER DE INFORMACIÓN
 // ===============================
 
-.property-info-banner {
+.property-info-banner,
+.user-info-banner {
   .alert {
     border-radius: 12px;
     border: none;
@@ -75,6 +76,34 @@
 
     .alert-heading {
       color: #0d6efd;
+    }
+
+    &.alert-success .alert-heading {
+      color: #0f5132;
+    }
+
+    &.alert-warning .alert-heading {
+      color: #664d03;
+    }
+
+    &.alert-info .alert-heading {
+      color: #055160;
+    }
+
+    &.alert-light .alert-heading {
+      color: #495057;
+    }
+
+    // Badges dentro de los banners
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.35em 0.65em;
+
+      &.bg-primary { background-color: #0d6efd !important; }
+      &.bg-success { background-color: #198754 !important; }
+      &.bg-info { background-color: #0dcaf0 !important; }
+      &.bg-danger { background-color: #dc3545 !important; }
+      &.bg-secondary { background-color: #6c757d !important; }
     }
   }
 }
@@ -92,6 +121,16 @@
   .card-header {
     border-radius: 12px 12px 0 0 !important;
     border-bottom: none;
+
+    // Header con información adicional
+    .d-flex {
+      align-items: center;
+
+      small {
+        opacity: 0.8;
+        font-weight: 500;
+      }
+    }
   }
 
   .card-footer {
@@ -190,6 +229,35 @@
 }
 
 // ===============================
+// BADGES PERSONALIZADOS
+// ===============================
+
+.badge {
+  font-weight: 600;
+
+  &.bg-primary {
+    background-color: #0d6efd !important;
+    color: white;
+  }
+  &.bg-success {
+    background-color: #198754 !important;
+    color: white;
+  }
+  &.bg-info {
+    background-color: #0dcaf0 !important;
+    color: #000;
+  }
+  &.bg-danger {
+    background-color: #dc3545 !important;
+    color: white;
+  }
+  &.bg-secondary {
+    background-color: #6c757d !important;
+    color: white;
+  }
+}
+
+// ===============================
 // RESPONSIVE
 // ===============================
 
@@ -202,18 +270,41 @@
       font-size: 2rem;
       margin-bottom: 1rem;
     }
+
+    .appointment-actions {
+      .btn {
+        width: 100%;
+        margin-top: 0.5rem;
+        margin-right: 0 !important;
+      }
+    }
   }
 
   .airtable-embed {
     min-height: 500px;
   }
 
-  .property-info-banner .alert {
+  .property-info-banner .alert,
+  .user-info-banner .alert {
     text-align: center;
 
     .fa-2x {
       display: block;
       margin-bottom: 1rem;
+    }
+
+    .row {
+      text-align: left;
+    }
+  }
+
+  // Botones en mobile
+  .appointment-form-card .card-header .d-flex {
+    flex-direction: column;
+    align-items: flex-start;
+
+    small {
+      margin-top: 0.5rem;
     }
   }
 }
@@ -235,6 +326,34 @@
 
 .container-fluid {
   animation: fadeIn 0.5s ease-in-out;
+}
+
+// Animación para los banners
+.property-info-banner,
+.user-info-banner {
+  animation: slideInFromTop 0.6s ease-out;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ===============================
+// ESTADOS DE HOVER
+// ===============================
+
+.property-info-banner .alert:hover,
+.user-info-banner .alert:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 // ===============================

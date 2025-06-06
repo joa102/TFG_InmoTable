@@ -14,6 +14,9 @@ import { PropiedadesService } from './app/services/propiedades.service';
 import { ClientesService } from './app/services/clientes.service';
 import { AgentesService } from './app/services/agentes.service';
 import { CitasService } from './app/services/citas.service';
+import { EmpresaService } from './app/services/empresa.service';
+import { ImageService } from './app/services/image.service';
+import { CacheService } from './app/services/cache.service'; // 🔥 AÑADIR CACHE SERVICE
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -33,6 +36,9 @@ bootstrapApplication(AppComponent, {
     PropiedadesService,
     ClientesService,
     AgentesService,
-    CitasService
+    CitasService,
+    EmpresaService,
+    ImageService,
+    CacheService // 🔥 AÑADIR CACHE SERVICE
   ]
 }).catch(err => console.error(err));

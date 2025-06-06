@@ -13,7 +13,7 @@ import { AuthService, User } from '../../../services/auth.service';
   imports: [
     CommonModule,
     RouterModule,
-    NavbarComponent  // 🔥 AÑADIR NAVBAR
+    NavbarComponent
   ],
   templateUrl: './appointment-list.component.html',
   styleUrl: './appointment-list.component.scss'
@@ -33,7 +33,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private authService: AuthService  // 🔥 AÑADIR AUTH SERVICE
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -42,21 +42,27 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
     // Suscribirse al usuario actual
     this.authService.getCurrentUser()
       .pipe(takeUntil(this.destroy$))
-      .subscribe(user => {
-        this.currentUser = user;
-        console.log('👤 Usuario actual en appointment-list:', user);
+      .subscribe({
+        next: (user: User | null) => {
+          this.currentUser = user;
+          console.log('👤 Usuario actual en appointment-list:', user);
 
-        if (user) {
-          // Una vez que tenemos el usuario, procesamos los query params
-          this.route.queryParams
-            .pipe(takeUntil(this.destroy$))
-            .subscribe(params => {
-              this.propertyRecordId = params['propertyRecordId'] || null;
-              console.log('🏠 Property Record ID:', this.propertyRecordId);
-              this.buildIframeUrl();
-            });
-        } else {
-          console.warn('⚠️ No hay usuario logueado');
+          if (user) {
+            // Una vez que tenemos el usuario, procesamos los query params
+            this.route.queryParams
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(params => {
+                this.propertyRecordId = params['propertyRecordId'] || null;
+                console.log('🏠 Property Record ID:', this.propertyRecordId);
+                this.buildIframeUrl();
+              });
+          } else {
+            console.warn('⚠️ No hay usuario logueado');
+            this.router.navigate(['/auth/login']);
+          }
+        },
+        error: (error: any) => {
+          console.error('❌ Error al obtener usuario:', error);
           this.router.navigate(['/auth/login']);
         }
       });
@@ -81,7 +87,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
       console.log('✅ Agregando propiedad al formulario:', this.propertyRecordId);
     }
 
-    // 🔥 USAR EL recordId DEL USUARIO LOGUEADO en lugar del valor hardcodeado
+    // 🔥 USAR EL recordId DEL USUARIO LOGUEADO
     if (this.currentUser?.recordId) {
       params.append('prefill_Cliente', this.currentUser.recordId);
       params.append('hide_Cliente', 'true');
@@ -131,18 +137,11 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🏠 Ir a una propiedad específica
+   * 🏠 Ir a propiedades
    */
   goToProperty(): void {
-    if (this.propertyRecordId) {
-      console.log('🏠 Navegando a la propiedad:', this.propertyRecordId);
-      // Aquí deberías tener el ID real de la propiedad, no el record ID
-      // Por ahora navegamos a la lista
-      this.router.navigate(['/propiedades']);
-    } else {
-      console.log('🏠 No hay propiedad específica, navegando a lista general');
-      this.router.navigate(['/propiedades']);
-    }
+    console.log('🏠 Navegando a propiedades...');
+    this.router.navigate(['/propiedades']);
   }
 
   /**
