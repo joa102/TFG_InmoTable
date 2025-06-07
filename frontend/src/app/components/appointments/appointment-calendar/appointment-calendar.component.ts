@@ -5,15 +5,13 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService, User } from '../../../services/auth.service';
-import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-appointment-calendar',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    NavbarComponent  // 🔥 AÑADIR NAVBAR
+    RouterModule
   ],
   templateUrl: './appointment-calendar.component.html',
   styleUrls: ['./appointment-calendar.component.scss']

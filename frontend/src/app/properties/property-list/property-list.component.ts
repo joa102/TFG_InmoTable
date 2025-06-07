@@ -6,7 +6,6 @@ import { PropiedadesService } from '../../services/propiedades.service';
 import { Propiedad, PropiedadFields } from '../../models/airtable.interfaces';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-property-list',
@@ -14,8 +13,7 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule,
-    NavbarComponent
+    RouterModule
   ],
   templateUrl: './property-list.component.html',
   styleUrls: ['./property-list.component.scss']

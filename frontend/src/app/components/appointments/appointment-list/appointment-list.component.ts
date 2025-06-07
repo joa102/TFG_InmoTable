@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
+// import { NavbarComponent } from '../../../shared/components/navbar/navbar.component'; // 🔥 ELIMINAR
 import { AuthService, User } from '../../../services/auth.service';
 
 @Component({
@@ -12,8 +12,8 @@ import { AuthService, User } from '../../../services/auth.service';
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    NavbarComponent
+    RouterModule
+    // NavbarComponent // 🔥 ELIMINAR
   ],
   templateUrl: './appointment-list.component.html',
   styleUrl: './appointment-list.component.scss'

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { FooterComponent } from './shared/components/footer/footer.component';
+import { NavbarComponent } from './shared/components/navbar/navbar.component'; // 🔥 AÑADIR NAVBAR
 
 @Component({
   selector: 'app-root',
@@ -10,10 +11,14 @@ import { FooterComponent } from './shared/components/footer/footer.component';
     CommonModule,
     RouterOutlet,
     RouterModule,
-    FooterComponent // ✅ SOLO AQUÍ
+    NavbarComponent, // 🔥 AÑADIR NAVBAR AQUÍ
+    FooterComponent
   ],
   template: `
     <div class="app-container">
+      <!-- 🔥 NAVBAR GLOBAL -->
+      <app-navbar></app-navbar>
+
       <!-- 📄 CONTENIDO PRINCIPAL -->
       <main class="main-content">
         <router-outlet></router-outlet>

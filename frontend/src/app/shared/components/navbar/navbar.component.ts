@@ -408,7 +408,7 @@ Próximamente podrás editar tus datos.
       return;
     }
 
-    this.router.navigate(['/appointment-calendar']).catch(error => {
+    this.router.navigate(['/calendario']).catch(error => {
       console.error('❌ Error al navegar a calendario:', error);
       alert('📅 Gestión de Citas\n\n🚧 Módulo en desarrollo.\n\nPróximamente podrás:\n• Ver tus citas programadas\n• Solicitar nuevas citas\n• Gestionar tu calendario');
     });
