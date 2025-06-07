@@ -149,7 +149,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
    */
   goToAppointmentCalendar(): void {
     console.log('📅 Navegando al calendario de citas...');
-    this.router.navigate(['/appointment-calendar']);
+    this.router.navigate(['/calendario']);
   }
 
   /**

@@ -1,11 +1,261 @@
 <div class="register-container">
-  <iframe
-    class="airtable-embed"
-    src="https://airtable.com/embed/apphONbM2nnoZThgr/pag9Q6NBo4IFez6L7/form"
-    frameborder="0"
-    onmousewheel=""
-    width="100%"
-    height="100%"
-    style="background: transparent; border: 1px solid #ccc"
-  ></iframe>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container d-flex flex-column align-items-center justify-content-center py-5">
+    <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+    <p class="mt-3 text-muted">Preparando formulario de registro...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading" class="container-fluid">
+
+    <!-- Header Section -->
+    <div class="register-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="register-title display-4 fw-bold mb-2">
+            <i class="fas fa-user-plus text-primary me-3"></i>
+            Crear Cuenta
+          </h1>
+          <p class="lead text-muted mb-0">
+            Complete el formulario para crear su cuenta y acceder a todas nuestras propiedades
+          </p>
+
+          <!-- 🔥 INFO BANNER -->
+          <div class="register-info-banner mt-3">
+            <div class="alert alert-primary d-flex align-items-center mb-0">
+              <i class="fas fa-shield-alt fa-2x me-3"></i>
+              <div>
+                <h6 class="alert-heading mb-1">
+                  <i class="fas fa-check-circle me-2"></i>
+                  Registro Seguro y Gratuito
+                </h6>
+                <p class="mb-0">
+                  Sus datos están protegidos con encriptación SSL. El registro es completamente gratuito y sin compromiso.
+                  <small class="d-block text-muted mt-2">
+                    <i class="fas fa-clock me-1"></i>
+                    Proceso de registro: 2-3 minutos
+                  </small>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <div class="register-actions">
+            <button class="btn btn-outline-secondary me-2" (click)="goToHome()">
+              <i class="fas fa-home me-2"></i>
+              Ver Propiedades
+            </button>
+            <button class="btn btn-success" (click)="goToLogin()">
+              <i class="fas fa-sign-in-alt me-2"></i>
+              Iniciar Sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔥 BENEFITS BANNER -->
+    <div class="benefits-banner mb-4">
+      <div class="alert alert-success d-flex align-items-center">
+        <i class="fas fa-star fa-2x me-3"></i>
+        <div>
+          <h6 class="alert-heading mb-1">
+            <i class="fas fa-gift me-2"></i>
+            Ventajas de crear una cuenta
+          </h6>
+          <div class="row">
+            <div class="col-md-4">
+              <small class="d-block">
+                <i class="fas fa-heart text-danger me-1"></i>
+                <strong>Favoritos</strong> - Guarde propiedades de interés
+              </small>
+            </div>
+            <div class="col-md-4">
+              <small class="d-block">
+                <i class="fas fa-calendar text-primary me-1"></i>
+                <strong>Citas</strong> - Solicite visitas fácilmente
+              </small>
+            </div>
+            <div class="col-md-4">
+              <small class="d-block">
+                <i class="fas fa-bell text-warning me-1"></i>
+                <strong>Alertas</strong> - Reciba nuevas propiedades
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content: Formulario -->
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card register-form-card">
+          <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">
+                <i class="fas fa-form me-2"></i>
+                Formulario de Registro
+              </h5>
+              <small>
+                <i class="fas fa-lock me-1"></i>
+                Datos seguros
+              </small>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <iframe
+              class="airtable-embed"
+              [src]="iframeUrl"
+              frameborder="0"
+              onmousewheel=""
+              width="100%"
+              height="700"
+              style="background: transparent;"
+              title="Formulario de registro de usuario">
+            </iframe>
+          </div>
+          <div class="card-footer bg-light">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <small class="text-muted">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Al registrarse, acepta nuestros términos y condiciones.
+                  Todos los campos marcados con * son obligatorios.
+                </small>
+              </div>
+              <div class="col-md-4 text-md-end">
+                <small class="text-muted">
+                  <i class="fas fa-shield-alt me-1"></i>
+                  100% Seguro y Privado
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar de información -->
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-clock text-primary me-2"></i>
+              ¿Qué sucede después del registro?
+            </h6>
+            <div class="mb-3">
+              <div class="d-flex align-items-start mb-2">
+                <i class="fas fa-envelope text-primary me-2 mt-1"></i>
+                <div>
+                  <strong>1. Confirmación</strong>
+                  <small class="d-block text-muted">Recibirá un email de confirmación</small>
+                </div>
+              </div>
+              <div class="d-flex align-items-start mb-2">
+                <i class="fas fa-user-check text-success me-2 mt-1"></i>
+                <div>
+                  <strong>2. Activación</strong>
+                  <small class="d-block text-muted">Su cuenta se activará automáticamente</small>
+                </div>
+              </div>
+              <div class="d-flex align-items-start">
+                <i class="fas fa-home text-info me-2 mt-1"></i>
+                <div>
+                  <strong>3. Acceso completo</strong>
+                  <small class="d-block text-muted">Podrá acceder a todas las funciones</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-headset text-primary me-2"></i>
+              ¿Necesita ayuda?
+            </h6>
+            <p class="card-text small text-muted mb-3">
+              Si tiene alguna duda durante el registro, nuestro equipo está aquí para ayudarle.
+            </p>
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-primary btn-sm" (click)="callSupport()">
+                <i class="fas fa-phone me-2"></i>
+                Llamar ahora
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" (click)="emailSupport()">
+                <i class="fas fa-envelope me-2"></i>
+                Enviar email
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-users text-primary me-2"></i>
+              ¿Ya tiene cuenta?
+            </h6>
+            <p class="card-text small text-muted mb-3">
+              Si ya se registró anteriormente, puede iniciar sesión directamente.
+            </p>
+            <div class="d-grid">
+              <button class="btn btn-success" (click)="goToLogin()">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Iniciar Sesión
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Info Section -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-shield-alt text-primary me-2"></i>
+              Seguridad y Privacidad
+            </h6>
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-lock fa-2x text-success mb-2"></i>
+                  <h6>Datos Seguros</h6>
+                  <small class="text-muted">Encriptación SSL 256-bit</small>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-user-shield fa-2x text-primary mb-2"></i>
+                  <h6>Privacidad</h6>
+                  <small class="text-muted">Sus datos no se comparten</small>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-trash fa-2x text-warning mb-2"></i>
+                  <h6>Control Total</h6>
+                  <small class="text-muted">Puede eliminar su cuenta</small>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-headset fa-2x text-info mb-2"></i>
+                  <h6>Soporte 24/7</h6>
+                  <small class="text-muted">Ayuda cuando la necesite</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
