@@ -12,7 +12,7 @@
 #propertyMap {
   height: 400px !important;
   width: 100% !important;
-  border-radius: 8px;
+  //border-radius: 12px;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -236,14 +236,14 @@
 }
 
 // ===============================
-// 🔥 TOP NAVIGATION BAR - MEJORADO
+// 🔥 TOP NAVIGATION BAR - BOTÓN CON MISMO ESTILO QUE PROPERTY-LIST
 // ===============================
 
 .top-navigation {
   background: white;
   padding: 1rem 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
 
   .breadcrumb {
@@ -289,31 +289,51 @@
     }
   }
 
+  // 🔥 HEADER ACTIONS - MISMO ESTILO QUE PROPERTY-LIST
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+
+    .btn {
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  // 🔥 BOTÓN BACK CON MISMO ESTILO QUE BOTONES DE PROPERTY-LIST
   .back-button {
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
-    font-weight: 500;
-    border: 1px solid #6c757d;
-    color: #6c757d;
+    border-radius: 8px; // 🔥 Igual que property-list
+    padding: 0.5rem 1rem; // 🔥 Igual que property-list
+    font-weight: 500; // 🔥 Igual que property-list
+    border: 1px solid #0d6efd; // 🔥 Mismo color que btn-outline-primary
+    color: #0d6efd; // 🔥 Mismo color que btn-outline-primary
     background: transparent;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; // 🔥 Misma transición
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    // 🔥 EVITAR QUE EL BOTÓN SE ENCOJA
     flex-shrink: 0;
     white-space: nowrap;
 
     &:hover {
-      background: #6c757d;
+      background: #0d6efd; // 🔥 Mismo hover que btn-outline-primary
       color: white;
-      border-color: #6c757d;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 6px rgba(108, 117, 125, 0.3);
+      border-color: #0d6efd;
+      transform: translateY(-1px); // 🔥 Mismo efecto hover
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); // 🔥 Misma sombra hover
     }
 
     &:focus {
-      box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25); // 🔥 Mismo focus
     }
 
     i {
@@ -365,7 +385,7 @@
 }
 
 // ===============================
-// RESPONSIVE PARA TOP NAVIGATION - MEJORADO
+// RESPONSIVE PARA TOP NAVIGATION - AJUSTADO
 // ===============================
 
 @media (max-width: 768px) {
@@ -405,9 +425,16 @@
       }
     }
 
-    .back-button {
+    // 🔥 HEADER ACTIONS EN MOBILE (MISMO ESTILO)
+    .header-actions .btn {
       font-size: 0.85rem;
       padding: 0.4rem 0.8rem;
+    }
+
+    // 🔥 BACK BUTTON EN MOBILE (MISMO ESTILO)
+    .back-button {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem; // 🔥 Mismo padding que header-actions
       // 🔥 ASEGURAR QUE EL BOTÓN SE MANTIENE VISIBLE
       min-width: auto;
     }
@@ -547,5 +574,61 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+// ===============================
+// 🔥 BADGES DE ESTADO - IGUALES A PROPERTY-LIST
+// ===============================
+.badge {
+  // Estilos base del badge (ya están bien con Bootstrap)
+
+  // 🔥 COLORES ESPECÍFICOS PARA CADA ESTADO (IGUALES A PROPERTY-LIST)
+  &.bg-success {
+    background-color: #28a745 !important; // Verde para Disponible
+  }
+
+  &.bg-danger {
+    background-color: #dc3545 !important; // Rojo para Vendida
+  }
+
+  &.bg-warning {
+    background-color: #fd7e14 !important; // Naranja para Alquilada
+    color: white !important; // Texto blanco para mejor contraste
+  }
+
+  &.bg-info {
+    background-color: #17a2b8 !important; // Azul claro para Reservada
+  }
+
+  &.bg-secondary {
+    background-color: #6c757d !important; // Gris para otros estados
+  }
+}
+
+// ===============================
+// INFORMACIÓN DE LA PROPIEDAD - MEJORAR TABLA
+// ===============================
+.card-body {
+  .table {
+    tbody {
+      tr {
+        td {
+          &.fw-semibold {
+            color: #495057;
+            font-weight: 600 !important;
+          }
+
+          // 🔥 MEJORAR ALINEACIÓN DE BADGES
+          .badge {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
   }
 }

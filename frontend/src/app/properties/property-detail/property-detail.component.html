@@ -46,12 +46,14 @@
           </nav>
         </div>
 
-        <!-- Botón que mantiene su tamaño -->
+        <!-- Botón que mantiene su tamaño - MISMO ESTILO QUE PROPERTY-LIST -->
         <div class="col-auto">
-          <button class="btn btn-outline-secondary back-button" (click)="goBack()">
-            <i class="fas fa-arrow-left me-2"></i>
-            Volver a la lista
-          </button>
+          <div class="header-actions">
+            <button class="btn btn-outline-primary btn-sm" (click)="goBack()">
+              <i class="fas fa-arrow-left me-1"></i>
+              Volver a la lista
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -183,7 +185,7 @@
             <i class="fas fa-align-left text-primary me-2"></i>
             Descripción
           </h3>
-          <div class="description-content p-4 bg-light rounded">
+          <div class="description-content p-4 bg-light">
             <p class="mb-0">
               {{ getFieldAsString('Descripción') || 'No hay descripción disponible para esta propiedad.' }}
             </p>
@@ -234,7 +236,10 @@
                 <tr *ngIf="getFieldAsString('Estado')">
                   <td class="fw-semibold">Estado:</td>
                   <td>
-                    <span class="badge bg-success">{{ getFieldAsString('Estado') }}</span>
+                    <!-- 🔥 USAR LA MISMA LÓGICA QUE EN PROPERTY-LIST -->
+                    <span class="badge" [class]="getStatusBadgeClass()">
+                      {{ getFieldAsString('Estado') }}
+                    </span>
                   </td>
                 </tr>
                 <tr *ngIf="getFieldAsNumber('Habitaciones')">

@@ -159,14 +159,34 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ OBTENER IMAGEN (EXACTO COMO PROPERTY-DETAIL)
+   * ✅ VERIFICAR SI LA PROPIEDAD TIENE IMAGEN VÁLIDA
+   */
+  hasPropertyImage(property: Propiedad): boolean {
+    const imagenes = property?.fields['Imágenes'];
+    if (!Array.isArray(imagenes) || imagenes.length === 0) {
+      return false;
+    }
+
+    // Verificar que la primera imagen tenga URL válida
+    const firstImage = imagenes[0];
+    return !!(firstImage?.url || firstImage?.thumbnails?.large?.url);
+  }
+
+  /**
+   * ✅ OBTENER IMAGEN SEGURA
    */
   getPropertyImage(property: Propiedad): string {
-    const imagenes = property?.fields['Imágenes'];
-    if (Array.isArray(imagenes) && imagenes[0]) {
-      return imagenes[0].thumbnails?.large?.url || imagenes[0].url;
+    if (!this.hasPropertyImage(property)) {
+      return '';
     }
-    return this.getDefaultImage();
+
+    const imagenes = property.fields['Imágenes'] as any[];
+    const firstImage = imagenes[0];
+
+    return firstImage.thumbnails?.large?.url ||
+           firstImage.thumbnails?.medium?.url ||
+           firstImage.url ||
+           '';
   }
 
   /**
@@ -413,13 +433,13 @@ export class PropertyListComponent implements OnInit, OnDestroy {
     if (event) {
       event.stopPropagation();
     }
-    
+
     console.log('📞 Contactar propiedad:', property.id);
-    
+
     // TODO: Implementar modal de contacto o navegación
     const propertyTitle = this.getFieldAsString(property, 'Título');
     const propertyAddress = this.getFieldAsString(property, 'Dirección');
-    
+
     alert(`📞 Contactar sobre: ${propertyTitle}\n📍 Ubicación: ${propertyAddress}\n\n🚧 Funcionalidad en desarrollo.\n\nPróximamente podrás:\n• Enviar mensaje directo\n• Programar visita\n• Solicitar más información`);
   }
 
@@ -434,7 +454,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
 
     const propertyId = property.id;
     const propertyTitle = this.getFieldAsString(property, 'Título');
-    
+
     if (this.favoriteIds.has(propertyId)) {
       this.favoriteIds.delete(propertyId);
       console.log('💔 Eliminado de favoritos:', propertyTitle);
@@ -442,7 +462,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
       this.favoriteIds.add(propertyId);
       console.log('❤️ Agregado a favoritos:', propertyTitle);
     }
-    
+
     // TODO: En el futuro, conectar con el servicio de favoritos
     console.log('🔥 Favoritos actuales:', Array.from(this.favoriteIds));
   }
@@ -452,5 +472,41 @@ export class PropertyListComponent implements OnInit, OnDestroy {
    */
   isFavorite(property: Propiedad): boolean {
     return this.favoriteIds.has(property.id);
+  }
+
+  /**
+   * ✅ OBTENER NÚMERO DE VISITAS - CAMPO REAL DE AIRTABLE
+   */
+  getVisitCount(property: Propiedad): string {
+    const fields = property.fields as any;
+
+    // 🔥 USAR EL NOMBRE EXACTO DEL CAMPO EN AIRTABLE
+    const visits = fields['Número de visitas'] ||     // Nombre exacto
+                   fields['Número de Visitas'] ||     // Por si tiene mayúscula
+                   fields['numero de visitas'] ||     // Por si está en minúsculas
+                   fields['NumeroDeVisitas'] ||       // Por si no tiene espacios
+                   fields['Visitas'] ||               // Nombre corto alternativo
+                   0;
+
+    return visits ? String(visits) : '0';
+  }
+
+  /**
+   * ✅ OBTENER AÑO DE CONSTRUCCIÓN - TAMBIÉN BUSCAR CAMPO REAL
+   */
+  getConstructionYear(property: Propiedad): string {
+    const fields = property.fields as any;
+
+    // 🔥 BUSCAR NOMBRES POSIBLES DEL CAMPO DE AÑO
+    const year = fields['Año de construcción'] ||     // Probable nombre exacto
+                 fields['Año de Construcción'] ||     // Con mayúscula
+                 fields['año de construcción'] ||     // En minúsculas
+                 fields['AñoDeConstruccion'] ||       // Sin espacios
+                 fields['Año construcción'] ||        // Sin "de"
+                 fields['Construido en'] ||           // Nombre alternativo
+                 fields['Año'] ||                     // Nombre corto
+                 '';
+
+    return year ? String(year) : '';
   }
 }

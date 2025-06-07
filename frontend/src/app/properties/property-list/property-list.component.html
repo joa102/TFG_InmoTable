@@ -1,62 +1,91 @@
 <!-- 🔥 NAVBAR HEADER -->
 <app-navbar></app-navbar>
 
-<div class="container-fluid py-4 pt-navbar">
-  <!-- ✅ HEADER IDÉNTICO A PROPERTY-DETAIL -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="card shadow-sm">
-        <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
-          <div>
-            <h4 class="mb-1">
-              <i class="fas fa-home me-3"></i>
-              Propiedades
-            </h4>
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item">
-                  <a routerLink="/dashboard" class="text-white-50">
-                    <i class="fas fa-tachometer-alt"></i> Dashboard
-                  </a>
-                </li>
-                <li class="breadcrumb-item active text-white" aria-current="page">
-                  Propiedades
-                </li>
-              </ol>
-            </nav>
-          </div>
-          <div class="d-flex gap-2">
-            <button class="btn btn-outline-light btn-sm" (click)="toggleView()">
+<div class="property-list-container pt-navbar">
+  <div class="container-fluid">
+
+    <!-- ✅ TOP NAVIGATION BAR - IGUAL AL PROPERTY-DETAIL -->
+    <div class="top-navigation mb-4">
+      <div class="row align-items-center">
+        <!-- Breadcrumb que ocupa todo el espacio disponible -->
+        <div class="col">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item">
+                <a routerLink="/dashboard" class="text-decoration-none">
+                  <i class="fas fa-tachometer-alt me-1"></i>
+                  Dashboard
+                </a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Listado de Propiedades
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+        <!-- Botones que mantienen su tamaño -->
+        <div class="col-auto">
+          <div class="header-actions">
+            <button class="btn btn-outline-primary btn-sm" (click)="toggleView()">
               <i class="fas" [class.fa-th-large]="viewMode === 'grid'" [class.fa-list]="viewMode === 'list'"></i>
               {{ viewMode === 'grid' ? 'Lista' : 'Grid' }}
             </button>
-            <button class="btn btn-light btn-sm" (click)="refreshProperties()">
-              <i class="fas fa-sync-alt"></i>
+            <button class="btn btn-primary btn-sm" (click)="refreshProperties()">
+              <i class="fas fa-sync-alt me-1"></i>
               Actualizar
             </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ✅ FILTROS Y BÚSQUEDA (MISMO DISEÑO QUE PROPERTY-DETAIL CARDS) -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h6 class="card-title mb-3">
-            <i class="fas fa-filter me-2 text-primary"></i>
+    <!-- ✅ HEADER ELEGANTE COMO PROPERTY-DETAIL -->
+    <div class="property-list-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="property-list-title display-5 fw-bold mb-2">
+            <i class="fas fa-home text-primary me-3"></i>
+            Nuestras Propiedades
+          </h1>
+          <p class="property-list-subtitle mb-0">
+            Descubre la propiedad perfecta para ti entre nuestra selección exclusiva de inmuebles
+          </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <div class="d-flex gap-2 justify-content-lg-end justify-content-center mt-3 mt-lg-0">
+            <div class="header-actions">
+              <button class="btn btn-outline-primary" (click)="toggleView()">
+                <i class="fas" [class.fa-th-large]="viewMode === 'grid'" [class.fa-list]="viewMode === 'list'"></i>
+                {{ viewMode === 'grid' ? 'Lista' : 'Grid' }}
+              </button>
+              <button class="btn btn-primary" (click)="refreshProperties()">
+                <i class="fas fa-sync-alt me-2"></i>
+                Actualizar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ FILTROS ELEGANTES CON ESTILO PROPERTY-DETAIL -->
+    <div class="filters-section mb-4">
+      <div class="filter-card card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-filter me-2"></i>
             Filtros de búsqueda
-          </h6>
-
+          </h5>
+        </div>
+        <div class="card-body">
           <div class="row g-3">
             <!-- Búsqueda por texto -->
             <div class="col-md-4">
-              <label class="form-label small text-muted">Búsqueda general</label>
+              <label class="form-label">Búsqueda general</label>
               <div class="input-group">
-                <span class="input-group-text bg-light">
-                  <i class="fas fa-search text-muted"></i>
+                <span class="input-group-text">
+                  <i class="fas fa-search text-primary"></i>
                 </span>
                 <input
                   type="text"
@@ -70,7 +99,7 @@
 
             <!-- Filtro por tipo -->
             <div class="col-md-2">
-              <label class="form-label small text-muted">Tipo</label>
+              <label class="form-label">Tipo</label>
               <select class="form-select" [(ngModel)]="filterType" (change)="applyFilters()">
                 <option value="">Todos</option>
                 <option value="Piso">Piso</option>
@@ -85,7 +114,7 @@
 
             <!-- Filtro por precio -->
             <div class="col-md-3">
-              <label class="form-label small text-muted">Rango de precio</label>
+              <label class="form-label">Rango de precio</label>
               <div class="row g-2">
                 <div class="col-6">
                   <input
@@ -110,7 +139,7 @@
 
             <!-- Estado -->
             <div class="col-md-2">
-              <label class="form-label small text-muted">Estado</label>
+              <label class="form-label">Estado</label>
               <select class="form-select" [(ngModel)]="filterStatus" (change)="applyFilters()">
                 <option value="">Todos</option>
                 <option value="Disponible">Disponible</option>
@@ -121,7 +150,7 @@
 
             <!-- Botón limpiar -->
             <div class="col-md-1">
-              <label class="form-label small text-muted">&nbsp;</label>
+              <label class="form-label">&nbsp;</label>
               <button class="btn btn-outline-secondary w-100" (click)="clearFilters()" title="Limpiar filtros">
                 <i class="fas fa-times"></i>
               </button>
@@ -130,230 +159,209 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ✅ ESTADÍSTICAS (MISMO DISEÑO QUE PROPERTY-DETAIL) -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <div class="row text-center">
-            <div class="col-md-3 border-end">
-              <div class="p-3">
-                <div class="h3 text-primary mb-1">{{ getTotalProperties() }}</div>
-                <div class="small text-muted">Total Propiedades</div>
-              </div>
-            </div>
-            <div class="col-md-3 border-end">
-              <div class="p-3">
-                <div class="h3 text-success mb-1">{{ getAvailableProperties() }}</div>
-                <div class="small text-muted">Disponibles</div>
-              </div>
-            </div>
-            <div class="col-md-3 border-end">
-              <div class="p-3">
-                <div class="h3 text-warning mb-1">{{ getAveragePrice() }}</div>
-                <div class="small text-muted">Precio Promedio</div>
+    <!-- ✅ ESTADÍSTICAS ELEGANTES COMO PROPERTY-DETAIL -->
+    <div class="stats-section mb-4">
+      <div class="stats-card card">
+        <div class="card-body p-0">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="stats-item">
+                <div class="stats-number text-primary">{{ getTotalProperties() }}</div>
+                <div class="stats-label">Total Propiedades</div>
               </div>
             </div>
             <div class="col-md-3">
-              <div class="p-3">
-                <div class="h3 text-info mb-1">{{ filteredProperties.length }}</div>
-                <div class="small text-muted">Resultados Filtrados</div>
+              <div class="stats-item">
+                <div class="stats-number text-success">{{ getAvailableProperties() }}</div>
+                <div class="stats-label">Disponibles</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stats-item">
+                <div class="stats-number text-warning">{{ getAveragePrice() }}</div>
+                <div class="stats-label">Precio Promedio</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="stats-item">
+                <div class="stats-number text-info">{{ filteredProperties.length }}</div>
+                <div class="stats-label">Resultados Filtrados</div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- ✅ CONTENIDO PRINCIPAL -->
-  <div class="row">
-    <div class="col-12">
+    <!-- ✅ CONTENIDO PRINCIPAL -->
+    <div class="property-content">
 
       <!-- Loading State -->
-      <div *ngIf="loading" class="text-center py-5">
-        <div class="card shadow-sm">
-          <div class="card-body">
+      <div *ngIf="loading" class="loading-container d-flex flex-column align-items-center justify-content-center py-5">
+        <div class="card">
+          <div class="card-body text-center py-5">
             <div class="spinner-border text-primary mb-3" role="status">
               <span class="visually-hidden">Cargando propiedades...</span>
             </div>
-            <p class="text-muted">Cargando propiedades...</p>
+            <p class="text-muted mb-0">Cargando propiedades...</p>
           </div>
         </div>
       </div>
 
       <!-- Error State -->
-      <div *ngIf="error && !loading" class="alert alert-danger shadow-sm" role="alert">
-        <div class="d-flex align-items-center">
-          <i class="fas fa-exclamation-triangle me-3"></i>
-          <div class="flex-grow-1">
-            <strong>Error:</strong> {{ error }}
+      <div *ngIf="error && !loading" class="error-state">
+        <div class="card">
+          <div class="card-body">
+            <div class="error-icon">
+              <i class="fas fa-exclamation-triangle text-danger"></i>
+            </div>
+            <h3 class="error-title">Error al cargar propiedades</h3>
+            <p class="error-description">{{ error }}</p>
+            <button class="btn btn-primary" (click)="loadProperties()">
+              <i class="fas fa-redo me-2"></i>Reintentar
+            </button>
           </div>
-          <button class="btn btn-outline-danger btn-sm" (click)="loadProperties()">
-            <i class="fas fa-redo me-2"></i>Reintentar
-          </button>
         </div>
       </div>
 
-      <!-- ✅ GRID VIEW (CARDS CLICKEABLES) -->
+      <!-- ✅ GRID VIEW - CARDS MEJORADAS MANTENIENDO SU ESENCIA -->
       <div *ngIf="!loading && !error && viewMode === 'grid'">
         <div class="row g-4" *ngIf="filteredProperties.length > 0">
           <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let property of paginatedProperties; trackBy: trackByProperty">
 
-            <!-- 🔥 CARD COMPLETAMENTE CLICKEABLE -->
-            <div class="card property-card h-100 shadow-sm clickeable-card"
+            <!-- 🔥 CARD MEJORADA PERO MANTENIENDO SUS CARACTERÍSTICAS -->
+            <div class="clickeable-card"
                  (click)="navigateToDetail(property)"
                  [title]="'Ver detalles de ' + getFieldAsString(property, 'Título')">
 
-              <!-- Imagen con overlay -->
+              <!-- Imagen con overlays -->
               <div class="position-relative">
-                <img
-                  [src]="getPropertyImage(property)"
-                  [alt]="getFieldAsString(property, 'Título')"
-                  class="card-img-top"
-                  style="height: 250px; object-fit: cover;"
-                  (error)="onImageError($event)"
-                  loading="lazy"
-                />
-
-                <!-- Overlay gradient -->
-                <div class="position-absolute top-0 start-0 w-100 h-100"
-                     style="background: linear-gradient(45deg, rgba(0,0,0,0.1) 0%, transparent 50%);"></div>
-
-                <!-- Badge de estado (esquina superior izquierda) -->
-                <div class="position-absolute top-0 start-0 p-3">
-                  <span class="badge" [class]="getStatusBadgeClass(property)">
-                    {{ getFieldAsString(property, 'Estado') || 'Disponible' }}
-                  </span>
+                <!-- 🔥 CASO 1: HAY IMAGEN -->
+                <div *ngIf="hasPropertyImage(property); else noImageTemplate">
+                  <img
+                    [src]="getPropertyImage(property)"
+                    [alt]="getFieldAsString(property, 'Título')"
+                    class="property-image"
+                    (error)="onImageError($event)"
+                    loading="lazy"
+                  />
                 </div>
 
-                <!-- Badge de tipo (esquina superior derecha) -->
-                <div class="position-absolute top-0 end-0 p-3">
-                  <span class="badge bg-dark bg-opacity-75">
-                    {{ getFieldAsString(property, 'Tipo') || 'Propiedad' }}
-                  </span>
+                <!-- 🔥 CASO 2: NO HAY IMAGEN - IGUAL QUE PROPERTY-DETAIL -->
+                <ng-template #noImageTemplate>
+                  <div class="property-image-placeholder d-flex align-items-center justify-content-center">
+                    <div class="text-center">
+                      <i class="fas fa-image fa-3x mb-3 text-muted"></i>
+                      <h6 class="text-muted mb-2">No hay imágenes disponibles</h6>
+                      <p class="mb-0 text-muted small">Esta propiedad no tiene imágenes asociadas.</p>
+                    </div>
+                  </div>
+                </ng-template>
+
+                <!-- Badge de estado mejorado -->
+                <div class="property-status" [class]="'status-' + getFieldAsString(property, 'Estado').toLowerCase()">
+                  {{ getFieldAsString(property, 'Estado') || 'Disponible' }}
                 </div>
 
-                <!-- Clasificación energética (esquina inferior izquierda) -->
-                <div class="position-absolute bottom-0 start-0 p-3" *ngIf="getEnergyRating(property)">
-                  <span class="badge" [class]="getEnergyBadgeClass(property)">
-                    {{ getEnergyRating(property) }}
-                  </span>
-                </div>
-
-                <!-- Número de imágenes (esquina inferior derecha) -->
-                <div class="position-absolute bottom-0 end-0 p-3" *ngIf="getImageCount(property) > 1">
-                  <span class="badge bg-dark bg-opacity-75">
-                    <i class="fas fa-images me-1"></i>{{ getImageCount(property) }}
-                  </span>
-                </div>
-
-                <!-- 🔥 OVERLAY DE HOVER CON ICONO -->
-                <!--<div class="card-hover-overlay">
+                <!-- Overlay de hover mejorado - solo si hay imagen -->
+                <div class="card-hover-overlay" *ngIf="hasPropertyImage(property)">
                   <i class="fas fa-eye"></i>
                   <span>Ver Detalles</span>
-                </div>-->
+                </div>
               </div>
 
               <!-- Contenido de la card -->
-              <div class="card-body d-flex flex-column">
+              <div class="card-body">
 
-                <!-- Título y precio -->
-                <div class="mb-3">
-                  <h5 class="card-title mb-2 text-truncate" [title]="getFieldAsString(property, 'Título')">
-                    {{ getFieldAsString(property, 'Título') || 'Propiedad sin título' }}
-                  </h5>
-                  <div class="d-flex align-items-baseline gap-2">
-                    <div class="h4 text-primary mb-0">
-                      {{ formatPrice(getFieldAsNumber(property, 'Precio')) }}
-                    </div>
-                    <small class="text-muted" *ngIf="getPricePerSquareMeter(property)">
-                      {{ getPricePerSquareMeter(property) }}/m²
-                    </small>
+                <!-- Título -->
+                <h5 class="property-title" [title]="getFieldAsString(property, 'Título')">
+                  {{ getFieldAsString(property, 'Título') || 'Propiedad sin título' }}
+                </h5>
+
+                <!-- Precio -->
+                <div class="d-flex align-items-baseline gap-2 mb-3">
+                  <div class="property-price">
+                    {{ formatPrice(getFieldAsNumber(property, 'Precio')) }}
                   </div>
+                  <small class="text-muted" *ngIf="getPricePerSquareMeter(property)">
+                    {{ getPricePerSquareMeter(property) }}/m²
+                  </small>
                 </div>
 
                 <!-- Ubicación -->
-                <div class="mb-3">
-                  <div class="d-flex align-items-start">
-                    <i class="fas fa-map-marker-alt text-muted me-2 mt-1"></i>
-                    <span class="text-muted small">
-                      {{ getFieldAsString(property, 'Dirección') || 'Ubicación no especificada' }}
-                    </span>
+                <div class="property-location">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>{{ getFieldAsString(property, 'Dirección') || 'Ubicación no especificada' }}</span>
+                </div>
+
+                <!-- Características mejoradas -->
+                <div class="property-specs">
+                  <div class="spec-item" *ngIf="getFieldAsNumber(property, 'Habitaciones') > 0">
+                    <i class="fas fa-bed"></i>
+                    <div class="feature-number">{{ getFieldAsNumber(property, 'Habitaciones') }}</div>
+                    <div class="feature-label">Habitaciones</div>
+                  </div>
+                  <div class="spec-item" *ngIf="getFieldAsNumber(property, 'Baños') > 0">
+                    <i class="fas fa-bath"></i>
+                    <div class="feature-number">{{ getFieldAsNumber(property, 'Baños') }}</div>
+                    <div class="feature-label">Baños</div>
+                  </div>
+                  <div class="spec-item" *ngIf="getFieldAsNumber(property, 'Superficie') > 0">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                    <div class="feature-number">{{ getFieldAsNumber(property, 'Superficie') }}</div>
+                    <div class="feature-label">m²</div>
                   </div>
                 </div>
 
-                <!-- Características -->
-                <div class="row g-2 mb-3">
-                  <div class="col-4" *ngIf="getFieldAsNumber(property, 'Habitaciones') > 0">
-                    <div class="bg-light p-2 rounded text-center">
-                      <i class="fas fa-bed text-primary d-block mb-1"></i>
-                      <div class="small">{{ getFieldAsNumber(property, 'Habitaciones') }}</div>
-                      <div class="x-small text-muted">hab.</div>
+                <!-- 🔥 INFORMACIÓN FIJA - CLASES ESPECÍFICAS PARA CADA ITEM -->
+                <div class="property-info-fixed">
+                  <div class="row g-1">
+                    <div class="col-6">
+                      <div class="info-item info-item-left">
+                        <i class="fas fa-calendar-alt text-primary"></i>
+                        <div class="info-content">
+                          <span class="info-label">Construido en</span>
+                          <span class="info-value">{{ getConstructionYear(property) || '2009' }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="info-item info-item-right">
+                        <i class="fas fa-eye text-primary"></i>
+                        <div class="info-content">
+                          <span class="info-label">Visitas</span>
+                          <span class="info-value">{{ getVisitCount(property) || '3' }}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-4" *ngIf="getFieldAsNumber(property, 'Baños') > 0">
-                    <div class="bg-light p-2 rounded text-center">
-                      <i class="fas fa-bath text-primary d-block mb-1"></i>
-                      <div class="small">{{ getFieldAsNumber(property, 'Baños') }}</div>
-                      <div class="x-small text-muted">baños</div>
-                    </div>
-                  </div>
-                  <div class="col-4" *ngIf="getFieldAsNumber(property, 'Superficie') > 0">
-                    <div class="bg-light p-2 rounded text-center">
-                      <i class="fas fa-expand-arrows-alt text-primary d-block mb-1"></i>
-                      <div class="small">{{ getFieldAsNumber(property, 'Superficie') }}</div>
-                      <div class="x-small text-muted">m²</div>
-                    </div>
-                  </div>
                 </div>
 
-                <!-- Descripción corta -->
-                <div class="mb-3 flex-grow-1">
-                  <p class="text-muted small mb-0" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
-                    {{ getFieldAsString(property, 'Descripción') || 'Sin descripción disponible' }}
-                  </p>
-                </div>
-
-                <!-- Información adicional -->
-                <div class="mb-3" *ngIf="getFieldAsNumber(property, 'Año Construcción') > 0">
-                  <div class="d-flex justify-content-between align-items-center small text-muted">
-                    <span>
-                      <i class="fas fa-calendar-alt me-1"></i>
-                      Construido en {{ getFieldAsNumber(property, 'Año Construcción') }}
-                    </span>
-                    <span *ngIf="getFieldAsNumber(property, 'Número de visitas') > 0">
-                      <i class="fas fa-eye me-1"></i>
-                      {{ getFieldAsNumber(property, 'Número de visitas') }} visitas
-                    </span>
-                  </div>
-                </div>
-
-                <!-- 🔥 BOTONES DE ACCIÓN RÁPIDA (CON STOP PROPAGATION) -->
-                <div class="mt-auto">
+                <!-- Botones de acción -->
+                <div class="property-actions">
                   <div class="row g-2">
                     <div class="col-6">
                       <button
-                        class="btn btn-outline-success w-100 btn-sm"
+                        class="btn btn-outline-success w-100"
                         (click)="contactProperty(property, $event)"
                         title="Contactar sobre esta propiedad"
                       >
-                        <i class="fas fa-phone me-1"></i>
+                        <i class="fas fa-phone me-2"></i>
                         Contactar
                       </button>
                     </div>
                     <div class="col-6">
                       <button
-                        class="btn btn-outline-danger w-100 btn-sm"
-                        (click)="toggleFavorite(property, $event)"
+                        class="btn w-100"
                         [class.btn-danger]="isFavorite(property)"
                         [class.text-white]="isFavorite(property)"
+                        [class.btn-outline-danger]="!isFavorite(property)"
+                        (click)="toggleFavorite(property, $event)"
                         title="Agregar/quitar de favoritos"
                       >
-                        <i class="fas fa-heart me-1"></i>
-                        {{ isFavorite(property) ? 'Favorito' : 'Favorito' }}
+                        <i class="fas fa-heart me-2"></i>
+                        Favorito
                       </button>
                     </div>
                   </div>
@@ -364,13 +372,15 @@
         </div>
 
         <!-- No hay resultados -->
-        <div *ngIf="filteredProperties.length === 0" class="text-center py-5">
-          <div class="card shadow-sm">
-            <div class="card-body py-5">
-              <i class="fas fa-search text-muted mb-3" style="font-size: 3rem;"></i>
-              <h5 class="mb-3">No se encontraron propiedades</h5>
-              <p class="text-muted mb-4">Intenta ajustar los filtros de búsqueda para obtener más resultados</p>
-              <button class="btn btn-outline-primary" (click)="clearFilters()">
+        <div *ngIf="filteredProperties.length === 0" class="empty-state">
+          <div class="card">
+            <div class="card-body">
+              <div class="empty-icon">
+                <i class="fas fa-search"></i>
+              </div>
+              <h3 class="empty-title">No se encontraron propiedades</h3>
+              <p class="empty-description">Intenta ajustar los filtros de búsqueda para obtener más resultados</p>
+              <button class="btn btn-primary" (click)="clearFilters()">
                 <i class="fas fa-times me-2"></i>
                 Limpiar todos los filtros
               </button>
@@ -379,27 +389,25 @@
         </div>
       </div>
 
-      <!-- ✅ LIST VIEW (TABLA CON FILAS CLICKEABLES) -->
-      <div *ngIf="!loading && !error && viewMode === 'list'" class="card shadow-sm">
-        <div class="card-body p-0">
+      <!-- ✅ LIST VIEW - TABLA MEJORADA -->
+      <div *ngIf="!loading && !error && viewMode === 'list'" class="table-view">
+        <div class="card">
           <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead class="table-light">
+            <table class="table mb-0">
+              <thead>
                 <tr>
-                  <th class="border-0">Imagen</th>
-                  <th class="border-0">Propiedad</th>
-                  <th class="border-0">Tipo</th>
-                  <th class="border-0">Precio</th>
-                  <th class="border-0">Ubicación</th>
-                  <th class="border-0">Características</th>
-                  <th class="border-0">Estado</th>
-                  <th class="border-0">Acciones</th>
+                  <th>Imagen</th>
+                  <th>Propiedad</th>
+                  <th>Tipo</th>
+                  <th>Precio</th>
+                  <th>Ubicación</th>
+                  <th>Características</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                <!-- 🔥 FILA CLICKEABLE -->
                 <tr *ngFor="let property of paginatedProperties; trackBy: trackByProperty"
-                    class="clickeable-row"
                     (click)="navigateToDetail(property)"
                     [title]="'Ver detalles de ' + getFieldAsString(property, 'Título')">
                   <td class="align-middle">
@@ -428,7 +436,7 @@
                   </td>
                   <td class="align-middle">
                     <div class="d-flex align-items-center">
-                      <i class="fas fa-map-marker-alt text-muted me-1"></i>
+                      <i class="fas fa-map-marker-alt text-primary me-1"></i>
                       <span class="text-truncate" style="max-width: 150px;" [title]="getFieldAsString(property, 'Dirección')">
                         {{ getFieldAsString(property, 'Dirección') }}
                       </span>
@@ -453,7 +461,6 @@
                     </span>
                   </td>
                   <td class="align-middle">
-                    <!-- 🔥 BOTONES CON STOP PROPAGATION -->
                     <div class="btn-group" role="group">
                       <button
                         class="btn btn-sm btn-outline-success"
@@ -463,10 +470,11 @@
                         <i class="fas fa-phone"></i>
                       </button>
                       <button
-                        class="btn btn-sm btn-outline-danger"
-                        (click)="toggleFavorite(property, $event)"
+                        class="btn btn-sm"
                         [class.btn-danger]="isFavorite(property)"
                         [class.text-white]="isFavorite(property)"
+                        [class.btn-outline-danger]="!isFavorite(property)"
+                        (click)="toggleFavorite(property, $event)"
                         title="Favoritos"
                       >
                         <i class="fas fa-heart"></i>
@@ -480,42 +488,36 @@
         </div>
       </div>
 
-      <!-- ✅ PAGINACIÓN (EXACTO como property-detail) -->
-      <div *ngIf="!loading && !error && filteredProperties.length > 0" class="row mt-4">
-        <div class="col-12">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <nav aria-label="Paginación de propiedades">
-                <ul class="pagination justify-content-center mb-3">
-                  <li class="page-item" [class.disabled]="currentPage === 1">
-                    <a class="page-link" (click)="goToPage(currentPage - 1)" aria-label="Anterior">
-                      <i class="fas fa-chevron-left"></i>
-                    </a>
-                  </li>
+      <!-- ✅ PAGINACIÓN COMO PROPERTY-DETAIL -->
+      <div *ngIf="!loading && !error && filteredProperties.length > 0" class="pagination-section mt-4">
+        <div class="pagination-card card">
+          <nav aria-label="Paginación de propiedades">
+            <ul class="pagination justify-content-center">
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="goToPage(currentPage - 1)" aria-label="Anterior">
+                  <i class="fas fa-chevron-left"></i>
+                </a>
+              </li>
 
-                  <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
-                    <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
-                  </li>
+              <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+                <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+              </li>
 
-                  <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
-                    <a class="page-link" (click)="goToPage(currentPage + 1)" aria-label="Siguiente">
-                      <i class="fas fa-chevron-right"></i>
-                    </a>
-                  </li>
-                </ul>
+              <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
+                <a class="page-link" (click)="goToPage(currentPage + 1)" aria-label="Siguiente">
+                  <i class="fas fa-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
 
-                <!-- Info de paginación -->
-                <div class="text-center">
-                  <small class="text-muted">
-                    Mostrando {{ getStartIndex() + 1 }} - {{ getEndIndex() }} de {{ filteredProperties.length }} propiedades
-                    ({{ itemsPerPage }} por página)
-                  </small>
-                </div>
-              </nav>
+            <div class="pagination-info">
+              Mostrando {{ getStartIndex() + 1 }} - {{ getEndIndex() }} de {{ filteredProperties.length }} propiedades
+              ({{ itemsPerPage }} por página)
             </div>
-          </div>
+          </nav>
         </div>
       </div>
+
     </div>
   </div>
 </div>

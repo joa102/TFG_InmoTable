@@ -420,4 +420,30 @@ export class PropertyDetailComponent implements OnInit, OnDestroy, AfterViewInit
   contactAboutProperty(): void {
     console.log('Contactar sobre propiedad:', this.property?.id);
   }
+
+  /**
+   * ✅ CLASE CSS PARA BADGE DE ESTADO - IGUAL QUE EN PROPERTY-LIST
+   */
+  getStatusBadgeClass(): string {
+    const estado = this.getFieldAsString('Estado').toLowerCase();
+    switch (estado) {
+      case 'disponible':
+      case 'available':
+        return 'bg-success'; // #28a745 (verde)
+      case 'vendido':
+      case 'vendida':
+      case 'sold':
+        return 'bg-danger'; // #dc3545 (rojo)
+      case 'alquilado':
+      case 'alquilada':
+      case 'rented':
+        return 'bg-warning'; // #fd7e14 (naranja)
+      case 'reservado':
+      case 'reservada':
+      case 'reserved':
+        return 'bg-info'; // #17a2b8 (azul claro)
+      default:
+        return 'bg-secondary'; // Gris para estados desconocidos
+    }
+  }
 }
