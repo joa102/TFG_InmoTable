@@ -14,7 +14,8 @@ export const environment = {
       clientes: 'Clientes',
       agentes: 'Agentes',
       citas: 'Citas',
-      usuarios: 'Usuarios'
+      usuarios: 'Usuarios',
+      empresa: 'Empresa' // 🔥 AÑADIR TABLA DE EMPRESA
     }
   },
   api: {

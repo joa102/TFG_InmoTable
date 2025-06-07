@@ -71,14 +71,17 @@
         </div>
         <div class="col-lg-4 text-lg-end">
           <div class="appointment-actions">
-            <button class="btn btn-outline-secondary me-2" (click)="goToAppointmentList()">
-              <i class="fas fa-list me-2"></i>
-              Lista de Citas
-            </button>
-            <button class="btn btn-primary" (click)="goBack()">
-              <i class="fas fa-arrow-left me-2"></i>
-              Volver
-            </button>
+            <!-- 🔥 MISMO ESTILO QUE PROPERTY-DETAIL -->
+            <div class="header-actions">
+              <button class="btn btn-outline-primary me-2" (click)="goToAppointmentList()">
+                <i class="fas fa-calendar-plus me-1"></i>
+                Solicitar Cita
+              </button>
+              <button class="btn btn-primary" (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>
+                Volver
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -223,7 +226,7 @@
             <div class="d-grid gap-2 mt-3">
               <button class="btn btn-outline-primary btn-sm" (click)="goToAppointmentList()">
                 <i class="fas fa-calendar-plus me-2"></i>
-                Nueva Cita
+                Solicitar Cita
               </button>
               <button class="btn btn-outline-secondary btn-sm" (click)="goToProperties()">
                 <i class="fas fa-building me-2"></i>

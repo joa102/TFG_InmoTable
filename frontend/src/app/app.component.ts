@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
+import { FooterComponent } from './shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-root',
@@ -8,18 +9,18 @@ import { RouterOutlet, RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     RouterOutlet,
-    RouterModule
+    RouterModule,
+    FooterComponent // ✅ SOLO AQUÍ
   ],
   template: `
     <div class="app-container">
-      <!-- 🔝 HEADER/NAVBAR aquí si tienes -->
-
       <!-- 📄 CONTENIDO PRINCIPAL -->
       <main class="main-content">
         <router-outlet></router-outlet>
       </main>
 
-      <!-- 🔻 FOOTER aquí si tienes -->
+      <!-- 🔥 FOOTER GLOBAL -->
+      <app-footer></app-footer>
     </div>
   `,
   styleUrls: ['./app.component.scss']

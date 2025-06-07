@@ -1,0 +1,410 @@
+// ===============================
+// 🔥 FOOTER COMPONENT STYLES
+// ===============================
+
+.footer {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: #ecf0f1;
+  margin-top: auto; // Para que se pegue al final
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, #3498db 50%, transparent 100%);
+  }
+
+  // ===============================
+  // FOOTER PRINCIPAL
+  // ===============================
+  .footer-main {
+    padding: 3rem 0 0rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  // ===============================
+  // 🔥 LOGO DEL FOOTER (IGUAL QUE NAVBAR)
+  // ===============================
+  .footer-logo {
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px;
+
+    &:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    // 🔥 ANIMACIÓN DE CARGA SUAVE
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .footer-section {
+    height: 100%;
+
+    .footer-title {
+      color: #3498db;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+
+      // 🔥 HOVER PARA TÍTULO CON LOGO
+      &:hover {
+        .footer-logo {
+          transform: scale(1.1);
+        }
+
+        i {
+          transform: scale(1.1);
+        }
+      }
+
+      i {
+        color: #e74c3c;
+        transition: all 0.3s ease;
+      }
+    }
+
+    .footer-subtitle {
+      color: #bdc3c7;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-description {
+      color: #bdc3c7;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .footer-contact {
+      p {
+        color: #bdc3c7;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        transition: color 0.3s ease;
+
+        i {
+          color: #3498db;
+          width: 16px;
+          text-align: center;
+        }
+
+        &:hover {
+          color: #ecf0f1;
+        }
+      }
+    }
+  }
+
+  // ===============================
+  // ENLACES DEL FOOTER
+  // ===============================
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: 0.5rem;
+
+      a {
+        color: #bdc3c7;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        position: relative;
+        padding-left: 1rem;
+
+        &::before {
+          content: '▸';
+          position: absolute;
+          left: 0;
+          color: #3498db;
+          transform: translateX(-2px);
+          transition: transform 0.3s ease;
+        }
+
+        &:hover {
+          color: #3498db;
+          padding-left: 1.2rem;
+
+          &::before {
+            transform: translateX(0);
+          }
+        }
+      }
+    }
+  }
+
+  // ===============================
+  // 🔥 REDES SOCIALES MEJORADAS
+  // ===============================
+  .footer-social {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #bdc3c7;
+      text-decoration: none;
+      border-radius: 50%;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+
+      &:hover {
+        background: #3498db;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+      }
+
+      // 🔥 ESTADOS DESHABILITADOS PARA REDES SIN URL
+      &[style*="opacity: 0.5"] {
+        cursor: not-allowed !important;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+          color: #bdc3c7 !important;
+          transform: none !important;
+          box-shadow: none !important;
+        }
+      }
+
+      // Colores específicos para cada red social (solo si están activas)
+      &:not([style*="opacity: 0.5"]) {
+        &:nth-child(1):hover { background: #3b5998; } // Facebook
+        &:nth-child(2):hover { background: #e4405f; } // Instagram
+        &:nth-child(3):hover { background: #1da1f2; } // Twitter
+        &:nth-child(4):hover { background: #0077b5; } // LinkedIn
+      }
+    }
+  }
+
+  // ===============================
+  // NEWSLETTER
+  // ===============================
+  .footer-newsletter {
+    .newsletter-title {
+      color: #bdc3c7;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .newsletter-text {
+      color: #95a5a6;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .input-group {
+      .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ecf0f1;
+        border-radius: 6px 0 0 6px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+
+        &::placeholder {
+          color: #95a5a6;
+        }
+
+        &:focus {
+          background: rgba(255, 255, 255, 0.15);
+          border-color: #3498db;
+          box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+          color: #ecf0f1;
+        }
+      }
+
+      .btn {
+        border-radius: 0 6px 6px 0;
+        padding: 0.5rem 1rem;
+        border: 1px solid #3498db;
+        background: #3498db;
+        color: white;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #2980b9;
+          border-color: #2980b9;
+          transform: translateY(-1px);
+        }
+
+        i {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  // ===============================
+  // FOOTER BOTTOM
+  // ===============================
+  .footer-bottom {
+    padding: 1.5rem 0;
+    background: rgba(0, 0, 0, 0.2);
+
+    .footer-copyright {
+      color: #95a5a6;
+      font-size: 0.85rem;
+    }
+
+    .footer-legal {
+      text-align: right;
+
+      a {
+        color: #bdc3c7;
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #3498db;
+        }
+      }
+
+      .separator {
+        color: #7f8c8d;
+        margin: 0 0.5rem;
+      }
+    }
+  }
+}
+
+// 🔥 ANIMACIÓN PARA LOGOS (IGUAL QUE NAVBAR)
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ===============================
+// RESPONSIVE DESIGN - AJUSTADO PARA LOGO
+// ===============================
+@media (max-width: 768px) {
+  .footer {
+    .footer-main {
+      padding: 2rem 0 1.5rem;
+      text-align: center;
+    }
+
+    .footer-section {
+      .footer-title {
+        justify-content: center;
+        font-size: 1.3rem;
+        
+        .footer-logo {
+          height: 28px !important;
+          max-width: 28px !important;
+        }
+      }
+
+      .footer-subtitle {
+        font-size: 0.95rem;
+      }
+
+      .footer-description {
+        font-size: 0.9rem;
+      }
+    }
+
+    .footer-social {
+      justify-content: center;
+    }
+
+    .footer-newsletter {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding: 1rem 0;
+
+      .footer-legal {
+        text-align: center;
+        margin-top: 1rem;
+
+        a, .separator {
+          font-size: 0.8rem;
+        }
+
+        .separator {
+          margin: 0 0.3rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .footer {
+    .footer-main {
+      padding: 1.5rem 0 1rem;
+    }
+
+    .footer-section {
+      .footer-title {
+        font-size: 1.2rem;
+        
+        .footer-logo {
+          height: 24px !important;
+          max-width: 24px !important;
+        }
+      }
+
+      .footer-contact p {
+        font-size: 0.85rem;
+      }
+    }
+
+    .footer-links li a {
+      font-size: 0.85rem;
+    }
+
+    .footer-social {
+      gap: 0.75rem;
+
+      .social-link {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+      }
+    }
+
+    .footer-legal {
+      a, .separator {
+        font-size: 0.75rem !important;
+      }
+    }
+  }
+}

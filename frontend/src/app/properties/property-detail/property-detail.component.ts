@@ -422,6 +422,26 @@ export class PropertyDetailComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   /**
+   * ✅ OBTENER NÚMERO DE VISITAS - CAMPO REAL DE AIRTABLE
+   */
+  getVisitCount(): string {
+    const fields = this.property?.fields as any;
+
+    if (!fields) return '0';
+
+    // 🔥 BUSCAR EL CAMPO EXACTO DE VISITAS
+    const visits = fields['Número de visitas'] ||     // Nombre exacto
+                   fields['Número de Visitas'] ||     // Con mayúscula
+                   fields['numero de visitas'] ||     // En minúsculas
+                   fields['NumeroDeVisitas'] ||       // Sin espacios
+                   fields['Visitas'] ||               // Nombre corto
+                   fields['Views'] ||                 // En inglés
+                   0;
+
+    return visits ? String(visits) : '0';
+  }
+
+  /**
    * ✅ CLASE CSS PARA BADGE DE ESTADO - IGUAL QUE EN PROPERTY-LIST
    */
   getStatusBadgeClass(): string {

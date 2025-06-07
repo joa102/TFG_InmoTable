@@ -308,12 +308,18 @@
             <div class="row text-center">
               <div class="col-6">
                 <div class="border-end">
-                  <div class="h5 text-primary mb-0">{{ getFieldAsNumber('Número de visitas') || 0 }}</div>
+                  <!-- 🔥 USAR CAMPO REAL DE AIRTABLE -->
+                  <div class="h5 text-primary mb-0">{{ getFieldAsString('Número de visitas') || '0' }}</div>
                   <small class="text-muted">Visitas</small>
                 </div>
               </div>
               <div class="col-6">
-                <div class="h5 text-success mb-0">{{ getFieldAsString('Estado') }}</div>
+                <!-- 🔥 ESTADO CON MISMOS COLORES QUE INFORMACIÓN DE LA PROPIEDAD -->
+                <div class="h5 mb-0">
+                  <span class="badge" [class]="getStatusBadgeClass()">
+                    {{ getFieldAsString('Estado') }}
+                  </span>
+                </div>
                 <small class="text-muted">Estado</small>
               </div>
             </div>

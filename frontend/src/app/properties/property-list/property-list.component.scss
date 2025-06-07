@@ -6,11 +6,12 @@
 }
 
 // ===============================
-// CONTENEDOR GENERAL - MISMO ESTILO QUE PROPERTY-DETAIL
+// CONTENEDOR GENERAL - AJUSTADO PARA FOOTER
 // ===============================
 .property-list-container {
-  min-height: 100vh;
+  min-height: calc(100vh - 80px); // 🔥 Restar altura aproximada del footer
   background-color: #f8f9fa; // 🔥 Mismo background que property-detail
+  padding-bottom: 2rem; // 🔥 Espaciado antes del footer
 
   .container-fluid {
     max-width: 1400px; // 🔥 Mismo max-width
