@@ -339,7 +339,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   navigateToHome(): void {
     console.log('🏠 Navegando a inicio...');
     this.showUserDropdown = false;
-    this.router.navigate(['/propiedades']);
+    this.router.navigate(['/']);
   }
 
   navigateToProperties(): void {

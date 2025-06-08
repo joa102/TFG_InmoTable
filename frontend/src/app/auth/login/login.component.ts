@@ -196,7 +196,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {
     // Si ya está autenticado, redirigir
     if (this.authService.isAuthenticated) {
-      this.router.navigate(['/dashboard']);
+      //this.router.navigate(['/dashboard']);
+      this.router.navigate(['/propiedades']);
     }
   }
 
@@ -266,7 +267,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.loading = false;
 
           setTimeout(() => {
-            this.router.navigate(['/dashboard']);
+            //this.router.navigate(['/dashboard']);
+            this.router.navigate(['/propiedades']);
           }, 1000);
         },
         error: (error) => {

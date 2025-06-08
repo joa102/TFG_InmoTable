@@ -46,7 +46,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
           if (user) {
             // Si ya está logueado, redirigir al dashboard
             console.log('✅ Usuario ya autenticado, redirigiendo...');
-            this.router.navigate(['/dashboard']);
+            //this.router.navigate(['/dashboard']);
+            this.router.navigate(['/propiedades']);
           } else {
             // Si no está logueado, construir el formulario
             this.buildIframeUrl();

@@ -4,13 +4,17 @@ export const routes: Routes = [
   // Ruta pública: Home y propiedades
   {
     path: '',
-    loadComponent: () => import('./components/properties/property-list/property-list.component')
-      .then(c => c.PropertyListComponent)
+    loadComponent: () => import('./components/home/home.component')
+      .then(c => c.HomeComponent),
+    title: 'Inicio - InmoTable'
   },
+
+  // Propiedades
   {
     path: 'propiedades',
     loadComponent: () => import('./components/properties/property-list/property-list.component')
-      .then(c => c.PropertyListComponent)
+      .then(c => c.PropertyListComponent),
+    title: 'Propiedades - InmoTable'
   },
   {
     path: 'propiedades/:id',
@@ -18,7 +22,7 @@ export const routes: Routes = [
       .then(c => c.PropertyDetailComponent)
   },
 
-  // 🔥 AÑADIR RUTA DE CONTACTO
+  // Contacto
   {
     path: 'contacto',
     loadComponent: () => import('./shared/components/contact/contact.component')
@@ -33,7 +37,7 @@ export const routes: Routes = [
       .then(c => c.DashboardComponent)
   },
 
-  // Gestión de entidades - RUTAS CORREGIDAS 🔥
+  // Gestión de entidades
   {
     path: 'clientes',
     loadComponent: () => import('./components/clients/client-list/client-list.component')
@@ -46,9 +50,9 @@ export const routes: Routes = [
   },
   {
     path: 'citas',
-    loadComponent: () => import('./components/appointments/appointment-form/appointment-form.component') // 🔥 CAMBIAR PATH
-      .then(c => c.AppointmentFormComponent), // 🔥 CAMBIAR NOMBRE DE CLASE
-    title: 'Formulario de Cita - InmoTable' // 🔥 ACTUALIZAR TÍTULO
+    loadComponent: () => import('./components/appointments/appointment-form/appointment-form.component')
+      .then(c => c.AppointmentFormComponent),
+    title: 'Formulario de Cita - InmoTable'
   },
   {
     path: 'calendario',
@@ -62,7 +66,14 @@ export const routes: Routes = [
     loadChildren: () => import('./auth/auth.routes').then(r => r.authRoutes)
   },
 
-  // Página no encontrada - RUTA CORREGIDA 🔥
+  // 🏠 RUTA HOME ALTERNATIVA
+  {
+    path: 'inicio',
+    redirectTo: '',
+    pathMatch: 'full'
+  },
+
+  // Página no encontrada
   {
     path: '404',
     loadComponent: () => import('./shared/components/not-found/not-found.component')
