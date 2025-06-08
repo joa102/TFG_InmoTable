@@ -108,6 +108,16 @@
         }
       }
     }
+
+    // 🔥 ESTILOS PARA HORARIO DINÁMICO
+    .footer-schedule {
+      color: #bdc3c7;
+      font-size: 0.9rem;
+      line-height: 1.4;
+
+      // Si el horario viene con saltos de línea de Airtable
+      white-space: pre-line;
+    }
   }
 
   // ===============================

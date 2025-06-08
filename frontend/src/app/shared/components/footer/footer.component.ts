@@ -29,11 +29,12 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   // 🏢 DATOS DE LA EMPRESA DESDE AIRTABLE
   empresaData: Empresa | null = null;
-  empresaNombre: string = 'InmoApp'; // 🔥 VALOR POR DEFECTO TEMPORAL
+  empresaNombre: string = 'InmoTable';
   empresaLogo: string = 'fas fa-building';
-  empresaTelefono: string = '+34 123 456 789';
+  empresaTelefono: string = '+34 612 345 789';
   empresaEmail: string = 'info@inmoapp.com';
-  empresaDireccion: string = 'Madrid, España';
+  empresaDireccion: string = 'Almería, España';
+  empresaHorario: string = 'Lunes a Viernes: 10:00 a 14:00 h - 17:00 a 20:00 h'; // 🔥 AÑADIR HORARIO
 
   // Redes sociales
   facebookUrl: string = '#';
@@ -75,7 +76,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔥 CARGAR EMPRESA DESDE CACHÉ PERSISTENTE PRIMERO (CORREGIDO)
+   * 🔥 CARGAR EMPRESA DESDE CACHÉ PERSISTENTE PRIMERO (AÑADIR HORARIO)
    */
   private loadEmpresaFromCacheFirst(): void {
     console.log('🔍 Footer: Buscando empresa en caché persistente...');
@@ -90,20 +91,25 @@ export class FooterComponent implements OnInit, OnDestroy {
         'telefono en caché': cachedEmpresa.telefono,
         'direccion en caché': cachedEmpresa.direccion,
         'email en caché': cachedEmpresa.email,
-        'web en caché': cachedEmpresa.web
+        'web en caché': cachedEmpresa.web,
+        'horario en caché': cachedEmpresa.horario // 🔥 AÑADIR HORARIO
       });
 
       this.empresaNombre = cachedEmpresa.nombre;
 
       // 🔥 MAPEAR CAMPOS CON LOGS DETALLADOS
-      this.empresaTelefono = cachedEmpresa.telefono || '+34 123 456 789';
+      this.empresaTelefono = cachedEmpresa.telefono || '+34 612 345 789';
       console.log('📞 Footer: Teléfono final asignado:', this.empresaTelefono);
 
       this.empresaEmail = cachedEmpresa.email || cachedEmpresa.web || 'info@inmotable.com';
       console.log('📧 Footer: Email/Web final asignado:', this.empresaEmail);
 
-      this.empresaDireccion = cachedEmpresa.direccion || 'Madrid, España';
+      this.empresaDireccion = cachedEmpresa.direccion || 'Almería, España';
       console.log('📍 Footer: Dirección final asignada:', this.empresaDireccion);
+
+      // 🔥 MAPEAR HORARIO DESDE CACHÉ
+      this.empresaHorario = cachedEmpresa.horario || 'Lunes a Viernes: 10:00 a 14:00 h - 17:00 a 20:00 h';
+      console.log('🕐 Footer: Horario final asignado:', this.empresaHorario);
 
       // Redes sociales
       this.facebookUrl = cachedEmpresa.facebook || '#';
@@ -116,6 +122,7 @@ export class FooterComponent implements OnInit, OnDestroy {
         telefono: this.empresaTelefono,
         email: this.empresaEmail,
         direccion: this.empresaDireccion,
+        horario: this.empresaHorario, // 🔥 INCLUIR EN RESUMEN
         redes: {
           facebook: this.facebookUrl,
           instagram: this.instagramUrl,
@@ -151,7 +158,7 @@ export class FooterComponent implements OnInit, OnDestroy {
       }
     }
 
-    // 🔥 SI NO HAY CACHÉ, CARGAR DESDE API (IGUAL QUE NAVBAR)
+    // Si no hay caché, cargar desde API
     console.log('🔄 Footer: No hay caché persistente, cargando desde API...');
     this.loadEmpresaFromAPI();
 }
@@ -233,7 +240,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔥 MAPEAR CAMPOS ADICIONALES PARA FOOTER (CORREGIDO PARA MINÚSCULAS CON ACENTOS)
+   * 🔥 MAPEAR CAMPOS ADICIONALES PARA FOOTER (AÑADIR HORARIO)
    */
   private mapearCamposAdicionales(empresa: any): void {
     console.log('📊 Footer: Mapeando campos adicionales desde API:', empresa);
@@ -243,7 +250,7 @@ export class FooterComponent implements OnInit, OnDestroy {
                           empresa['Teléfono'] ||         // Mayúscula con acento
                           empresa.Telefono ||            // Mayúscula sin acento
                           empresa.telefono ||            // Minúscula sin acento
-                          '+34 123 456 789';
+                          '+34 612 345 789';
 
     console.log('📞 Footer: Teléfono mapeado desde API:', this.empresaTelefono);
 
@@ -263,6 +270,14 @@ export class FooterComponent implements OnInit, OnDestroy {
 
     console.log('📍 Footer: Dirección mapeada desde API:', this.empresaDireccion);
 
+    // 🔥 MAPEAR HORARIO DESDE API
+    this.empresaHorario = empresa['Horario'] ||          // Mayúscula (nombre de campo en Airtable)
+                         empresa.horario ||              // Minúscula
+                         empresa['horario'] ||           // Minúscula con corchetes
+                         'Lunes a Viernes: 10:00 a 14:00 h - 17:00 a 20:00 h';
+
+    console.log('🕐 Footer: Horario mapeado desde API:', this.empresaHorario);
+
     // Redes sociales (estos ya funcionan)
     this.facebookUrl = empresa.Facebook || empresa.facebook || '#';
     this.instagramUrl = empresa.Instagram || empresa.instagram || '#';
@@ -273,6 +288,7 @@ export class FooterComponent implements OnInit, OnDestroy {
       telefono: this.empresaTelefono,
       email: this.empresaEmail,
       direccion: this.empresaDireccion,
+      horario: this.empresaHorario, // 🔥 INCLUIR HORARIO EN LOGS
       redes: {
         facebook: this.facebookUrl,
         instagram: this.instagramUrl,
@@ -283,7 +299,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔄 ACTUALIZAR CACHÉ DE EMPRESA (CORREGIDO PARA MINÚSCULAS CON ACENTOS)
+   * 🔄 ACTUALIZAR CACHÉ DE EMPRESA (INCLUIR HORARIO)
    */
   private updateEmpresaCache(empresa: Empresa, logoDataUrl: string | null): void {
     const cacheData: any = {
@@ -306,6 +322,11 @@ export class FooterComponent implements OnInit, OnDestroy {
 
       web: (empresa as any).Web || (empresa as any).web,
 
+      // 🔥 INCLUIR HORARIO EN CACHÉ
+      horario: (empresa as any)['Horario'] ||            // MAYÚSCULA (AIRTABLE)
+              (empresa as any).horario ||                // MINÚSCULA
+              (empresa as any)['horario'],               // MINÚSCULA CON CORCHETES
+
       // Redes sociales
       facebook: (empresa as any).Facebook || (empresa as any).facebook,
       instagram: (empresa as any).Instagram || (empresa as any).instagram,
@@ -313,11 +334,10 @@ export class FooterComponent implements OnInit, OnDestroy {
       linkedin: (empresa as any).LinkedIn || (empresa as any).linkedin,
 
       // Otros campos
-      horario: (empresa as any).Horario || (empresa as any).horario,
       idEmpresa: (empresa as any)['ID Empresa'] || (empresa as any).idEmpresa
     };
 
-    console.log('💾 Footer: Caché de empresa actualizado con campos corregidos:', cacheData);
+    console.log('💾 Footer: Caché de empresa actualizado con campos corregidos (incluye horario):', cacheData);
     this.cacheService.setEmpresa(cacheData);
   }
 

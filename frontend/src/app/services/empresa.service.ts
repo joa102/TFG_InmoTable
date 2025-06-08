@@ -15,7 +15,10 @@ export class EmpresaService {
     private apiService: ApiService,
     private imageService: ImageService,
     private cacheService: CacheService // 🔥 INYECTAR CACHE SERVICE
-  ) {}
+  ) {
+    // Temporalmente en FooterComponent constructor:
+    //this.cacheService.clearEmpresaCache();
+  }
 
   /**
    * 🏢 OBTENER TODAS LAS EMPRESAS (PÚBLICO)
@@ -444,5 +447,61 @@ export class EmpresaService {
     const direccion = buscarDireccion();
 
     return { telefono, direccion };
+  }
+
+  /**
+   * 🔥 FUNCIÓN HELPER PARA MAPEAR CAMPOS COMPLETOS (CORREGIR PARA INCLUIR HORARIO)
+   */
+  mapearCamposCompletos(empresaData: any) {
+    console.log('🔍 Mapeando campos completos, empresa recibida:', empresaData);
+    console.log('🔍 Campos disponibles:', Object.keys(empresaData));
+
+    // 🔥 DEBUG ESPECÍFICO PARA HORARIO
+    console.log('🕐 Horario disponible en:', {
+      'Horario': empresaData['Horario'],
+      'horario': empresaData.horario,
+      'Horario de atención': empresaData['Horario de atención'],
+      'Horarios': empresaData['Horarios']
+    });
+
+    return {
+      id: empresaData.id,
+      nombre: empresaData.nombre,
+      logo: empresaData.logo,
+      estado: empresaData.estado,
+
+      // 🔥 MAPEAR TELÉFONO CON TODAS LAS VARIACIONES
+      telefono: empresaData['teléfono'] ||           // minúscula con acento (REAL en Airtable)
+               empresaData['Teléfono'] ||            // mayúscula con acento
+               empresaData.Telefono ||               // mayúscula sin acento
+               empresaData.telefono,                 // minúscula sin acento
+
+      // 🔥 MAPEAR DIRECCIÓN CON TODAS LAS VARIACIONES
+      direccion: empresaData['dirección'] ||         // minúscula con acento (REAL en Airtable)
+                empresaData['Dirección'] ||          // mayúscula con acento
+                empresaData.Direccion ||             // mayúscula sin acento
+                empresaData.direccion,               // minúscula sin acento
+
+      // 🔥 MAPEAR HORARIO CON TODAS LAS VARIACIONES
+      horario: empresaData['Horario'] ||             // MAYÚSCULA (nombre probable en Airtable)
+              empresaData.Horario ||                 // Propiedad mayúscula
+              empresaData['horario'] ||              // minúscula con corchetes
+              empresaData.horario ||                 // minúscula sin corchetes
+              empresaData['Horario de atención'] ||  // variación larga
+              empresaData['Horarios'],               // plural
+
+      // Otros campos
+      email: empresaData.Email || empresaData.email,
+      web: empresaData.Web || empresaData.web,
+
+      // Redes sociales
+      facebook: empresaData.Facebook || empresaData.facebook,
+      instagram: empresaData.Instagram || empresaData.instagram,
+      twitter: empresaData.Twitter || empresaData.twitter,
+      linkedin: empresaData.LinkedIn || empresaData.linkedin,
+
+      // Campos adicionales
+      idEmpresa: empresaData['ID Empresa'] || empresaData.idEmpresa
+    };
   }
 }

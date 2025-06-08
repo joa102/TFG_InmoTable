@@ -4,7 +4,7 @@
     <div class="footer-main">
       <div class="row">
         <!-- Información de la empresa -->
-        <div class="col-lg-4 col-md-6 mb-4">
+        <div class="col-lg-3 col-md-6 mb-4">
           <div class="footer-section">
             <h5 class="footer-title">
               <!-- 🔥 LOGO DINÁMICO IGUAL QUE NAVBAR -->
@@ -48,6 +48,22 @@
           </div>
         </div>
 
+        <!-- Horario -->
+        <div class="col-lg-2 col-md-6 mb-4">
+          <div class="footer-section">
+            <h6 class="footer-subtitle">Horario</h6>
+            <!-- 🔥 HORARIO DINÁMICO DESDE AIRTABLE -->
+            <div class="footer-schedule" [innerHTML]="empresaHorario"></div>
+          </div>
+        </div>
+
+        <!-- Espacio -->
+        <div class="col-lg-1 col-md-6 mb-4">
+          <div class="footer-section">
+
+          </div>
+        </div>
+
         <!-- Enlaces rápidos -->
         <div class="col-lg-2 col-md-6 mb-4">
           <div class="footer-section">
@@ -62,7 +78,7 @@
         </div>
 
         <!-- Servicios -->
-        <div class="col-lg-2 col-md-6 mb-4">
+        <!--<div class="col-lg-2 col-md-6 mb-4">
           <div class="footer-section">
             <h6 class="footer-subtitle">Servicios</h6>
             <ul class="footer-links">
@@ -72,7 +88,7 @@
               <li><a href="#" (click)="$event.preventDefault()">Asesoramiento</a></li>
             </ul>
           </div>
-        </div>
+        </div>-->
 
         <!-- Redes sociales y contacto -->
         <div class="col-lg-4 col-md-6 mb-4">
