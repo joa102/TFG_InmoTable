@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\AirtableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class ClienteController extends Controller
 {
@@ -42,7 +43,7 @@ class ClienteController extends Controller
                 'total' => count($clientes)
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error al obtener clientes: ' . $e->getMessage());
+            Log::error('Error al obtener clientes: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -109,7 +110,7 @@ class ClienteController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
-            \Log::error('Error al crear cliente: ' . $e->getMessage());
+            Log::error('Error al crear cliente: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -216,7 +217,7 @@ class ClienteController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al actualizar cliente: ' . $e->getMessage());
+            Log::error('Error al actualizar cliente: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -283,7 +284,7 @@ class ClienteController extends Controller
                     $propiedad = $this->airtableService->getRecord('Propiedades', $propiedadId);
                     $propiedades[] = $propiedad;
                 } catch (\Exception $e) {
-                    \Log::warning("No se pudo obtener la propiedad {$propiedadId}: " . $e->getMessage());
+                    Log::warning("No se pudo obtener la propiedad {$propiedadId}: " . $e->getMessage());
                 }
             }
 
@@ -294,7 +295,7 @@ class ClienteController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al obtener propiedades de interés: ' . $e->getMessage());
+            Log::error('Error al obtener propiedades de interés: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -336,7 +337,7 @@ class ClienteController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al agregar propiedad a interés: ' . $e->getMessage());
+            Log::error('Error al agregar propiedad a interés: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -380,7 +381,7 @@ class ClienteController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al quitar propiedad de interés: ' . $e->getMessage());
+            Log::error('Error al quitar propiedad de interés: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -413,7 +414,7 @@ class ClienteController extends Controller
             return $this->propiedadesInteres($cliente['id']);
 
         } catch (\Exception $e) {
-            \Log::error('Error al obtener mis propiedades de interés: ' . $e->getMessage());
+            Log::error('Error al obtener mis propiedades de interés: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -472,7 +473,7 @@ class ClienteController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al buscar clientes: ' . $e->getMessage());
+            Log::error('Error al buscar clientes: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,

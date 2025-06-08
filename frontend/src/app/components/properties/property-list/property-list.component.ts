@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
-import { PropiedadesService } from '../../services/propiedades.service';
-import { Propiedad, PropiedadFields } from '../../models/airtable.interfaces';
+import { PropiedadesService } from '../../../services/propiedades.service';
+import { Propiedad, PropiedadFields } from '../../../models/airtable.interfaces';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 

@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { PropiedadesService } from '../../services/propiedades.service';
-import { Propiedad, PropiedadFields } from '../../models/airtable.interfaces';
-import { EnergyRatingComponent, EnergyRatingData } from '../../shared/components/energy-rating/energy-rating.component';
+import { PropiedadesService } from '../../../services/propiedades.service';
+import { Propiedad, PropiedadFields } from '../../../models/airtable.interfaces';
+import { EnergyRatingComponent, EnergyRatingData } from '../../../shared/components/energy-rating/energy-rating.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 
 // ✅ LEAFLET SIN CONFIGURACIÓN PERSONALIZADA DE ICONOS
 import * as L from 'leaflet';

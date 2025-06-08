@@ -4,17 +4,17 @@ export const routes: Routes = [
   // Ruta pública: Home y propiedades
   {
     path: '',
-    loadComponent: () => import('./properties/property-list/property-list.component')
+    loadComponent: () => import('./components/properties/property-list/property-list.component')
       .then(c => c.PropertyListComponent)
   },
   {
     path: 'propiedades',
-    loadComponent: () => import('./properties/property-list/property-list.component')
+    loadComponent: () => import('./components/properties/property-list/property-list.component')
       .then(c => c.PropertyListComponent)
   },
   {
     path: 'propiedades/:id',
-    loadComponent: () => import('./properties/property-detail/property-detail.component')
+    loadComponent: () => import('./components/properties/property-detail/property-detail.component')
       .then(c => c.PropertyDetailComponent)
   },
 

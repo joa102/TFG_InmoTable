@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PropertyService } from '../../services/property.service';
+import { PropiedadesService } from '../../../services/propiedades.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -24,7 +24,7 @@ export class PropertyFormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private propertyService: PropertyService
+    private propertyService: PropiedadesService
   ) {}
 
   ngOnInit(): void {
