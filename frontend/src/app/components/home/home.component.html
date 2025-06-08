@@ -1,0 +1,413 @@
+<div class="home-container">
+
+  <!-- 🌟 HERO SECTION -->
+  <section class="hero-section">
+    <div class="hero-background">
+      <div class="hero-overlay"></div>
+      <div class="container">
+        <div class="row align-items-center min-vh-100">
+          <div class="col-lg-8 mx-auto text-center">
+
+            <!-- Título principal -->
+            <h1 class="hero-title" data-aos="fade-up">
+              Encuentra tu hogar perfecto en
+              <span class="text-primary">{{ getEmpresaNombre() }}</span>
+            </h1>
+
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+              La mayor selección de propiedades en Almería.
+              Más de {{ stats.totalProperties }} propiedades disponibles.
+            </p>
+
+            <!-- Formulario de búsqueda -->
+            <div class="search-card" data-aos="fade-up" data-aos-delay="400">
+              <form (ngSubmit)="performSearch()" class="search-form">
+                <div class="row g-3">
+
+                  <!-- Búsqueda general -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="form-floating">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="searchTerm"
+                        [(ngModel)]="searchTerm"
+                        name="searchTerm"
+                        placeholder="¿Qué buscas?"
+                      >
+                      <label for="searchTerm">
+                        <i class="fas fa-search me-2"></i>¿Qué buscas?
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Tipo de propiedad -->
+                  <div class="col-md-6 col-lg-2">
+                    <div class="form-floating">
+                      <select
+                        class="form-select"
+                        id="searchType"
+                        [(ngModel)]="searchType"
+                        name="searchType"
+                      >
+                        <option value="">Cualquier tipo</option>
+                        <option *ngFor="let type of propertyTypes" [value]="type">
+                          {{ type }}
+                        </option>
+                      </select>
+                      <label for="searchType">
+                        <i class="fas fa-home me-2"></i>Tipo
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Ubicación -->
+                  <div class="col-md-6 col-lg-2">
+                    <div class="form-floating">
+                      <select
+                        class="form-select"
+                        id="searchLocation"
+                        [(ngModel)]="searchLocation"
+                        name="searchLocation"
+                      >
+                        <option value="">Cualquier zona</option>
+                        <option *ngFor="let location of locations" [value]="location">
+                          {{ location }}
+                        </option>
+                      </select>
+                      <label for="searchLocation">
+                        <i class="fas fa-map-marker-alt me-2"></i>Zona
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Precio -->
+                  <div class="col-md-6 col-lg-3">
+                    <div class="form-floating">
+                      <select
+                        class="form-select"
+                        id="priceRange"
+                        [(ngModel)]="priceRange"
+                        name="priceRange"
+                      >
+                        <option value="">Cualquier precio</option>
+                        <option *ngFor="let range of priceRanges" [value]="range.value">
+                          {{ range.label }}
+                        </option>
+                      </select>
+                      <label for="priceRange">
+                        <i class="fas fa-euro-sign me-2"></i>Precio
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Botón buscar -->
+                  <div class="col-lg-2">
+                    <button type="submit" class="btn btn-primary btn-search w-100 h-100">
+                      <i class="fas fa-search me-2"></i>
+                      <span class="d-none d-lg-inline">Buscar</span>
+                    </button>
+                  </div>
+
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📊 STATS SECTION -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-home"></i>
+            </div>
+            <div class="stat-number">{{ stats.totalProperties }}+</div>
+            <div class="stat-label">Propiedades</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-number">{{ stats.citasRealizadas }}+</div>
+            <div class="stat-label">Citas Realizadas</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-smile"></i>
+            </div>
+            <div class="stat-number">{{ stats.clientesSatisfechos }}%</div>
+            <div class="stat-label">Clientes Satisfechos</div>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="400">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-award"></i>
+            </div>
+            <div class="stat-number">{{ stats.anosExperiencia }}+</div>
+            <div class="stat-label">Años de Experiencia</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🌟 PROPIEDADES DESTACADAS - 🔥 IDÉNTICAS A PROPERTY-LIST -->
+  <section class="featured-properties-section">
+    <div class="container">
+
+      <!-- Header de sección -->
+      <div class="row mb-5">
+        <div class="col-12 text-center">
+          <h2 class="section-title" data-aos="fade-up">
+            Propiedades Destacadas
+          </h2>
+          <p class="section-subtitle" data-aos="fade-up" data-aos-delay="200">
+            Descubre las mejores oportunidades inmobiliarias
+          </p>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando propiedades...</span>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="error && !loading" class="alert alert-warning text-center">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ error }}
+      </div>
+
+      <!-- 🔥 GRID DE PROPIEDADES - EXACTAMENTE IGUAL QUE PROPERTY-LIST -->
+      <div *ngIf="!loading && !error && featuredProperties.length > 0" class="row g-4">
+        <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let property of featuredProperties; let i = index" data-aos="fade-up" [attr.data-aos-delay]="i * 100">
+
+          <!-- 🔥 CARD IDÉNTICA A PROPERTY-LIST -->
+          <div class="clickeable-card"
+               (click)="viewProperty(property)"
+               [title]="'Ver detalles de ' + getFieldAsString(property, 'Título')">
+
+            <!-- Imagen con overlays -->
+            <div class="position-relative">
+              <!-- 🔥 CASO 1: HAY IMAGEN -->
+              <div *ngIf="hasPropertyImage(property); else noImageTemplate">
+                <img
+                  [src]="getPropertyImage(property)"
+                  [alt]="getFieldAsString(property, 'Título')"
+                  class="property-image"
+                  (error)="onImageError($event)"
+                  loading="lazy"
+                />
+              </div>
+
+              <!-- 🔥 CASO 2: NO HAY IMAGEN - IGUAL QUE PROPERTY-LIST -->
+              <ng-template #noImageTemplate>
+                <div class="property-image-placeholder d-flex align-items-center justify-content-center">
+                  <div class="text-center">
+                    <i class="fas fa-image fa-3x mb-3 text-muted"></i>
+                    <h6 class="text-muted mb-2">No hay imágenes disponibles</h6>
+                    <p class="mb-0 text-muted small">Esta propiedad no tiene imágenes asociadas.</p>
+                  </div>
+                </div>
+              </ng-template>
+
+              <!-- Badge de estado mejorado -->
+              <div class="property-status" [class]="'status-' + getFieldAsString(property, 'Estado').toLowerCase()">
+                {{ getFieldAsString(property, 'Estado') || 'Disponible' }}
+              </div>
+
+              <!-- 🔥 OVERLAY DE HOVER - SIEMPRE VISIBLE (CON O SIN IMAGEN) -->
+              <div class="card-hover-overlay">
+                <i class="fas fa-eye"></i>
+                <span>Ver Detalles</span>
+              </div>
+            </div>
+
+            <!-- 🔥 CONTENIDO DE LA CARD - EXACTAMENTE IGUAL QUE PROPERTY-LIST -->
+            <div class="card-body">
+
+              <!-- Título -->
+              <h5 class="property-title" [title]="getFieldAsString(property, 'Título')">
+                {{ getFieldAsString(property, 'Título') || 'Propiedad sin título' }}
+              </h5>
+
+              <!-- Precio -->
+              <div class="d-flex align-items-baseline gap-2">
+                <div class="property-price">
+                  {{ formatPrice(getFieldAsNumber(property, 'Precio')) }}
+                </div>
+                <small class="text-muted" *ngIf="getPricePerSquareMeter(property)">
+                  {{ getPricePerSquareMeter(property) }}/m²
+                </small>
+              </div>
+
+              <!-- Ubicación -->
+              <div class="property-location">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{{ getFieldAsString(property, 'Dirección') || 'Ubicación no especificada' }}</span>
+              </div>
+
+              <!-- Características mejoradas -->
+              <div class="property-specs">
+                <div class="spec-item" *ngIf="getFieldAsNumber(property, 'Habitaciones') > 0">
+                  <i class="fas fa-bed"></i>
+                  <div class="feature-number">{{ getFieldAsNumber(property, 'Habitaciones') }}</div>
+                  <div class="feature-label">Habitaciones</div>
+                </div>
+                <div class="spec-item" *ngIf="getFieldAsNumber(property, 'Baños') > 0">
+                  <i class="fas fa-bath"></i>
+                  <div class="feature-number">{{ getFieldAsNumber(property, 'Baños') }}</div>
+                  <div class="feature-label">Baños</div>
+                </div>
+                <div class="spec-item" *ngIf="getFieldAsNumber(property, 'Superficie') > 0">
+                  <i class="fas fa-expand-arrows-alt"></i>
+                  <div class="feature-number">{{ getFieldAsNumber(property, 'Superficie') }}</div>
+                  <div class="feature-label">m²</div>
+                </div>
+              </div>
+
+              <!-- 🔥 INFORMACIÓN FIJA - CLASES ESPECÍFICAS PARA CADA ITEM -->
+              <div class="property-info-fixed">
+                <div class="row g-1">
+                  <div class="col-6">
+                    <div class="info-item info-item-left">
+                      <i class="fas fa-calendar-alt text-primary"></i>
+                      <div class="info-content">
+                        <span class="info-label">Construido en</span>
+                        <span class="info-value">{{ getConstructionYear(property) || '2009' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="info-item info-item-right">
+                      <i class="fas fa-eye text-primary"></i>
+                      <div class="info-content">
+                        <span class="info-label">Visitas</span>
+                        <span class="info-value">{{ getVisitCount(property) || '3' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ver todas las propiedades -->
+      <div class="text-center mt-5">
+        <button class="btn btn-outline-primary btn-lg" (click)="viewAllProperties()">
+          <i class="fas fa-th-large me-2"></i>
+          Ver Todas las Propiedades
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 🏢 SERVICIOS -->
+  <section class="services-section">
+    <div class="container">
+
+      <div class="row mb-5">
+        <div class="col-12 text-center">
+          <h2 class="section-title" data-aos="fade-up">
+            Nuestros Servicios
+          </h2>
+          <p class="section-subtitle" data-aos="fade-up" data-aos-delay="200">
+            Te acompañamos en todo el proceso inmobiliario
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <h4>Búsqueda Personalizada</h4>
+            <p>Encontramos la propiedad perfecta según tus necesidades y presupuesto.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-calculator"></i>
+            </div>
+            <h4>Valoración Gratuita</h4>
+            <p>Tasamos tu propiedad sin compromiso con nuestro equipo de expertos.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-file-contract"></i>
+            </div>
+            <h4>Gestión Completa</h4>
+            <p>Nos encargamos de toda la documentación y trámites legales.</p>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="400">
+          <div class="service-card">
+            <div class="service-icon">
+              <i class="fas fa-handshake"></i>
+            </div>
+            <h4>Asesoramiento</h4>
+            <p>Te asesoramos durante todo el proceso de compra o venta.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 📞 CALL TO ACTION -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+          <h2 class="cta-title" data-aos="fade-up">
+            ¿Listo para encontrar tu hogar ideal?
+          </h2>
+          <p class="cta-subtitle" data-aos="fade-up" data-aos-delay="200">
+            Contáctanos hoy mismo y te ayudaremos a encontrar la propiedad perfecta
+          </p>
+          <div class="cta-buttons" data-aos="fade-up" data-aos-delay="400">
+            <button class="btn btn-primary btn-lg me-3" (click)="goToContact()">
+              <i class="fas fa-envelope me-2"></i>
+              Contactar Ahora
+            </button>
+            <button class="btn btn-outline-light btn-lg" (click)="requestAppointment()">
+              <i class="fas fa-calendar me-2"></i>
+              Solicitar Cita
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

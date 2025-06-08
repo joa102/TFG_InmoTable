@@ -262,7 +262,9 @@
                 </div>
 
                 <!-- Overlay de hover mejorado - solo si hay imagen -->
-                <div class="card-hover-overlay" *ngIf="hasPropertyImage(property)">
+                <!--<div class="card-hover-overlay" *ngIf="hasPropertyImage(property)">-->
+                <!-- 🔥 OVERLAY DE HOVER - SIEMPRE VISIBLE (CON O SIN IMAGEN) -->
+                <div class="card-hover-overlay">
                   <i class="fas fa-eye"></i>
                   <span>Ver Detalles</span>
                 </div>
