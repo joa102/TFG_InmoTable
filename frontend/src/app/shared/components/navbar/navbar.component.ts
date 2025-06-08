@@ -351,7 +351,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   navigateToContact(): void {
     console.log('📧 Navegando a contacto...');
     this.showUserDropdown = false;
-    alert('🚧 Página de contacto en desarrollo.\n\nPróximamente podrás:\n• Enviar consultas\n• Ver información de contacto\n• Solicitar información');
+    //alert('🚧 Página de contacto en desarrollo.\n\nPróximamente podrás:\n• Enviar consultas\n• Ver información de contacto\n• Solicitar información');
+    this.router.navigate(['/contacto']);
   }
 
   navigateToLogin(): void {

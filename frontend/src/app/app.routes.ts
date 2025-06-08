@@ -18,6 +18,14 @@ export const routes: Routes = [
       .then(c => c.PropertyDetailComponent)
   },
 
+  // 🔥 AÑADIR RUTA DE CONTACTO
+  {
+    path: 'contacto',
+    loadComponent: () => import('./shared/components/contact/contact.component')
+      .then(c => c.ContactComponent),
+    title: 'Contacto - InmoTable'
+  },
+
   // Dashboard (área protegida)
   {
     path: 'dashboard',

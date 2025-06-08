@@ -1,0 +1,331 @@
+// ===============================
+// 📧 CONTACT COMPONENT STYLES
+// ===============================
+
+.contact-container {
+  padding: 2rem;
+  //max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+// ===============================
+// NAVBAR - ESTILOS ESPECÍFICOS
+// ===============================
+.pt-navbar {
+  padding-top: 5rem !important;
+}
+
+// ===============================
+// CONTENEDOR GENERAL
+// ===============================
+
+.contact-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+
+  .container-fluid {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+}
+
+// ===============================
+// LOADING STATE
+// ===============================
+
+.loading-container {
+  min-height: 60vh;
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+// ===============================
+// HEADER DE CONTACTO
+// ===============================
+
+.contact-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  .contact-title {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+}
+
+// ===============================
+// HEADER ACTIONS - MISMO ESTILO QUE APPOINTMENT-CALENDAR
+// ===============================
+
+.contact-actions {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: flex-end;
+
+  .header-actions {
+    display: flex;
+    flex-shrink: 0;
+
+    .btn {
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      }
+
+      i {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+// ===============================
+// BANNER DE INFORMACIÓN
+// ===============================
+
+.user-info-banner,
+.guest-info-banner {
+  .alert {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+
+    .alert-heading {
+      color: #0d6efd;
+    }
+
+    &.alert-info .alert-heading {
+      color: #055160;
+    }
+
+    &.alert-secondary .alert-heading {
+      color: #41464b;
+    }
+  }
+}
+
+// ===============================
+// CARD DEL FORMULARIO DE CONTACTO
+// ===============================
+
+.contact-form-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  .card-header {
+    border-radius: 12px 12px 0 0 !important;
+    border-bottom: none;
+  }
+
+  .card-footer {
+    border-radius: 0 0 12px 12px !important;
+    border-top: 1px solid #dee2e6;
+  }
+}
+
+// ===============================
+// IFRAME DEL FORMULARIO
+// ===============================
+
+.airtable-embed {
+  border: none;
+  border-radius: 0;
+  width: 100%;
+  height: 700px;
+  background: white;
+  display: block;
+}
+
+// ===============================
+// CARDS GENERALES
+// ===============================
+
+.card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  .card-header {
+    border-radius: 12px 12px 0 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .card-footer {
+    border-radius: 0 0 12px 12px !important;
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+  }
+}
+
+// ===============================
+// BREADCRUMB
+// ===============================
+
+.breadcrumb {
+  background: white;
+  border-radius: 8px;
+  padding: 12px 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  .breadcrumb-item {
+    a {
+      color: #0d6efd;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &.active {
+      color: #6c757d;
+    }
+  }
+}
+
+// ===============================
+// ICONOS Y ANIMACIONES
+// ===============================
+
+.fa-2x {
+  transition: all 0.3s ease;
+}
+
+.card:hover .fa-2x {
+  transform: scale(1.1);
+}
+
+// ===============================
+// BOTONES
+// ===============================
+
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// ===============================
+// RESPONSIVE DESIGN
+// ===============================
+
+@media (max-width: 768px) {
+  .contact-container {
+    padding: 1rem;
+  }
+
+  .contact-header {
+    text-align: center;
+    padding: 1.5rem;
+
+    .contact-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .contact-actions {
+      justify-content: center;
+
+      .header-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+
+        .btn {
+          font-size: 0.85rem;
+          padding: 0.4rem 0.8rem;
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  .airtable-embed {
+    height: 600px;
+  }
+
+  .user-info-banner .alert,
+  .guest-info-banner .alert {
+    text-align: center;
+
+    .fa-2x {
+      display: block;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-header {
+    padding: 1rem;
+
+    .contact-title {
+      font-size: 1.5rem;
+    }
+
+    .contact-actions .header-actions .btn {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.6rem;
+
+      i {
+        font-size: 0.75rem;
+      }
+    }
+  }
+}
+
+// ===============================
+// ANIMACIONES
+// ===============================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container-fluid {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+// ===============================
+// BADGES PERSONALIZADOS
+// ===============================
+
+.badge {
+  &.bg-danger { background-color: #dc3545 !important; }
+  &.bg-success { background-color: #198754 !important; }
+  &.bg-primary { background-color: #0d6efd !important; }
+  &.bg-secondary { background-color: #6c757d !important; }
+  &.bg-info { background-color: #0dcaf0 !important; }
+}
