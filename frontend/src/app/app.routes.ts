@@ -46,8 +46,9 @@ export const routes: Routes = [
   },
   {
     path: 'citas',
-    loadComponent: () => import('./components/appointments/appointment-list/appointment-list.component')
-      .then(c => c.AppointmentListComponent)
+    loadComponent: () => import('./components/appointments/appointment-form/appointment-form.component') // 🔥 CAMBIAR PATH
+      .then(c => c.AppointmentFormComponent), // 🔥 CAMBIAR NOMBRE DE CLASE
+    title: 'Formulario de Cita - InmoTable' // 🔥 ACTUALIZAR TÍTULO
   },
   {
     path: 'calendario',

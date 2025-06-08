@@ -402,16 +402,16 @@ export class PropertyDetailComponent implements OnInit, OnDestroy, AfterViewInit
    * Solicitar cita para esta propiedad
    */
   requestAppointment(): void {
-    //console.log('Solicitar cita para propiedad:', this.property?.id);
-    // 🔥 NAVEGAR A CITAS CON PARÁMETRO DE PROPIEDAD
-    this.router.navigate(['/citas'], {
-      queryParams: {
-        //propertyId: this.property?.id,
-        propertyRecordId: this.getFieldAsString('RECORD_ID'),
-        //propertyTitle: this.getFieldAsString('Título'),
-        //propertyAddress: this.getFieldAsString('Dirección')
-      }
-    });
+    if (this.property?.id) {
+      console.log('📝 Navegando al formulario de citas para la propiedad:', this.property.id);
+
+      // Navegar al formulario de citas pasando el Record ID de la propiedad
+      this.router.navigate(['/citas'], {
+        queryParams: { propertyRecordId: this.property.id }
+      });
+    } else {
+      console.error('❌ No se puede solicitar cita: property.id no disponible');
+    }
   }
 
   /**

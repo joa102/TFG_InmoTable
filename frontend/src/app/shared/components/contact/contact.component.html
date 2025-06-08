@@ -80,8 +80,8 @@
         <div class="col-lg-4 text-lg-end">
           <div class="contact-actions">
             <div class="header-actions">
-              <button class="btn btn-outline-primary me-2" (click)="goToAppointmentList()" *ngIf="currentUser">
-                <i class="fas fa-calendar-plus me-1"></i>
+              <button class="btn btn-outline-primary me-2" (click)="goToAppointmentForm()" *ngIf="currentUser">
+                <i class="fas fa-calendar-plus me-2"></i>
                 Solicitar Cita
               </button>
               <button class="btn btn-primary" (click)="goBack()">
@@ -212,7 +212,7 @@
 
             <!-- Botones de acción -->
             <div class="d-grid gap-2 mt-3">
-              <button class="btn btn-outline-primary btn-sm" (click)="goToAppointmentList()" *ngIf="currentUser">
+              <button class="btn btn-outline-primary btn-sm" (click)="goToAppointmentForm()" *ngIf="currentUser">
                 <i class="fas fa-calendar-plus me-2"></i>
                 Solicitar Cita
               </button>

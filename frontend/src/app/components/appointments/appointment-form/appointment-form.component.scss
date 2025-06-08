@@ -1,4 +1,8 @@
 // ===============================
+// 📝 APPOINTMENT-FORM COMPONENT STYLES (RENOMBRADO DE APPOINTMENT-LIST)
+// ===============================
+
+// ===============================
 // NAVBAR - ESTILOS ESPECÍFICOS
 // ===============================
 .pt-navbar {
@@ -9,7 +13,7 @@
 // CONTENEDOR GENERAL
 // ===============================
 
-.appointment-detail-container {
+.appointment-form-container { // 🔥 CAMBIAR NOMBRE DE CLASE
   min-height: 100vh;
   background-color: #f8f9fa;
 
@@ -34,7 +38,7 @@
 }
 
 // ===============================
-// HEADER DE CITAS
+// HEADER DE FORMULARIO DE CITAS
 // ===============================
 
 .appointment-header {

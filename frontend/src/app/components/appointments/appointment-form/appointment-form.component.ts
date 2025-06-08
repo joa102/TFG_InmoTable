@@ -4,21 +4,19 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-// import { NavbarComponent } from '../../../shared/components/navbar/navbar.component'; // 🔥 ELIMINAR
 import { AuthService, User } from '../../../services/auth.service';
 
 @Component({
-  selector: 'app-appointment-list',
+  selector: 'app-appointment-form', // 🔥 CAMBIAR SELECTOR
   standalone: true,
   imports: [
     CommonModule,
     RouterModule
-    // NavbarComponent // 🔥 ELIMINAR
   ],
-  templateUrl: './appointment-list.component.html',
-  styleUrl: './appointment-list.component.scss'
+  templateUrl: './appointment-form.component.html', // 🔥 CAMBIAR TEMPLATE
+  styleUrls: ['./appointment-form.component.scss'] // 🔥 CAMBIAR STYLES (CORREGIR styleUrl -> styleUrls)
 })
-export class AppointmentListComponent implements OnInit, OnDestroy {
+export class AppointmentFormComponent implements OnInit, OnDestroy { // 🔥 CAMBIAR NOMBRE DE CLASE
 
   // 🔥 PROPIEDADES PARA MANEJAR LA URL DEL IFRAME
   airtableBaseUrl = 'https://airtable.com/embed/apphONbM2nnoZThgr/pagtZbDsnocCqMAzm/form';
@@ -37,7 +35,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log('📅 Inicializando AppointmentListComponent...');
+    console.log('📝 Inicializando AppointmentFormComponent...'); // 🔥 ACTUALIZAR LOG
 
     // Suscribirse al usuario actual
     this.authService.getCurrentUser()
@@ -45,7 +43,7 @@ export class AppointmentListComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (user: User | null) => {
           this.currentUser = user;
-          console.log('👤 Usuario actual en appointment-list:', user);
+          console.log('👤 Usuario actual en appointment-form:', user); // 🔥 ACTUALIZAR LOG
 
           if (user) {
             // Una vez que tenemos el usuario, procesamos los query params

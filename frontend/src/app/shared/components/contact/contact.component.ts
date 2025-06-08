@@ -133,11 +133,11 @@ export class ContactComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 📧 Ir a solicitar cita
+   * 📝 Ir a formulario de citas (ACTUALIZADO)
    */
-  goToAppointmentList(): void {
-    console.log('📧 Navegando a solicitar cita...');
-    this.router.navigate(['/citas']);
+  goToAppointmentForm(): void { // 🔥 CAMBIAR NOMBRE DEL MÉTODO
+    console.log('📝 Navegando al formulario de citas...');
+    this.router.navigate(['/citas']); // La ruta sigue siendo la misma
   }
 
   /**
