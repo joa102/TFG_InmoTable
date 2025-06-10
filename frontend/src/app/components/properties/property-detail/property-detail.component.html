@@ -218,6 +218,26 @@
       <!-- Right Column: Property Details -->
       <div class="col-lg-4">
 
+        <!-- Action Buttons -->
+        <div class="action-buttons mb-4">
+          <!-- 🔥 BOTÓN DE FAVORITOS CON LOADING STATE -->
+          <button
+            class="btn btn-lg w-100"
+            [class.btn-danger]="isFavorite()"
+            [class.text-white]="isFavorite()"
+            [class.btn-outline-danger]="!isFavorite()"
+            [disabled]="favoriteLoading"
+            (click)="toggleFavorite($event)"
+            [title]="isFavorite() ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+          >
+            <!-- 🔥 MOSTRAR SPINNER SI ESTÁ CARGANDO -->
+            <span *ngIf="favoriteLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            <i *ngIf="!favoriteLoading" class="fas fa-heart me-2"></i>
+            <span *ngIf="favoriteLoading">{{ isFavorite() ? 'Quitando...' : 'Agregando...' }}</span>
+            <span *ngIf="!favoriteLoading">{{ isFavorite() ? 'Quitar de Favoritos' : 'Agregar a Favoritos' }}</span>
+          </button>
+        </div>
+
         <!-- Property Information Card -->
         <div class="card mb-4">
           <div class="card-header bg-primary text-white">
@@ -290,9 +310,26 @@
             <i class="fas fa-calendar-alt me-2"></i>
             Solicitar Cita
           </button>
-          <button class="btn btn-outline-primary btn-lg w-100" (click)="contactAboutProperty()">
+          <button class="btn btn-outline-primary btn-lg mb-3 w-100" (click)="contactAboutProperty()">
             <i class="fas fa-envelope me-2"></i>
             Más Información
+          </button>
+
+          <!-- 🔥 BOTÓN DE FAVORITOS CON LOADING STATE -->
+          <button
+            class="btn btn-lg w-100"
+            [class.btn-danger]="isFavorite()"
+            [class.text-white]="isFavorite()"
+            [class.btn-outline-danger]="!isFavorite()"
+            [disabled]="favoriteLoading"
+            (click)="toggleFavorite($event)"
+            [title]="isFavorite() ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+          >
+            <!-- 🔥 MOSTRAR SPINNER SI ESTÁ CARGANDO -->
+            <span *ngIf="favoriteLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            <i *ngIf="!favoriteLoading" class="fas fa-heart me-2"></i>
+            <span *ngIf="favoriteLoading">{{ isFavorite() ? 'Quitando...' : 'Agregando...' }}</span>
+            <span *ngIf="!favoriteLoading">{{ isFavorite() ? 'Quitar de Favoritos' : 'Agregar a Favoritos' }}</span>
           </button>
         </div>
 

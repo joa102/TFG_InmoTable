@@ -396,7 +396,11 @@ Próximamente podrás editar tus datos.
       return;
     }
 
-    alert('❤️ Propiedades de Interés\n\n🚧 Funcionalidad en desarrollo.\n\nPróximamente podrás:\n• Ver tus propiedades favoritas\n• Gestionar tu lista de interés\n• Recibir notificaciones de cambios');
+    //alert('❤️ Propiedades de Interés\n\n🚧 Funcionalidad en desarrollo.\n\nPróximamente podrás:\n• Ver tus propiedades favoritas\n• Gestionar tu lista de interés\n• Recibir notificaciones de cambios');
+    this.router.navigate(['/mis-propiedades-interes']).catch(error => {
+      console.error('❌ Error al navegar a mis propiedades de interes:', error);
+      //alert('📅 Gestión de Citas\n\n🚧 Módulo en desarrollo.\n\nPróximamente podrás:\n• Ver tus citas programadas\n• Solicitar nuevas citas\n• Gestionar tu calendario');
+    });
   }
 
   navigateToAppointments(): void {
@@ -411,7 +415,7 @@ Próximamente podrás editar tus datos.
 
     this.router.navigate(['/calendario']).catch(error => {
       console.error('❌ Error al navegar a calendario:', error);
-      alert('📅 Gestión de Citas\n\n🚧 Módulo en desarrollo.\n\nPróximamente podrás:\n• Ver tus citas programadas\n• Solicitar nuevas citas\n• Gestionar tu calendario');
+      //alert('📅 Gestión de Citas\n\n🚧 Módulo en desarrollo.\n\nPróximamente podrás:\n• Ver tus citas programadas\n• Solicitar nuevas citas\n• Gestionar tu calendario');
     });
   }
 

@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { PropiedadesService } from '../../../services/propiedades.service';
+import { ClientesService } from '../../../services/clientes.service'; // 🔥 AÑADIR
+import { AuthService } from '../../../services/auth.service'; // 🔥 AÑADIR
 import { Propiedad, PropiedadFields } from '../../../models/airtable.interfaces';
 import { Subject } from 'rxjs';
-import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { takeUntil, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators'; // 🔥 AÑADIR switchMap
 
 @Component({
   selector: 'app-property-list',
@@ -45,12 +47,15 @@ export class PropertyListComponent implements OnInit, OnDestroy {
 
   // 🔥 FAVORITOS (SIMULADO - EN FUTURO USAR SERVICIO)
   private favoriteIds: Set<string> = new Set();
+  private favoritesLoaded = false;
 
   private destroy$ = new Subject<void>();
   private searchSubject = new Subject<string>();
 
   constructor(
     private propiedadesService: PropiedadesService,
+    private clientesService: ClientesService, // 🔥 AÑADIR
+    private authService: AuthService, // 🔥 AÑADIR
     private router: Router
   ) {
     // Configurar búsqueda con debounce
@@ -65,6 +70,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadProperties();
+    this.loadUserFavorites(); // 🔥 CARGAR FAVORITOS REALES
   }
 
   ngOnDestroy(): void {
@@ -95,6 +101,29 @@ export class PropertyListComponent implements OnInit, OnDestroy {
           console.error('Error al cargar propiedades:', error);
           this.error = 'Error al cargar las propiedades';
           this.loading = false;
+        }
+      });
+  }
+
+  /**
+   * 🔥 CARGAR FAVORITOS REALES DEL USUARIO
+   */
+  private loadUserFavorites(): void {
+    if (!this.authService.isAuthenticated) {
+      return;
+    }
+
+    this.clientesService.getMisPropiedadesInteres()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (propiedades) => {
+          this.favoriteIds = new Set(propiedades.map(p => p.id!));
+          this.favoritesLoaded = true;
+          console.log('✅ Favoritos cargados:', this.favoriteIds.size);
+        },
+        error: (error) => {
+          console.error('❌ Error al cargar favoritos:', error);
+          this.favoritesLoaded = true;
         }
       });
   }
@@ -442,7 +471,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔥 TOGGLE FAVORITO (CON STOP PROPAGATION)
+   * 🔥 TOGGLE FAVORITO REAL (REEMPLAZAR EL MÉTODO ANTERIOR)
    */
   toggleFavorite(property: Propiedad, event?: Event): void {
     // Evitar que se propague el click al contenedor padre
@@ -450,61 +479,112 @@ export class PropertyListComponent implements OnInit, OnDestroy {
       event.stopPropagation();
     }
 
+    if (!this.authService.isAuthenticated) {
+      alert('⚠️ Debes iniciar sesión para gestionar favoritos');
+      return;
+    }
+
     const propertyId = property.id;
     const propertyTitle = this.getFieldAsString(property, 'Título');
 
-    if (this.favoriteIds.has(propertyId)) {
-      this.favoriteIds.delete(propertyId);
-      console.log('💔 Eliminado de favoritos:', propertyTitle);
-    } else {
-      this.favoriteIds.add(propertyId);
-      console.log('❤️ Agregado a favoritos:', propertyTitle);
-    }
+    console.log('🔥 Toggling favorito para:', propertyTitle);
 
-    // TODO: En el futuro, conectar con el servicio de favoritos
-    console.log('🔥 Favoritos actuales:', Array.from(this.favoriteIds));
+    this.clientesService.toggleInteresUsuario(propertyId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result) => {
+          if (result.accion === 'agregada') {
+            this.favoriteIds.add(propertyId);
+            console.log('❤️ Agregado a favoritos:', propertyTitle);
+          } else {
+            this.favoriteIds.delete(propertyId);
+            console.log('💔 Quitado de favoritos:', propertyTitle);
+          }
+
+          // Mostrar mensaje de éxito
+          this.showMessage(result.mensaje, 'success');
+        },
+        error: (error) => {
+          console.error('❌ Error al toggle favorito:', error);
+          this.showMessage('Error al gestionar favoritos', 'error');
+        }
+      });
   }
 
   /**
-   * 🔥 VERIFICAR SI ES FAVORITO
+   * 🔥 VERIFICAR SI ES FAVORITO (REAL)
    */
   isFavorite(property: Propiedad): boolean {
     return this.favoriteIds.has(property.id);
   }
 
   /**
-   * ✅ OBTENER NÚMERO DE VISITAS - CAMPO REAL DE AIRTABLE
+   * 🔥 MOSTRAR MENSAJE AL USUARIO
    */
-  getVisitCount(property: Propiedad): string {
-    const fields = property.fields as any;
+  private showMessage(message: string, type: 'success' | 'error'): void {
+    // Por ahora, usar alert simple. Después se puede mejorar con toast/snackbar
+    if (type === 'success') {
+      console.log('✅', message);
+    } else {
+      console.error('❌', message);
+    }
 
-    // 🔥 USAR EL NOMBRE EXACTO DEL CAMPO EN AIRTABLE
-    const visits = fields['Número de visitas'] ||     // Nombre exacto
-                   fields['Número de Visitas'] ||     // Por si tiene mayúscula
-                   fields['numero de visitas'] ||     // Por si está en minúsculas
-                   fields['NumeroDeVisitas'] ||       // Por si no tiene espacios
-                   fields['Visitas'] ||               // Nombre corto alternativo
-                   0;
+    // Toast simple con timeout
+    const toastElement = document.createElement('div');
+    toastElement.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${type === 'success' ? '#28a745' : '#dc3545'};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 5px;
+      z-index: 9999;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    `;
+    toastElement.textContent = message;
 
-    return visits ? String(visits) : '0';
+    document.body.appendChild(toastElement);
+
+    setTimeout(() => {
+      if (document.body.contains(toastElement)) {
+        document.body.removeChild(toastElement);
+      }
+    }, 3000);
   }
 
   /**
-   * ✅ OBTENER AÑO DE CONSTRUCCIÓN - TAMBIÉN BUSCAR CAMPO REAL
+   * ✅ OBTENER AÑO DE CONSTRUCCIÓN
    */
   getConstructionYear(property: Propiedad): string {
     const fields = property.fields as any;
-
-    // 🔥 BUSCAR NOMBRES POSIBLES DEL CAMPO DE AÑO
-    const year = fields['Año de construcción'] ||     // Probable nombre exacto
-                 fields['Año de Construcción'] ||     // Con mayúscula
-                 fields['año de construcción'] ||     // En minúsculas
-                 fields['AñoDeConstruccion'] ||       // Sin espacios
-                 fields['Año construcción'] ||        // Sin "de"
-                 fields['Construido en'] ||           // Nombre alternativo
-                 fields['Año'] ||                     // Nombre corto
+    
+    const year = fields['Año de construcción'] ||
+                 fields['Año de Construcción'] ||
+                 fields['año de construcción'] ||
+                 fields['AñoDeConstruccion'] ||
+                 fields['Año construcción'] ||
+                 fields['Construido en'] ||
+                 fields['Año'] ||
                  '';
-
+                 
     return year ? String(year) : '';
+  }
+
+  /**
+   * ✅ OBTENER NÚMERO DE VISITAS
+   */
+  getVisitCount(property: Propiedad): string {
+    const fields = property.fields as any;
+    
+    const visits = fields['Número de visitas'] ||
+                   fields['Número de Visitas'] ||
+                   fields['numero de visitas'] ||
+                   fields['NumeroDeVisitas'] ||
+                   fields['Visitas'] ||
+                   0;
+                   
+    return visits ? String(visits) : '0';
   }
 }

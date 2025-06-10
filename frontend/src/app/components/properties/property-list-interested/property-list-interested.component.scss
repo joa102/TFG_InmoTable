@@ -1,0 +1,367 @@
+// ===============================
+// 🎯 PROPERTY LIST INTERESTED - ESTILOS BASADOS EN APPOINTMENT-CALENDAR
+// ===============================
+
+// 🔥 USAR @use EN LUGAR DE @import (SASS 3.0 COMPATIBLE)
+@use '../property-list/property-list.component.scss' as property-list;
+
+// ===============================
+// 🎨 PERSONALIZACIONES ESPECÍFICAS PARA INTERÉS
+// ===============================
+
+.property-list-interested-container {
+  // Mantener estilos base de property-list
+  // Pero añadir mejoras específicas para "interés"
+}
+
+// ===============================
+// 🔥 BADGE DE FAVORITO EN CARD
+// ===============================
+.favorite-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 16;
+  animation: heartbeat 1.5s ease-in-out infinite;
+
+  i {
+    font-size: 1.1rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  }
+}
+
+// ===============================
+// 🎨 ANIMACIÓN DE CORAZÓN
+// ===============================
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// ===============================
+// 🔥 HEADER ESPECÍFICO PARA INTERÉS
+// ===============================
+.property-list-header {
+  // Mantener estilos base
+
+  .property-list-title {
+    // Color especial para el título de interés
+    .fa-heart {
+      animation: heartbeat 2s ease-in-out infinite;
+    }
+  }
+}
+
+// ===============================
+// 🎯 BOTONES ESPECÍFICOS DE INTERÉS
+// ===============================
+.property-actions {
+  .btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #dc3545;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    .fa-heart-broken {
+      transition: all 0.3s ease;
+    }
+
+    &:hover .fa-heart-broken {
+      animation: shake 0.5s ease-in-out;
+    }
+  }
+}
+
+// ===============================
+// 🎨 ANIMACIÓN DE SHAKE PARA QUITAR
+// ===============================
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+// ===============================
+// 🔥 EMPTY STATES ESPECÍFICOS
+// ===============================
+.empty-state {
+  .empty-icon {
+    .fa-heart-broken {
+      color: #dc3545 !important;
+      animation: heartbreak 2s ease-in-out infinite;
+    }
+  }
+
+  .empty-title {
+    color: #2c3e50;
+    font-weight: 700;
+  }
+
+  .empty-description {
+    color: #6c757d;
+    line-height: 1.6;
+  }
+}
+
+@keyframes heartbreak {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// ===============================
+// 🎨 STATS ESPECÍFICAS PARA INTERÉS
+// ===============================
+.stats-section {
+  .stats-item {
+    .stats-number {
+      &.text-danger {
+        color: #dc3545 !important;
+        font-weight: 800;
+      }
+
+      &.text-success {
+        color: #28a745 !important;
+      }
+
+      &.text-primary {
+        color: #007bff !important;
+      }
+
+      &.text-info {
+        color: #17a2b8 !important;
+      }
+    }
+
+    .stats-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+// ===============================
+// 🔥 MEJORAS EN TABLE VIEW PARA INTERÉS
+// ===============================
+.table-view {
+  .table {
+    tbody {
+      tr {
+        position: relative;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 4px;
+          height: 100%;
+          background: linear-gradient(135deg, #dc3545, #c82333);
+          opacity: 0.7;
+        }
+
+        &:hover::before {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+// ===============================
+// 🎯 FILTROS ESPECÍFICOS PARA INTERÉS
+// ===============================
+.filters-section {
+  .filter-card {
+    .card-header {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+      color: white;
+
+      .card-title {
+        color: white;
+
+        .fa-search {
+          color: rgba(255, 255, 255, 0.9);
+        }
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 HOVER EFFECTS MEJORADOS
+// ===============================
+.clickeable-card {
+  &:hover {
+    .favorite-badge {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+  }
+}
+
+// ===============================
+// 📱 RESPONSIVE ESPECÍFICO
+// ===============================
+@media (max-width: 768px) {
+  .favorite-badge {
+    width: 32px;
+    height: 32px;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  .property-list-header {
+    .property-list-title {
+      font-size: 1.8rem;
+    }
+  }
+
+  .stats-section {
+    .stats-item {
+      padding: 1rem 0.5rem;
+
+      .stats-number {
+        font-size: 1.5rem;
+      }
+
+      .stats-label {
+        font-size: 0.75rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .favorite-badge {
+    width: 28px;
+    height: 28px;
+
+    i {
+      font-size: 0.9rem;
+    }
+  }
+
+  .property-list-header {
+    .property-list-title {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// ===============================
+// 🎨 MEJORAS DE ACCESIBILIDAD
+// ===============================
+.btn-outline-danger {
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  }
+}
+
+.favorite-badge {
+  &:hover {
+    cursor: default;
+  }
+}
+
+// ===============================
+// 🔥 PRINT STYLES
+// ===============================
+@media print {
+  .favorite-badge {
+    display: none;
+  }
+
+  .property-actions {
+    display: none;
+  }
+
+  .header-actions {
+    display: none;
+  }
+
+  .filters-section {
+    display: none;
+  }
+
+  .pagination-section {
+    display: none;
+  }
+}
+
+// ===============================
+// 🎯 NO HAY RESULTADOS DE BÚSQUEDA - MEJORADO
+// ===============================
+.empty-state {
+  .card {
+    .card-body {
+      .empty-icon {
+        i {
+          font-size: 2.5rem;
+          color: #dc3545;
+        }
+      }
+
+      .empty-title {
+        font-size: 1.5rem;
+        color: #343a40;
+        margin-top: 1rem;
+      }
+
+      .empty-description {
+        font-size: 1rem;
+        color: #868e96;
+        margin-top: 0.5rem;
+        line-height: 1.4;
+      }
+
+      .btn-primary {
+        margin-top: 1rem;
+        background-color: #dc3545;
+        border-color: #dc3545;
+
+        &:hover {
+          background-color: #c82333;
+          border-color: #c82333;
+        }
+      }
+    }
+  }
+}

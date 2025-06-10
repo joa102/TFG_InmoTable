@@ -88,7 +88,7 @@ class AirtableService
             ]);
 
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->token, // 🔥 USAR token
+                'Authorization' => 'Bearer ' . $this->token,
             ])->get($url);
 
             if ($response->successful()) {
@@ -97,7 +97,7 @@ class AirtableService
                     'id' => $record['id'],
                     'recordId' => $record['id'],
                     'createdTime' => $record['createdTime'] ?? null,
-                    ...$this->transformFields($record['fields'] ?? [])
+                    'fields' => $record['fields'] ?? [] // 🔥 MANTENER FIELDS SIN TRANSFORMAR
                 ];
 
                 Log::info("✅ Registro obtenido exitosamente", $result);
@@ -107,7 +107,7 @@ class AirtableService
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
-                return null;
+                throw new \Exception("Error al obtener registro: " . $response->body());
             }
         } catch (\Exception $e) {
             Log::error("❌ Error en getRecord", [
@@ -294,7 +294,7 @@ class AirtableService
     }
 
     /**
-     * BUSCAR REGISTROS CON FÓRMULA (MÉTODO FALTANTE)
+     * BUSCAR REGISTROS CON FÓRMULA (CORREGIDO)
      */
     public function searchRecords($tableName, $filterFormula)
     {
@@ -322,14 +322,14 @@ class AirtableService
                         'id' => $record['id'],
                         'recordId' => $record['id'],
                         'createdTime' => $record['createdTime'] ?? null,
-                        'fields' => $record['fields'] ?? [],
-                        ...$this->transformFields($record['fields'] ?? [])
+                        'fields' => $record['fields'] ?? [] // 🔥 MANTENER FIELDS SIN TRANSFORMAR
                     ];
                 })->toArray();
 
                 Log::info("✅ Búsqueda completada", [
                     'count' => count($records),
-                    'formula' => $filterFormula
+                    'formula' => $filterFormula,
+                    'records' => $records // 🔥 LOG COMPLETO PARA DEBUG
                 ]);
 
                 return $records;

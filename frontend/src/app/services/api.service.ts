@@ -50,23 +50,18 @@ export class ApiService {
   }
 
   // 🔥 MÉTODOS HTTP BASE
-  get<T>(endpoint: string, params?: any): Observable<ApiResponse<T>> {
-    let httpParams = new HttpParams();
+  get<T>(endpoint: string, options?: { params?: HttpParams }): Observable<ApiResponse<T>> {
+    const url = `${this.API_URL}/${endpoint}`;
 
-    if (params) {
-      Object.keys(params).forEach(key => {
-        if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
-          httpParams = httpParams.set(key, params[key]);
-        }
-      });
-    }
-
-    return this.http.get<ApiResponse<T>>(`${this.API_URL}/${endpoint}`, {
+    const httpOptions = {
       headers: this.getHeaders(),
-      params: httpParams
-    }).pipe(
-      catchError(this.handleError)
-    );
+      ...options // Esto incluirá los params si se pasan
+    };
+
+    return this.http.get<ApiResponse<T>>(url, httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
   getWithStats<T>(endpoint: string, params?: any): Observable<ApiResponseWithStats<T>> {

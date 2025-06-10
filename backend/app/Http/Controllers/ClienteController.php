@@ -392,34 +392,255 @@ class ClienteController extends Controller
     }
 
     /**
-     * Obtener propiedades de interés del usuario logueado
+     * 🔥 OBTENER PROPIEDADES DE INTERÉS DEL USUARIO LOGUEADO (CORREGIDO CON ESTRUCTURA REAL)
      */
     public function misPropiedadesInteres(Request $request)
     {
         try {
-            $user = $request->user();
+            Log::info('🔍 Obteniendo propiedades de interés desde Airtable');
 
-            // Buscar cliente en Airtable por email
-            $clientes = $this->airtableService->getRecords('Clientes');
-            $cliente = collect($clientes)->firstWhere('fields.Email', $user->email);
+            // 🔥 OBTENER EMAIL DEL USUARIO LOGUEADO DESDE EL FRONTEND
+            $emailUsuario = $request->get('email');
 
-            if (!$cliente) {
+            if (!$emailUsuario) {
+                Log::warning('⚠️ No se proporcionó email en el request');
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email del usuario requerido',
+                    'error' => 'Parámetro email faltante'
+                ], 400);
+            }
+
+            Log::info('📧 Buscando usuario con email: ' . $emailUsuario);
+
+            // 1️⃣ BUSCAR USUARIO EN TABLA USUARIOS POR EMAIL
+            $usuariosFormula = "LOWER({Email}) = LOWER('{$emailUsuario}')";
+            $usuarios = $this->airtableService->searchRecords('Usuarios', $usuariosFormula);
+
+            if (empty($usuarios)) {
+                Log::info('🚫 No se encontró usuario con email: ' . $emailUsuario);
+
                 return response()->json([
                     'success' => true,
                     'data' => [],
-                    'message' => 'No tienes propiedades de interés'
+                    'total' => 0,
+                    'message' => 'Usuario no encontrado en el sistema',
+                    'info' => [
+                        'email_consultado' => $emailUsuario,
+                        'usuarios_encontrados' => 0
+                    ]
                 ]);
             }
 
-            return $this->propiedadesInteres($cliente['id']);
+            $usuario = $usuarios[0];
+            Log::info('✅ Usuario encontrado: ' . $usuario['id'], [
+                'nombre' => $usuario['fields']['Nombre'] ?? 'Sin nombre',
+                'email' => $usuario['fields']['Email'] ?? 'Sin email',
+                'clientes_asignados' => $usuario['fields']['Clientes'] ?? []
+            ]);
+
+            // 2️⃣ OBTENER IDS DE CLIENTES DEL USUARIO
+            $clientesIds = $usuario['fields']['Clientes'] ?? [];
+
+            if (empty($clientesIds)) {
+                Log::info('📝 El usuario no tiene clientes asignados');
+
+                return response()->json([
+                    'success' => true,
+                    'data' => [],
+                    'total' => 0,
+                    'message' => 'El usuario no tiene clientes asignados',
+                    'info' => [
+                        'usuario_id' => $usuario['id'],
+                        'usuario_nombre' => $usuario['fields']['Nombre'] ?? 'Sin nombre',
+                        'clientes_count' => 0
+                    ]
+                ]);
+            }
+
+            Log::info('👥 Clientes del usuario: ' . count($clientesIds), $clientesIds);
+
+            // 3️⃣ OBTENER TODAS LAS PROPIEDADES DE INTERÉS DE TODOS LOS CLIENTES
+            $todasPropiedadesInteres = [];
+            $erroresClientes = [];
+
+            foreach ($clientesIds as $clienteId) {
+                try {
+                    Log::info('🔍 Obteniendo cliente: ' . $clienteId);
+
+                    $cliente = $this->airtableService->getRecord('Clientes', $clienteId);
+
+                    // 🔥 LOG COMPLETO DEL CLIENTE PARA DEBUG
+                    Log::info('👥 CLIENTE COMPLETO OBTENIDO:', [
+                        'cliente_id' => $clienteId,
+                        'cliente_nombre' => $cliente['fields']['Nombre'] ?? 'Sin nombre',
+                        'todos_los_campos' => $cliente['fields'], // 🔥 VER TODO EL CONTENIDO
+                        'campo_interes_raw' => $cliente['fields']['InteresPropiedades'] ?? 'NO_EXISTE'
+                    ]);
+
+                    if (isset($cliente['fields']['InteresPropiedades'])) {
+                        $propiedadesDelCliente = $cliente['fields']['InteresPropiedades'];
+
+                        // 🔥 LOG DETALLADO DE LAS PROPIEDADES ENCONTRADAS
+                        Log::info('🏠 PROPIEDADES DE INTERÉS ENCONTRADAS:', [
+                            'cliente_id' => $clienteId,
+                            'cantidad' => count($propiedadesDelCliente),
+                            'propiedades_ids' => $propiedadesDelCliente,
+                            'tipo_dato' => gettype($propiedadesDelCliente),
+                            'es_array' => is_array($propiedadesDelCliente)
+                        ]);
+
+                        $todasPropiedadesInteres = array_merge($todasPropiedadesInteres, $propiedadesDelCliente);
+
+                        // 🔥 LOG DEL ESTADO ACUMULADO
+                        Log::info('📊 ESTADO ACUMULADO:', [
+                            'total_acumulado' => count($todasPropiedadesInteres),
+                            'ids_acumulados' => $todasPropiedadesInteres
+                        ]);
+                    } else {
+                        Log::info('📝 Cliente sin propiedades de interés: ' . $clienteId);
+                    }
+
+                } catch (\Exception $e) {
+                    $erroresClientes[] = "Cliente {$clienteId}: " . $e->getMessage();
+                    Log::warning('❌ Error al obtener cliente ' . $clienteId . ': ' . $e->getMessage());
+                }
+            }
+
+            // Eliminar duplicados de propiedades
+            $todasPropiedadesInteres = array_unique($todasPropiedadesInteres);
+
+            if (empty($todasPropiedadesInteres)) {
+                Log::info('📝 No hay propiedades de interés en total');
+
+                return response()->json([
+                    'success' => true,
+                    'data' => [],
+                    'total' => 0,
+                    'message' => 'Aún no has marcado ninguna propiedad como favorita',
+                    'info' => [
+                        'usuario_id' => $usuario['id'],
+                        'clientes_procesados' => count($clientesIds),
+                        'propiedades_interes_count' => 0
+                    ]
+                ]);
+            }
+
+            Log::info('🏠 Total propiedades de interés encontradas: ' . count($todasPropiedadesInteres), $todasPropiedadesInteres);
+
+            // 4️⃣ OBTENER CADA PROPIEDAD DESDE TABLA PROPIEDADES
+            $propiedades = [];
+            $erroresPropiedades = [];
+
+            foreach ($todasPropiedadesInteres as $propiedadId) {
+                try {
+                    Log::info('🔍 Obteniendo propiedad: ' . $propiedadId);
+
+                    $propiedad = $this->airtableService->getRecord('Propiedades', $propiedadId);
+
+                    // Validar que la propiedad sea válida
+                    if (isset($propiedad['fields'])) {
+                        // 🔥 ADAPTAR AL FORMATO QUE ESPERA EL FRONTEND
+                        $propiedadFormateada = [
+                            'id' => $propiedad['id'],
+                            'fields' => $propiedad['fields'],
+                            'createdTime' => $propiedad['createdTime'] ?? '2024-01-01T00:00:00.000Z'
+                        ];
+
+                        $propiedades[] = $propiedadFormateada;
+                        Log::info('✅ Propiedad cargada: ' . ($propiedad['fields']['Título'] ?? 'Sin título'));
+                    } else {
+                        $erroresPropiedades[] = "Propiedad {$propiedadId}: Datos incompletos";
+                        Log::warning('⚠️ Propiedad con datos incompletos: ' . $propiedadId);
+                    }
+
+                } catch (\Exception $e) {
+                    $erroresPropiedades[] = "Propiedad {$propiedadId}: " . $e->getMessage();
+                    Log::warning('❌ Error al obtener propiedad ' . $propiedadId . ': ' . $e->getMessage());
+                }
+            }
+
+            // 5️⃣ NO APLICAR FILTROS POR ESTADO - DEVOLVER TODAS LAS PROPIEDADES
+            // $propiedadesFiltradas = array_filter($propiedades, function($propiedad) {
+            //     $estado = $propiedad['fields']['Estado'] ?? 'Disponible';
+            //     return in_array($estado, ['Disponible', 'disponible', 'Available']);
+            // });
+
+            // 🔥 DEVOLVER TODAS LAS PROPIEDADES SIN FILTRAR
+            $propiedadesFiltradas = $propiedades;
+
+            // 6️⃣ ORDENAR POR FECHA DE CREACIÓN (más recientes primero)
+            usort($propiedadesFiltradas, function($a, $b) {
+                $fechaA = $a['createdTime'] ?? '1970-01-01T00:00:00.000Z';
+                $fechaB = $b['createdTime'] ?? '1970-01-01T00:00:00.000Z';
+                return strtotime($fechaB) - strtotime($fechaA);
+            });
+
+            // 7️⃣ PREPARAR ESTADÍSTICAS ACTUALIZADAS
+            $estadisticas = [
+                'usuario_clientes' => count($clientesIds),
+                'total_interes' => count($todasPropiedadesInteres),
+                'propiedades_cargadas' => count($propiedades),
+                'total_devueltas' => count($propiedadesFiltradas), // 🔥 CAMBIAR NOMBRE
+                'disponibles' => count(array_filter($propiedades, function($p) { // 🔥 CALCULAR PERO NO FILTRAR
+                    $estado = $p['fields']['Estado'] ?? 'Disponible';
+                    return in_array($estado, ['Disponible', 'disponible', 'Available']);
+                })),
+                'no_disponibles' => count($propiedades) - count(array_filter($propiedades, function($p) {
+                    $estado = $p['fields']['Estado'] ?? 'Disponible';
+                    return in_array($estado, ['Disponible', 'disponible', 'Available']);
+                })),
+                'errores_clientes' => count($erroresClientes),
+                'errores_propiedades' => count($erroresPropiedades)
+            ];
+
+            Log::info('📊 Estadísticas finales:', $estadisticas);
+
+            // 8️⃣ RESPUESTA EXITOSA - ACTUALIZAR MENSAJE
+            $response = [
+                'success' => true,
+                'data' => array_values($propiedadesFiltradas),
+                'total' => count($propiedadesFiltradas),
+                'message' => count($propiedadesFiltradas) > 0
+                    ? 'Todas las propiedades de interés cargadas exitosamente' // 🔥 CAMBIAR MENSAJE
+                    : 'Aún no has marcado ninguna propiedad como favorita',
+                'estadisticas' => $estadisticas,
+                'info' => [
+                    'usuario_id' => $usuario['id'],
+                    'usuario_nombre' => $usuario['fields']['Nombre'] ?? 'Sin nombre',
+                    'email_consultado' => $emailUsuario,
+                    'clientes_procesados' => $clientesIds,
+                    'source' => 'Airtable - Todas las propiedades de interés (sin filtrar por estado)',
+                    'timestamp' => now()->toISOString()
+                ]
+            ];
+
+            // Añadir errores si los hay (pero no fallar la respuesta)
+            if (!empty($erroresClientes) || !empty($erroresPropiedades)) {
+                $response['warnings'] = [
+                    'message' => 'Algunos registros no se pudieron cargar',
+                    'errores_clientes' => $erroresClientes,
+                    'errores_propiedades' => $erroresPropiedades
+                ];
+            }
+
+            return response()->json($response);
 
         } catch (\Exception $e) {
-            Log::error('Error al obtener mis propiedades de interés: ' . $e->getMessage());
+            Log::error('❌ Error crítico al obtener propiedades de interés: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Error al obtener tus propiedades de interés',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'info' => [
+                    'email_consultado' => $request->get('email', 'No especificado'),
+                    'timestamp' => now()->toISOString()
+                ]
             ], 500);
         }
     }
@@ -478,6 +699,282 @@ class ClienteController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error al buscar clientes',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * 🔥 AGREGAR PROPIEDAD A INTERÉS DEL USUARIO LOGUEADO
+     */
+    public function agregarInteresUsuario(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'propiedad_id' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Datos inválidos',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $emailUsuario = $request->get('email');
+            $propiedadId = $request->get('propiedad_id');
+
+            Log::info('🔥 Agregando propiedad a interés', [
+                'email' => $emailUsuario,
+                'propiedad_id' => $propiedadId
+            ]);
+
+            // 1️⃣ BUSCAR USUARIO
+            $usuarios = $this->airtableService->searchRecords('Usuarios', 
+                "LOWER({Email}) = LOWER('{$emailUsuario}')"
+            );
+
+            if (empty($usuarios)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no encontrado'
+                ], 404);
+            }
+
+            $usuario = $usuarios[0];
+            $clientesIds = $usuario['fields']['Clientes'] ?? [];
+
+            if (empty($clientesIds)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario sin cliente asignado'
+                ], 400);
+            }
+
+            $clienteId = $clientesIds[0]; // Primer cliente
+
+            // 2️⃣ OBTENER CLIENTE Y SUS PROPIEDADES DE INTERÉS
+            $cliente = $this->airtableService->getRecord('Clientes', $clienteId);
+            $propiedadesInteres = $cliente['fields']['InteresPropiedades'] ?? [];
+
+            // 3️⃣ VERIFICAR SI YA ESTÁ EN INTERÉS
+            if (in_array($propiedadId, $propiedadesInteres)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'La propiedad ya está en tus favoritos'
+                ], 409);
+            }
+
+            // 4️⃣ AGREGAR LA NUEVA PROPIEDAD
+            $propiedadesInteres[] = $propiedadId;
+
+            $clienteActualizado = $this->airtableService->updateRecord('Clientes', $clienteId, [
+                'InteresPropiedades' => $propiedadesInteres
+            ]);
+
+            Log::info('✅ Propiedad agregada a interés exitosamente', [
+                'cliente_id' => $clienteId,
+                'propiedad_id' => $propiedadId,
+                'total_propiedades' => count($propiedadesInteres)
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Propiedad agregada a tus favoritos',
+                'data' => [
+                    'cliente_id' => $clienteId,
+                    'propiedad_id' => $propiedadId,
+                    'total_interes' => count($propiedadesInteres),
+                    'accion' => 'agregada'
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Error al agregar propiedad a interés: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al agregar la propiedad a favoritos',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * 🔥 QUITAR PROPIEDAD DE INTERÉS DEL USUARIO LOGUEADO
+     */
+    public function quitarInteresUsuario(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'propiedad_id' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Datos inválidos',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $emailUsuario = $request->get('email');
+            $propiedadId = $request->get('propiedad_id');
+
+            Log::info('🔥 Quitando propiedad de interés', [
+                'email' => $emailUsuario,
+                'propiedad_id' => $propiedadId
+            ]);
+
+            // 1️⃣ BUSCAR USUARIO
+            $usuarios = $this->airtableService->searchRecords('Usuarios', 
+                "LOWER({Email}) = LOWER('{$emailUsuario}')"
+            );
+
+            if (empty($usuarios)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario no encontrado'
+                ], 404);
+            }
+
+            $usuario = $usuarios[0];
+            $clientesIds = $usuario['fields']['Clientes'] ?? [];
+
+            if (empty($clientesIds)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Usuario sin cliente asignado'
+                ], 400);
+            }
+
+            $clienteId = $clientesIds[0];
+
+            // 2️⃣ OBTENER CLIENTE Y SUS PROPIEDADES DE INTERÉS
+            $cliente = $this->airtableService->getRecord('Clientes', $clienteId);
+            $propiedadesInteres = $cliente['fields']['InteresPropiedades'] ?? [];
+
+            // 3️⃣ VERIFICAR SI ESTÁ EN LA LISTA
+            if (!in_array($propiedadId, $propiedadesInteres)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'La propiedad no está en tus favoritos'
+                ], 409);
+            }
+
+            // 4️⃣ QUITAR LA PROPIEDAD
+            $propiedadesInteres = array_values(array_filter($propiedadesInteres, function($id) use ($propiedadId) {
+                return $id !== $propiedadId;
+            }));
+
+            $clienteActualizado = $this->airtableService->updateRecord('Clientes', $clienteId, [
+                'InteresPropiedades' => $propiedadesInteres
+            ]);
+
+            Log::info('✅ Propiedad quitada de interés exitosamente', [
+                'cliente_id' => $clienteId,
+                'propiedad_id' => $propiedadId,
+                'total_propiedades' => count($propiedadesInteres)
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Propiedad quitada de tus favoritos',
+                'data' => [
+                    'cliente_id' => $clienteId,
+                    'propiedad_id' => $propiedadId,
+                    'total_interes' => count($propiedadesInteres),
+                    'accion' => 'quitada'
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Error al quitar propiedad de interés: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al quitar la propiedad de favoritos',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * 🔥 VERIFICAR SI UNA PROPIEDAD ESTÁ EN INTERÉS DEL USUARIO LOGUEADO
+     */
+    public function verificarInteresUsuario(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'propiedad_id' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Datos inválidos',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $emailUsuario = $request->get('email');
+            $propiedadId = $request->get('propiedad_id');
+
+            // 1️⃣ BUSCAR USUARIO
+            $usuarios = $this->airtableService->searchRecords('Usuarios', 
+                "LOWER({Email}) = LOWER('{$emailUsuario}')"
+            );
+
+            if (empty($usuarios)) {
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'es_favorito' => false,
+                        'mensaje' => 'Usuario no encontrado'
+                    ]
+                ]);
+            }
+
+            $usuario = $usuarios[0];
+            $clientesIds = $usuario['fields']['Clientes'] ?? [];
+
+            if (empty($clientesIds)) {
+                return response()->json([
+                    'success' => true,
+                    'data' => [
+                        'es_favorito' => false,
+                        'mensaje' => 'Usuario sin cliente asignado'
+                    ]
+                ]);
+            }
+
+            $clienteId = $clientesIds[0];
+
+            // 2️⃣ OBTENER CLIENTE Y VERIFICAR PROPIEDADES DE INTERÉS
+            $cliente = $this->airtableService->getRecord('Clientes', $clienteId);
+            $propiedadesInteres = $cliente['fields']['InteresPropiedades'] ?? [];
+
+            $esFavorito = in_array($propiedadId, $propiedadesInteres);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'es_favorito' => $esFavorito,
+                    'cliente_id' => $clienteId,
+                    'propiedad_id' => $propiedadId
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('❌ Error al verificar interés: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al verificar interés',
                 'error' => $e->getMessage()
             ], 500);
         }

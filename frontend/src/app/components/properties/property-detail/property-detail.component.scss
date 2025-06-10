@@ -219,7 +219,7 @@
 }
 
 // ===============================
-// BOTONES DE ACCIÓN
+// BOTONES DE ACCIÓN - MEJORADOS
 // ===============================
 
 .action-buttons {
@@ -231,6 +231,90 @@
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    // 🔥 ESTILOS ESPECÍFICOS PARA BOTÓN DE FAVORITOS
+    &.btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+
+      &:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+      }
+    }
+
+    &.btn-outline-danger {
+      color: #dc3545;
+      border-color: #dc3545;
+      background: transparent;
+
+      &:hover {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+      }
+    }
+
+    // 🔥 ICONO DE CORAZÓN CON ANIMACIÓN
+    .fa-heart {
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    // 🔥 EFECTOS ESPECIALES PARA EL BOTÓN DE FAVORITOS
+    &.btn-danger .fa-heart,
+    &.btn-outline-danger:hover .fa-heart {
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+  }
+}
+
+// 🔥 ANIMACIÓN DE HEARTBEAT PARA EL CORAZÓN
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.1);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+// 🔥 ESTILOS RESPONSIVOS PARA BOTONES
+@media (max-width: 768px) {
+  .action-buttons {
+    .btn {
+      font-size: 0.95rem;
+      padding: 0.75rem 1.5rem;
+
+      &:hover {
+        transform: translateY(-1px); // 🔥 Menos movimiento en mobile
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .action-buttons {
+    .btn {
+      font-size: 0.9rem;
+      padding: 0.7rem 1.25rem;
     }
   }
 }

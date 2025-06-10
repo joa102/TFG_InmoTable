@@ -60,6 +60,13 @@ export const routes: Routes = [
       .then(c => c.AppointmentCalendarComponent)
   },
 
+  // Mis propiedades interes
+  {
+    path: 'mis-propiedades-interes',
+    loadComponent: () => import('./components/properties/property-list-interested/property-list-interested.component')
+      .then(c => c.PropertyListInterestedComponent)
+  },
+
   // Autenticación
   {
     path: 'auth',
