@@ -9,12 +9,17 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
               <li class="breadcrumb-item">
-                <a routerLink="/dashboard" class="text-decoration-none">
+                <!--<a routerLink="/dashboard" class="text-decoration-none">
                   <i class="fas fa-tachometer-alt me-1"></i>
                   Dashboard
+                </a>-->
+                <a routerLink="/propiedades" class="text-decoration-none">
+                  <i class="fas fa-building me-1"></i>
+                  Propiedades
                 </a>
               </li>
               <li class="breadcrumb-item active" aria-current="page">
+                <i class="fas fa-heart me-1"></i>
                 Mis Propiedades de Interés
               </li>
             </ol>
@@ -22,7 +27,7 @@
         </div>
 
         <!-- Botones -->
-        <div class="col-auto">
+        <!--<div class="col-auto">
           <div class="header-actions">
             <button class="btn btn-outline-primary btn-sm" (click)="toggleView()">
               <i class="fas" [class.fa-th-large]="viewMode === 'grid'" [class.fa-list]="viewMode === 'list'"></i>
@@ -33,7 +38,7 @@
               Actualizar
             </button>
           </div>
-        </div>
+        </div>-->
       </div>
     </div>
 
@@ -52,9 +57,13 @@
         <div class="col-lg-4 text-lg-end">
           <!-- 🔥 ESTRUCTURA IGUAL QUE PROPERTY-LIST -->
           <div class="header-actions d-flex gap-2 justify-content-lg-end justify-content-center mt-3 mt-lg-0">
-            <button class="btn btn-outline-success" (click)="goToPropertyList()">
+            <!--<button class="btn btn-outline-success" (click)="goToPropertyList()">
               <i class="fas fa-search me-2"></i>
               Explorar Más
+            </button>-->
+            <button class="btn btn-outline-primary" (click)="toggleView()">
+              <i class="fas" [class.fa-th-large]="viewMode === 'grid'" [class.fa-list]="viewMode === 'list'"></i>
+              {{ viewMode === 'grid' ? 'Lista' : 'Grid' }}
             </button>
             <button class="btn btn-primary" (click)="refreshProperties()">
               <i class="fas fa-sync-alt me-2"></i>
@@ -456,36 +465,49 @@
         </div>
       </div>
 
-      <!-- ✅ LIST VIEW - TABLA -->
-      <div *ngIf="!loading && !error && viewMode === 'list'" class="table-view">
+      <!-- ✅ LIST VIEW - TABLA CORREGIDA CON PLACEHOLDER -->
+      <div *ngIf="!loading && !error && viewMode === 'list'" class="card shadow-sm">
         <div class="card">
-          <div class="table-responsive">
+          <div class="table-responsive" style="border-radius: 20px;">
             <table class="table mb-0">
               <thead>
                 <tr>
-                  <th>Imagen</th>
-                  <th>Propiedad</th>
-                  <th>Tipo</th>
-                  <th>Precio</th>
-                  <th>Ubicación</th>
-                  <th>Características</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
+                  <th class="border-0">Imagen</th>
+                  <th class="border-0">Propiedad</th>
+                  <th class="border-0">Tipo</th>
+                  <th class="border-0">Precio</th>
+                  <th class="border-0">Ubicación</th>
+                  <th class="border-0">Características</th>
+                  <th class="border-0">Estado</th>
+                  <th class="border-0">Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let property of paginatedProperties; trackBy: trackByProperty"
-                    (click)="navigateToDetail(property)"
-                    [title]="'Ver detalles de ' + getFieldAsString(property, 'Título')">
+                <tr *ngFor="let property of paginatedProperties; trackBy: trackByProperty" style="border-style: hidden !important;">
+
+                  <!-- 🔥 CELDA DE IMAGEN CORREGIDA CON PLACEHOLDER -->
                   <td class="align-middle">
-                    <img
-                      [src]="getPropertyImage(property)"
-                      [alt]="getFieldAsString(property, 'Título')"
-                      class="rounded shadow-sm"
-                      style="width: 60px; height: 60px; object-fit: cover;"
-                      (error)="onImageError($event)"
-                    />
+                    <!-- 🔥 CASO 1: HAY IMAGEN VÁLIDA -->
+                    <div *ngIf="hasPropertyImage(property); else noImageTableTemplate">
+                      <img
+                        [src]="getPropertyImage(property)"
+                        [alt]="getFieldAsString(property, 'Título')"
+                        class="rounded shadow-sm"
+                        style="width: 60px; height: 60px; object-fit: cover;"
+                        (error)="onImageError($event)"
+                      />
+                    </div>
+
+                    <!-- 🔥 CASO 2: NO HAY IMAGEN - PLACEHOLDER PARA TABLA -->
+                    <ng-template #noImageTableTemplate>
+                      <div class="d-flex align-items-center justify-content-center bg-light rounded"
+                           style="width: 60px; height: 60px;">
+                        <i class="fas fa-image text-muted"></i>
+                      </div>
+                    </ng-template>
                   </td>
+
+                  <!-- 🔥 RESTO CELDAS SIN CAMBIOS -->
                   <td class="align-middle">
                     <div class="d-flex align-items-center">
                       <div>

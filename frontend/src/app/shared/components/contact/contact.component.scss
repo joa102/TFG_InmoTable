@@ -184,10 +184,13 @@
 .breadcrumb {
   background: white;
   border-radius: 8px;
-  padding: 12px 20px;
+  //padding: 12px 20px;
+  padding: 1rem 1.5rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
   .breadcrumb-item {
+    font-size: 0.95rem;
+
     a {
       color: #0d6efd;
       text-decoration: none;

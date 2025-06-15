@@ -429,9 +429,9 @@ export class PropertyDetailComponent implements OnInit, OnDestroy, AfterViewInit
   /**
    * Contactar sobre esta propiedad
    */
-  contactAboutProperty(): void {
-    console.log('Contactar sobre propiedad:', this.property?.id);
-  }
+  //contactAboutProperty(): void {
+  //  console.log('Contactar sobre propiedad:', this.property?.id);
+  //}
 
   /**
    * ✅ OBTENER NÚMERO DE VISITAS - CAMPO REAL DE AIRTABLE

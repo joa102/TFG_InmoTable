@@ -98,6 +98,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.router.navigate(['/auth/login']);
   }
 
+    /**
+   * 🔙 Ir al contact
+   */
+  goToContact(): void {
+    console.log('🔙 Navegando a contacto...');
+    this.router.navigate(['/contacto']);
+  }
+
   /**
    * 🏠 Ir a inicio
    */

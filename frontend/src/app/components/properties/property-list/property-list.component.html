@@ -9,20 +9,29 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
               <li class="breadcrumb-item">
-                <a routerLink="/dashboard" class="text-decoration-none">
+                <!--<a routerLink="/dashboard" class="text-decoration-none">
                   <i class="fas fa-tachometer-alt me-1"></i>
                   Dashboard
+                </a>-->
+                <a routerLink="/" class="text-decoration-none">
+                  <i class="fas fa-home me-1"></i>
+                  Inicio
                 </a>
               </li>
               <li class="breadcrumb-item active" aria-current="page">
+                <i class="fas fa-building me-1"></i>
                 Listado de Propiedades
+                <!-- 🔥 INDICADOR DE FILTROS ACTIVOS -->
+                <span *ngIf="hasActiveFilters()" class="badge bg-primary ms-2">
+                  <i class="fas fa-filter me-1"></i>Filtros activos
+                </span>
               </li>
             </ol>
           </nav>
         </div>
 
         <!-- Botones que mantienen su tamaño -->
-        <div class="col-auto">
+        <!--<div class="col-auto">
           <div class="header-actions">
             <button class="btn btn-outline-primary btn-sm" (click)="toggleView()">
               <i class="fas" [class.fa-th-large]="viewMode === 'grid'" [class.fa-list]="viewMode === 'list'"></i>
@@ -33,7 +42,7 @@
               Actualizar
             </button>
           </div>
-        </div>
+        </div>-->
       </div>
     </div>
 
@@ -48,6 +57,20 @@
           <p class="property-list-subtitle mb-0">
             Descubre la propiedad perfecta para ti entre nuestra selección exclusiva de inmuebles
           </p>
+
+          <!-- 🔥 BANNER DE FILTROS ACTIVOS DESDE HOME -->
+          <!--<div *ngIf="hasActiveFilters()" class="alert alert-info mt-3 mb-0">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-search me-2"></i>
+              <span class="flex-grow-1">
+                <strong>Búsqueda aplicada:</strong>
+                Mostrando {{ filteredProperties.length }} resultados con los filtros seleccionados
+              </span>
+              <button class="btn btn-sm btn-outline-primary ms-2" (click)="clearFilters()">
+                <i class="fas fa-times me-1"></i>Limpiar filtros
+              </button>
+            </div>
+          </div>-->
         </div>
         <div class="col-lg-4 text-lg-end">
           <div class="d-flex gap-2 justify-content-lg-end justify-content-center mt-3 mt-lg-0">
@@ -245,7 +268,7 @@
                   />
                 </div>
 
-                <!-- 🔥 CASO 2: NO HAY IMAGEN - IGUAL QUE PROPERTY-DETAIL -->
+                <!-- 🔥 CASO 2: NO HAY IMAGEN -->
                 <ng-template #noImageTemplate>
                   <div class="property-image-placeholder d-flex align-items-center justify-content-center">
                     <div class="text-center">
@@ -261,9 +284,12 @@
                   {{ getFieldAsString(property, 'Estado') || 'Disponible' }}
                 </div>
 
-                <!-- Overlay de hover mejorado - solo si hay imagen -->
-                <!--<div class="card-hover-overlay" *ngIf="hasPropertyImage(property)">-->
-                <!-- 🔥 OVERLAY DE HOVER - SIEMPRE VISIBLE (CON O SIN IMAGEN) -->
+                <!-- 🔥 FAVORITE BADGE - SOLO SI ES FAVORITO -->
+                <div *ngIf="isFavorite(property)" class="favorite-badge">
+                  <i class="fas fa-heart text-danger"></i>
+                </div>
+
+                <!-- Overlay de hover -->
                 <div class="card-hover-overlay">
                   <i class="fas fa-eye"></i>
                   <span>Ver Detalles</span>
@@ -341,13 +367,19 @@
                 <div class="property-actions">
                   <div class="row g-2">
                     <div class="col-6">
+                      <!-- 🔥 CAMBIO: De "Contactar" a "Solicitar Cita" -->
+                      <!--<button
+                        class="btn btn-primary w-100"
+                        (click)="requestAppointment(property, $event)"
+                        title="Solicitar cita para esta propiedad"
+                      >-->
                       <button
-                        class="btn btn-outline-success w-100"
-                        (click)="contactProperty(property, $event)"
-                        title="Contactar sobre esta propiedad"
+                        class="btn btn-primary btn-lg w-100"
+                        (click)="requestAppointment(property, $event)"
+                        title="Solicitar cita para esta propiedad"
                       >
-                        <i class="fas fa-phone me-2"></i>
-                        Contactar
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        Solicitar Cita
                       </button>
                     </div>
                     <div class="col-6">
@@ -409,7 +441,7 @@
                 <tr *ngFor="let property of paginatedProperties; trackBy: trackByProperty"
                     (click)="navigateToDetail(property)"
                     [title]="'Ver detalles de ' + getFieldAsString(property, 'Título')">
-                  <td class="align-middle">
+                  <!--<td class="align-middle">
                     <img
                       [src]="getPropertyImage(property)"
                       [alt]="getFieldAsString(property, 'Título')"
@@ -417,14 +449,43 @@
                       style="width: 60px; height: 60px; object-fit: cover;"
                       (error)="onImageError($event)"
                     />
-                  </td>
+                  </td>-->
+                  <!-- 🔥 CELDA DE IMAGEN CORREGIDA CON PLACEHOLDER -->
                   <td class="align-middle">
-                    <div class="fw-bold text-truncate" style="max-width: 200px;" [title]="getFieldAsString(property, 'Título')">
-                      {{ getFieldAsString(property, 'Título') }}
+                    <!-- 🔥 CASO 1: HAY IMAGEN VÁLIDA -->
+                    <div *ngIf="hasPropertyImage(property); else noImageTableTemplate">
+                      <img
+                        [src]="getPropertyImage(property)"
+                        [alt]="getFieldAsString(property, 'Título')"
+                        class="rounded shadow-sm"
+                        style="width: 60px; height: 60px; object-fit: cover;"
+                        (error)="onImageError($event)"
+                      />
                     </div>
-                    <small class="text-muted text-truncate d-block" style="max-width: 200px;">
-                      {{ getFieldAsString(property, 'Descripción') }}
-                    </small>
+
+                    <!-- 🔥 CASO 2: NO HAY IMAGEN - PLACEHOLDER PARA TABLA -->
+                    <ng-template #noImageTableTemplate>
+                      <div class="d-flex align-items-center justify-content-center bg-light rounded"
+                           style="width: 60px; height: 60px;">
+                        <i class="fas fa-image text-muted"></i>
+                      </div>
+                    </ng-template>
+                  </td>
+
+                  <!-- 🔥 RESTO CELDAS SIN CAMBIOS -->
+                  <td class="align-middle">
+                    <div class="d-flex align-items-center">
+                      <div>
+                        <div class="fw-bold text-truncate" style="max-width: 200px;" [title]="getFieldAsString(property, 'Título')">
+                          {{ getFieldAsString(property, 'Título') }}
+                        </div>
+                        <small class="text-muted text-truncate d-block" style="max-width: 200px;">
+                          {{ getFieldAsString(property, 'Descripción') }}
+                        </small>
+                      </div>
+                      <!-- 🔥 FAVORITE ICON EN LA TABLA -->
+                      <i *ngIf="isFavorite(property)" class="fas fa-heart text-danger ms-2" title="En mis favoritos"></i>
+                    </div>
                   </td>
                   <td class="align-middle">
                     <span class="badge bg-secondary">{{ getFieldAsString(property, 'Tipo') }}</span>
@@ -461,12 +522,13 @@
                   </td>
                   <td class="align-middle">
                     <div class="btn-group" role="group">
+                      <!-- 🔥 CAMBIO: En la vista de tabla también -->
                       <button
-                        class="btn btn-sm btn-outline-success"
-                        (click)="contactProperty(property, $event)"
-                        title="Contactar"
+                        class="btn btn-sm btn-primary"
+                        (click)="requestAppointment(property, $event)"
+                        title="Solicitar cita"
                       >
-                        <i class="fas fa-phone"></i>
+                        <i class="fas fa-calendar-alt"></i>
                       </button>
                       <button
                         class="btn btn-sm"

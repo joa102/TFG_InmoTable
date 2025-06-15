@@ -35,7 +35,7 @@
             <ol class="breadcrumb mb-0">
               <li class="breadcrumb-item">
                 <a routerLink="/propiedades" class="text-decoration-none">
-                  <i class="fas fa-home me-1"></i>
+                  <i class="fas fa-building me-1"></i>
                   Propiedades
                 </a>
               </li>
@@ -47,14 +47,14 @@
         </div>
 
         <!-- Botón que mantiene su tamaño - MISMO ESTILO QUE PROPERTY-LIST -->
-        <div class="col-auto">
+        <!--<div class="col-auto">
           <div class="header-actions">
             <button class="btn btn-outline-primary btn-sm" (click)="goBack()">
               <i class="fas fa-arrow-left me-1"></i>
               Volver a la lista
             </button>
           </div>
-        </div>
+        </div>-->
       </div>
     </div>
 
@@ -65,16 +65,21 @@
           <h1 class="property-title display-5 fw-bold mb-2">
             {{ getFieldAsString('Título') || 'Propiedad sin título' }}
           </h1>
-          <div class="property-price fs-2 fw-bold text-primary mb-3">
-            {{ formatPrice(getFieldAsNumber('Precio')) }}
-          </div>
-          <div class="property-location text-muted">
-            <i class="fas fa-map-marker-alt me-2"></i>
-            {{ getFieldAsString('Dirección') || 'Ubicación no especificada' }}
-          </div>
-        </div>
 
-        <div class="col-lg-4 text-lg-end">
+          <!--<div class="row">
+            <div class="col-lg-4">-->
+              <div class="property-price fs-2 fw-bold text-primary mb-3">
+                {{ formatPrice(getFieldAsNumber('Precio')) }}
+              </div>
+            <!--</div>
+            <div class="col-lg-4 mt-2">-->
+              <div class="property-location text-muted mb-3">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                {{ getFieldAsString('Dirección') || 'Ubicación no especificada' }}
+              </div>
+            <!--</div>
+          </div>-->
+
           <div class="property-quick-info">
             <div class="row g-2">
               <div class="col-auto" *ngIf="getFieldAsNumber('Habitaciones')">
@@ -97,7 +102,45 @@
               </div>
             </div>
           </div>
+
         </div>
+
+        <div class="col-lg-4 text-lg-end">
+
+          <div class="contact-actions">
+            <div class="header-actions">
+              <button class="btn btn-primary" (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>
+                Volver
+              </button>
+            </div>
+          </div>
+
+          <!--<div class="property-quick-info">
+            <div class="row g-2">
+              <div class="col-auto" *ngIf="getFieldAsNumber('Habitaciones')">
+                <div class="info-badge">
+                  <i class="fas fa-bed text-primary"></i>
+                  <span class="ms-1">{{ getFieldAsNumber('Habitaciones') }} hab.</span>
+                </div>
+              </div>
+              <div class="col-auto" *ngIf="getFieldAsNumber('Baños')">
+                <div class="info-badge">
+                  <i class="fas fa-bath text-primary"></i>
+                  <span class="ms-1">{{ getFieldAsNumber('Baños') }} baños</span>
+                </div>
+              </div>
+              <div class="col-auto" *ngIf="getFieldAsNumber('Superficie')">
+                <div class="info-badge">
+                  <i class="fas fa-expand-arrows-alt text-primary"></i>
+                  <span class="ms-1">{{ getFieldAsNumber('Superficie') }} m²</span>
+                </div>
+              </div>
+            </div>
+          </div>-->
+
+        </div>
+
       </div>
     </div>
 
@@ -222,7 +265,7 @@
         <div class="action-buttons mb-4">
           <!-- 🔥 BOTÓN DE FAVORITOS CON LOADING STATE -->
           <button
-            class="btn btn-lg w-100"
+            class="btn btn-lg mb-3 w-100"
             [class.btn-danger]="isFavorite()"
             [class.text-white]="isFavorite()"
             [class.btn-outline-danger]="!isFavorite()"
@@ -236,6 +279,17 @@
             <span *ngIf="favoriteLoading">{{ isFavorite() ? 'Quitando...' : 'Agregando...' }}</span>
             <span *ngIf="!favoriteLoading">{{ isFavorite() ? 'Quitar de Favoritos' : 'Agregar a Favoritos' }}</span>
           </button>
+
+          <button class="btn btn-primary btn-lg w-100" (click)="requestAppointment()">
+            <i class="fas fa-calendar-alt me-2"></i>
+            Solicitar Cita
+          </button>
+
+          <!--<button class="btn btn-outline-primary btn-lg mb-3 w-100" (click)="contactAboutProperty()">
+            <i class="fas fa-envelope me-2"></i>
+            Más Información
+          </button>-->
+
         </div>
 
         <!-- Property Information Card -->
@@ -295,44 +349,6 @@
           </div>
         </div>
 
-        <!-- ✅ CLASIFICACIÓN ENERGÉTICA - NUEVO -->
-        <div class="mb-4" *ngIf="hasEnergyInfo()">
-          <app-energy-rating
-            [data]="getEnergyRatingData()"
-            [showConsumption]="true"
-            size="medium">
-          </app-energy-rating>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons mb-4">
-          <button class="btn btn-primary btn-lg mb-3 w-100" (click)="requestAppointment()">
-            <i class="fas fa-calendar-alt me-2"></i>
-            Solicitar Cita
-          </button>
-          <button class="btn btn-outline-primary btn-lg mb-3 w-100" (click)="contactAboutProperty()">
-            <i class="fas fa-envelope me-2"></i>
-            Más Información
-          </button>
-
-          <!-- 🔥 BOTÓN DE FAVORITOS CON LOADING STATE -->
-          <button
-            class="btn btn-lg w-100"
-            [class.btn-danger]="isFavorite()"
-            [class.text-white]="isFavorite()"
-            [class.btn-outline-danger]="!isFavorite()"
-            [disabled]="favoriteLoading"
-            (click)="toggleFavorite($event)"
-            [title]="isFavorite() ? 'Quitar de favoritos' : 'Agregar a favoritos'"
-          >
-            <!-- 🔥 MOSTRAR SPINNER SI ESTÁ CARGANDO -->
-            <span *ngIf="favoriteLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
-            <i *ngIf="!favoriteLoading" class="fas fa-heart me-2"></i>
-            <span *ngIf="favoriteLoading">{{ isFavorite() ? 'Quitando...' : 'Agregando...' }}</span>
-            <span *ngIf="!favoriteLoading">{{ isFavorite() ? 'Quitar de Favoritos' : 'Agregar a Favoritos' }}</span>
-          </button>
-        </div>
-
         <!-- Additional Info -->
         <div class="card">
           <div class="card-header">
@@ -361,6 +377,15 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- ✅ CLASIFICACIÓN ENERGÉTICA - NUEVO -->
+        <div class="mb-4" *ngIf="hasEnergyInfo()">
+          <app-energy-rating
+            [data]="getEnergyRatingData()"
+            [showConsumption]="true"
+            size="medium">
+          </app-energy-rating>
         </div>
 
       </div>

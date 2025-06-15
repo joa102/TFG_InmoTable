@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router'; // 🔥 AÑADIR ActivatedRoute
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators'; // 🔥 AÑADIR debounceTime, distinctUntilChanged
 
 // Servicios
 import { PropiedadesService } from '../../services/propiedades.service';
-import { AuthService, User } from '../../services/auth.service'; // 🔥 IMPORT CORRECTO
+import { AuthService, User } from '../../services/auth.service';
 import { EmpresaService } from '../../services/empresa.service';
 
 // Interfaces
@@ -29,19 +29,29 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // 🏠 DATOS PRINCIPALES
   featuredProperties: Propiedad[] = [];
+  allProperties: Propiedad[] = []; // 🔥 AÑADIR: Todas las propiedades para filtrar
+  filteredProperties: Propiedad[] = []; // 🔥 AÑADIR: Propiedades filtradas
   empresaData: Empresa | null = null;
   loading = true;
   error: string | null = null;
 
-  // 🔐 ESTADO DE AUTENTICACIÓN - 🔥 USAR USER DEL AUTH.SERVICE
+  // 🔐 ESTADO DE AUTENTICACIÓN
   isLoggedIn = false;
   currentUser: User | null = null;
 
-  // 🔍 BÚSQUEDA HERO
+  // 🔥 BÚSQUEDA HERO - MEJORADA COMO PROPERTY-LIST
   searchTerm = '';
   searchType = '';
   searchLocation = '';
   priceRange = '';
+
+  // 🔥 AÑADIR: FILTROS ADICIONALES PARA FUNCIONALIDAD COMPLETA
+  filterStatus = 'Disponible'; // Por defecto solo disponibles
+  priceMin: number | null = null;
+  priceMax: number | null = null;
+
+  // 🔥 VISTA DE PROPIEDADES EN HERO
+  showFilteredResults = false; // Si mostrar resultados filtrados en lugar de destacadas
 
   // 📊 ESTADÍSTICAS
   stats = {
@@ -63,17 +73,29 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private favoriteIds: Set<string> = new Set();
   private destroy$ = new Subject<void>();
+  private searchSubject = new Subject<string>(); // 🔥 AÑADIR: Subject para debounce
 
   constructor(
     private propiedadesService: PropiedadesService,
     private authService: AuthService,
     private empresaService: EmpresaService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private route: ActivatedRoute // 🔥 AÑADIR
+  ) {
+    // 🔥 CONFIGURAR BÚSQUEDA CON DEBOUNCE COMO PROPERTY-LIST
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.applyHeroFilters();
+    });
+  }
 
   ngOnInit(): void {
     console.log('🏠 Inicializando HomeComponent...');
     this.checkAuthStatus();
+    this.loadQueryParams(); // 🔥 AÑADIR: Cargar params de URL
     this.loadHomeData();
   }
 
@@ -82,17 +104,32 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // 🔥 MÉTODO ÚNICO Y CORRECTO DE AUTENTICACIÓN
+  // 🔥 AÑADIR: CARGAR PARÁMETROS DE URL
+  /**
+   * 📥 Cargar parámetros de URL (si viene de navegación)
+   */
+  private loadQueryParams(): void {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      if (params['search']) this.searchTerm = params['search'];
+      if (params['type']) this.searchType = params['type'];
+      if (params['location']) this.searchLocation = params['location'];
+      if (params['priceRange']) this.priceRange = params['priceRange'];
+      if (params['priceMin']) this.priceMin = +params['priceMin'];
+      if (params['priceMax']) this.priceMax = +params['priceMax'];
+
+      console.log('📥 Parámetros cargados desde URL:', params);
+    });
+  }
+
+  // 🔥 MÉTODO ÚNICO Y CORRECTO DE AUTENTICACIÓN (SIN CAMBIOS)
   /**
    * 🔐 Verificar estado de autenticación
    */
   private checkAuthStatus(): void {
     try {
-      // 🔥 VERIFICAR ESTADO INICIAL CON EL GETTER
       this.isLoggedIn = this.authService.isAuthenticated;
 
       if (this.isLoggedIn) {
-        // 🔥 OBTENER USUARIO ACTUAL
         this.authService.getCurrentUser()
           .pipe(takeUntil(this.destroy$))
           .subscribe({
@@ -123,28 +160,42 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   private loadHomeData(): void {
     this.loading = true;
-    this.loadFeaturedProperties();
+    this.loadAllProperties(); // 🔥 CAMBIO: Cargar todas las propiedades
     this.loadEmpresaData();
   }
 
+  // 🔥 CAMBIO: CARGAR TODAS LAS PROPIEDADES PARA FILTRAR
   /**
-   * 🌟 Cargar propiedades destacadas
+   * 🏠 Cargar todas las propiedades (para filtros y destacadas)
    */
-  private loadFeaturedProperties(): void {
+  private loadAllProperties(): void {
     this.propiedadesService.getAll()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: any) => {
-          const allProperties = response.data || [];
-          this.featuredProperties = allProperties
+          const properties = response.data || [];
+          this.allProperties = properties;
+
+          // Propiedades destacadas (disponibles, primeras 6)
+          this.featuredProperties = properties
             .filter((p: Propiedad) => p.fields?.Estado === 'Disponible')
             .slice(0, 6);
-          this.stats.totalProperties = allProperties.length;
+
+          this.stats.totalProperties = properties.length;
           this.loading = false;
-          console.log('✅ Propiedades destacadas cargadas:', this.featuredProperties.length);
+
+          // 🔥 APLICAR FILTROS INICIALES SI HAY PARÁMETROS
+          if (this.hasActiveFilters()) {
+            this.applyHeroFilters();
+          }
+
+          console.log('✅ Propiedades cargadas:', {
+            total: properties.length,
+            destacadas: this.featuredProperties.length
+          });
         },
         error: (error: any) => {
-          console.error('❌ Error al cargar propiedades destacadas:', error);
+          console.error('❌ Error al cargar propiedades:', error);
           this.error = 'Error al cargar las propiedades';
           this.loading = false;
         }
@@ -152,7 +203,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🏢 Cargar datos de empresa
+   * 🏢 Cargar datos de empresa (SIN CAMBIOS)
    */
   private loadEmpresaData(): void {
     this.empresaService.getByName('InmoTable')
@@ -173,35 +224,184 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // ===============================
-  // 🚀 MÉTODOS DE NAVEGACIÓN
+  // 🔥 MÉTODOS DE FILTRADO COMO PROPERTY-LIST
   // ===============================
 
   /**
-   * 🔍 Realizar búsqueda
+   * 🔍 Verificar si hay filtros activos
+   */
+  hasActiveFilters(): boolean { // 🔥 QUITAR 'private'
+    return !!(this.searchTerm || this.searchType || this.searchLocation ||
+              this.priceRange || this.priceMin || this.priceMax);
+  }
+
+  /**
+   * 🎯 Aplicar filtros en el hero (en tiempo real)
+   */
+  private applyHeroFilters(): void {
+    if (!this.hasActiveFilters()) {
+      this.showFilteredResults = false;
+      this.filteredProperties = [];
+      return;
+    }
+
+    let filtered = [...this.allProperties];
+
+    // 🔍 Filtro por texto
+    if (this.searchTerm.trim()) {
+      const searchLower = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(property =>
+        this.getFieldAsString(property, 'Título').toLowerCase().includes(searchLower) ||
+        this.getFieldAsString(property, 'Descripción').toLowerCase().includes(searchLower) ||
+        this.getFieldAsString(property, 'Dirección').toLowerCase().includes(searchLower) ||
+        this.getFieldAsString(property, 'Tipo').toLowerCase().includes(searchLower)
+      );
+    }
+
+    // 🏠 Filtro por tipo
+    if (this.searchType) {
+      filtered = filtered.filter(property =>
+        this.getFieldAsString(property, 'Tipo') === this.searchType
+      );
+    }
+
+    // 📍 Filtro por ubicación
+    if (this.searchLocation) {
+      filtered = filtered.filter(property =>
+        this.getFieldAsString(property, 'Dirección').toLowerCase().includes(this.searchLocation.toLowerCase())
+      );
+    }
+
+    // 💰 Filtro por rango de precio
+    if (this.priceRange) {
+      const [min, max] = this.priceRange.split('-').map(Number);
+      if (min) {
+        filtered = filtered.filter(property =>
+          this.getFieldAsNumber(property, 'Precio') >= min
+        );
+      }
+      if (max && max !== 999999) {
+        filtered = filtered.filter(property =>
+          this.getFieldAsNumber(property, 'Precio') <= max
+        );
+      }
+    }
+
+    // 🔢 Filtros por precio manual
+    if (this.priceMin !== null && this.priceMin > 0) {
+      filtered = filtered.filter(property =>
+        this.getFieldAsNumber(property, 'Precio') >= this.priceMin!
+      );
+    }
+
+    if (this.priceMax !== null && this.priceMax > 0) {
+      filtered = filtered.filter(property =>
+        this.getFieldAsNumber(property, 'Precio') <= this.priceMax!
+      );
+    }
+
+    // 🏷️ Solo propiedades disponibles (por defecto en home)
+    filtered = filtered.filter(property =>
+      this.getFieldAsString(property, 'Estado') === 'Disponible'
+    );
+
+    this.filteredProperties = filtered.slice(0, 6); // Máximo 6 en home
+    this.showFilteredResults = true;
+
+    console.log('🎯 Filtros aplicados:', {
+      total: filtered.length,
+      mostrados: this.filteredProperties.length,
+      filtros: {
+        searchTerm: this.searchTerm,
+        searchType: this.searchType,
+        searchLocation: this.searchLocation,
+        priceRange: this.priceRange
+      }
+    });
+  }
+
+  /**
+   * 🔍 Change en búsqueda con debounce
+   */
+  onSearchChange(): void {
+    this.searchSubject.next(this.searchTerm);
+  }
+
+  /**
+   * 🏠 Change en tipo de propiedad
+   */
+  onTypeChange(): void {
+    this.applyHeroFilters();
+  }
+
+  /**
+   * 📍 Change en ubicación
+   */
+  onLocationChange(): void {
+    this.applyHeroFilters();
+  }
+
+  /**
+   * 💰 Change en rango de precio
+   */
+  onPriceRangeChange(): void {
+    // Si se selecciona un rango, limpiar precios manuales
+    if (this.priceRange) {
+      this.priceMin = null;
+      this.priceMax = null;
+    }
+    this.applyHeroFilters();
+  }
+
+  /**
+   * 🧹 Limpiar todos los filtros
+   */
+  clearHeroFilters(): void {
+    this.searchTerm = '';
+    this.searchType = '';
+    this.searchLocation = '';
+    this.priceRange = '';
+    this.priceMin = null;
+    this.priceMax = null;
+    this.showFilteredResults = false;
+    this.filteredProperties = [];
+  }
+
+  // ===============================
+  // 🚀 MÉTODOS DE NAVEGACIÓN MEJORADOS
+  // ===============================
+
+  /**
+   * 🔍 Realizar búsqueda (navegar a property-list con filtros)
    */
   performSearch(): void {
     const queryParams: any = {};
+
+    // 🔥 PASAR TODOS LOS FILTROS ACTIVOS
     if (this.searchTerm) queryParams.search = this.searchTerm;
     if (this.searchType) queryParams.type = this.searchType;
     if (this.searchLocation) queryParams.location = this.searchLocation;
     if (this.priceRange) {
       const [min, max] = this.priceRange.split('-');
       if (min) queryParams.priceMin = min;
-      if (max) queryParams.priceMax = max;
+      if (max && max !== '999999') queryParams.priceMax = max;
     }
-    console.log('🔍 Realizando búsqueda con:', queryParams);
+    if (this.priceMin) queryParams.priceMin = this.priceMin;
+    if (this.priceMax) queryParams.priceMax = this.priceMax;
+
+    console.log('🔍 Navegando a property-list con filtros:', queryParams);
     this.router.navigate(['/propiedades'], { queryParams });
   }
 
   /**
-   * 🏠 Ver todas las propiedades
+   * 🏠 Ver todas las propiedades (SIN CAMBIOS)
    */
   viewAllProperties(): void {
     this.router.navigate(['/propiedades']);
   }
 
   /**
-   * 🏠 Ver detalles de propiedad
+   * 🏠 Ver detalles de propiedad (SIN CAMBIOS)
    */
   viewProperty(property: Propiedad): void {
     if (property.id) {
@@ -210,28 +410,28 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 📞 Ir a contacto
+   * 📞 Ir a contacto (SIN CAMBIOS)
    */
   goToContact(): void {
     this.router.navigate(['/contacto']);
   }
 
   /**
-   * 👤 Ir a registro
+   * 👤 Ir a registro (SIN CAMBIOS)
    */
   goToRegister(): void {
     this.router.navigate(['/auth/register']);
   }
 
   /**
-   * 👤 Ir a perfil
+   * 👤 Ir a perfil (SIN CAMBIOS)
    */
   goToProfile(): void {
     this.router.navigate(['/dashboard']);
   }
 
   // ===============================
-  // 🔧 MÉTODOS AUXILIARES
+  // 🔧 MÉTODOS AUXILIARES (SIN CAMBIOS)
   // ===============================
 
   /**
@@ -359,5 +559,43 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   getEmpresaNombre(): string {
     return this.empresaData?.nombre || 'InmoTable';
+  }
+
+  // 🔥 AÑADIR: MÉTODOS PARA EL TEMPLATE
+  /**
+   * 🎯 Obtener propiedades a mostrar (filtradas o destacadas)
+   */
+  getDisplayProperties(): Propiedad[] {
+    return this.showFilteredResults ? this.filteredProperties : this.featuredProperties;
+  }
+
+  /**
+   * 📊 Obtener título de sección dinámico
+   */
+  getSectionTitle(): string {
+    if (this.showFilteredResults) {
+      const count = this.filteredProperties.length;
+      return `Resultados de búsqueda (${count})`;
+    }
+    return 'Propiedades Destacadas';
+  }
+
+  /**
+   * 📝 Obtener subtítulo de sección dinámico
+   */
+  getSectionSubtitle(): string {
+    if (this.showFilteredResults) {
+      return this.filteredProperties.length > 0
+        ? 'Propiedades que coinciden con tu búsqueda'
+        : 'No se encontraron propiedades con estos filtros';
+    }
+    return 'Descubre las mejores oportunidades inmobiliarias';
+  }
+
+  /**
+   * 🧹 Mostrar botón de limpiar filtros
+   */
+  shouldShowClearButton(): boolean { // 🔥 ASEGURAR QUE ES PUBLIC
+    return this.showFilteredResults && this.hasActiveFilters();
   }
 }

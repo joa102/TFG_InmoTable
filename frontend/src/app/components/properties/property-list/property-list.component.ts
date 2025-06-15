@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router'; // 🔥 AÑADIR ActivatedRoute
 import { PropiedadesService } from '../../../services/propiedades.service';
-import { ClientesService } from '../../../services/clientes.service'; // 🔥 AÑADIR
-import { AuthService } from '../../../services/auth.service'; // 🔥 AÑADIR
+import { ClientesService } from '../../../services/clientes.service';
+import { AuthService } from '../../../services/auth.service';
 import { Propiedad, PropiedadFields } from '../../../models/airtable.interfaces';
 import { Subject } from 'rxjs';
-import { takeUntil, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators'; // 🔥 AÑADIR switchMap
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-property-list',
@@ -31,7 +31,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   loading = true;
   error: string | null = null;
 
-  // ✅ FILTROS
+  // ✅ FILTROS - 🔥 MEJORAR PARA MANEJAR PARAMS DE URL
   searchText = '';
   filterType = '';
   filterStatus = '';
@@ -45,7 +45,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   currentPage = 1;
   itemsPerPage = 12;
 
-  // 🔥 FAVORITOS (SIMULADO - EN FUTURO USAR SERVICIO)
+  // 🔥 FAVORITOS
   private favoriteIds: Set<string> = new Set();
   private favoritesLoaded = false;
 
@@ -54,9 +54,10 @@ export class PropertyListComponent implements OnInit, OnDestroy {
 
   constructor(
     private propiedadesService: PropiedadesService,
-    private clientesService: ClientesService, // 🔥 AÑADIR
-    private authService: AuthService, // 🔥 AÑADIR
-    private router: Router
+    private clientesService: ClientesService,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute // 🔥 AÑADIR ActivatedRoute
   ) {
     // Configurar búsqueda con debounce
     this.searchSubject.pipe(
@@ -69,13 +70,61 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loadQueryParams(); // 🔥 AÑADIR: Cargar params ANTES que las propiedades
     this.loadProperties();
-    this.loadUserFavorites(); // 🔥 CARGAR FAVORITOS REALES
+    this.loadUserFavorites();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // 🔥 NUEVO MÉTODO: CARGAR PARÁMETROS DE URL
+  /**
+   * 📥 Cargar parámetros de búsqueda desde la URL
+   */
+  private loadQueryParams(): void {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      console.log('📥 Query params recibidos en property-list:', params);
+
+      // 🔍 Mapear parámetros de home a property-list
+      if (params['search']) {
+        this.searchText = params['search'];
+        console.log('🔍 Búsqueda aplicada:', this.searchText);
+      }
+
+      if (params['type']) {
+        this.filterType = params['type'];
+        console.log('🏠 Tipo aplicado:', this.filterType);
+      }
+
+      if (params['location']) {
+        // 🔥 BUSCAR EN SEARCHTEXT PORQUE PROPERTY-LIST NO TIENE FILTRO DE UBICACIÓN ESPECÍFICO
+        if (!this.searchText) {
+          this.searchText = params['location'];
+        } else {
+          this.searchText += ' ' + params['location'];
+        }
+        console.log('📍 Ubicación agregada a búsqueda:', params['location']);
+      }
+
+      if (params['priceMin']) {
+        this.priceMin = +params['priceMin'];
+        console.log('💰 Precio mínimo aplicado:', this.priceMin);
+      }
+
+      if (params['priceMax']) {
+        this.priceMax = +params['priceMax'];
+        console.log('💰 Precio máximo aplicado:', this.priceMax);
+      }
+
+      // 🔥 APLICAR FILTROS DESPUÉS DE CARGAR PROPIEDADES
+      if (this.properties.length > 0) {
+        this.applyFilters();
+        console.log('✅ Filtros aplicados desde URL');
+      }
+    });
   }
 
   /**
@@ -91,6 +140,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (response.success) {
             this.properties = response.data;
+            // 🔥 APLICAR FILTROS INMEDIATAMENTE DESPUÉS DE CARGAR SI HAY PARAMS
             this.applyFilters();
           } else {
             this.error = response.message || 'Error al cargar las propiedades';
@@ -136,8 +186,12 @@ export class PropertyListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/propiedades', property.id]);
   }
 
+  // ===============================
+  // 🔧 MÉTODOS AUXILIARES (SIN CAMBIOS)
+  // ===============================
+
   /**
-   * ✅ OBTENER VALOR DE CAMPO (EXACTO COMO PROPERTY-DETAIL)
+   * ✅ OBTENER VALOR DE CAMPO
    */
   getFieldAsString(property: Propiedad, field: keyof PropiedadFields): string {
     const value = property?.fields[field];
@@ -145,7 +199,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ OBTENER VALOR NUMÉRICO (EXACTO COMO PROPERTY-DETAIL)
+   * ✅ OBTENER VALOR NUMÉRICO
    */
   getFieldAsNumber(property: Propiedad, field: keyof PropiedadFields): number {
     const value = property?.fields[field];
@@ -153,7 +207,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ FORMATEAR PRECIO (EXACTO COMO PROPERTY-DETAIL)
+   * ✅ FORMATEAR PRECIO
    */
   formatPrice(precio: number): string {
     if (!precio) return 'Precio a consultar';
@@ -166,7 +220,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ PRECIO POR M² (EXACTO COMO PROPERTY-DETAIL)
+   * ✅ PRECIO POR M²
    */
   getPricePerSquareMeter(property: Propiedad): string {
     const precio = this.getFieldAsNumber(property, 'Precio');
@@ -194,7 +248,6 @@ export class PropertyListComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    // Verificar que la primera imagen tenga URL válida
     const firstImage = imagenes[0];
     return !!(firstImage?.url || firstImage?.thumbnails?.large?.url);
   }
@@ -217,14 +270,14 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ IMAGEN POR DEFECTO IDÉNTICA A PROPERTY-DETAIL
+   * ✅ IMAGEN POR DEFECTO
    */
   private getDefaultImage(): string {
-    return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZjNzU3ZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPgogICAgPHRzcGFuPjxmYSBjbGFzcz0iZmFzIGZhLWhvbWUiLz4gU2luIGltYWdlbjwvdHNwYW4+CiAgPC90ZXh0Pgo8L3N2Zz4K';
+    return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvcnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZjNzU3ZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPgogICAgPHRzcGFuPjxmYSBjbGFzcz0iZmFzIGZhLWhvbWUiLz4gU2luIGltYWdlbjwvdHNwYW4+CiAgPC90ZXh0Pgo8L3N2Zz4K';
   }
 
   /**
-   * ✅ MANEJAR ERROR DE IMAGEN (EXACTO COMO PROPERTY-DETAIL)
+   * ✅ MANEJAR ERROR DE IMAGEN
    */
   onImageError(event: any): void {
     if (event.target.src !== this.getDefaultImage()) {
@@ -260,13 +313,13 @@ export class PropertyListComponent implements OnInit, OnDestroy {
       case 'disponible':
       case 'available':
         return 'bg-success';
-      case 'vendido':
+      case 'vendida':
       case 'sold':
         return 'bg-danger';
-      case 'alquilado':
+      case 'alquilada':
       case 'rented':
         return 'bg-warning';
-      case 'reservado':
+      case 'reservada':
       case 'reserved':
         return 'bg-info';
       default:
@@ -299,11 +352,21 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ✅ APLICAR FILTROS
+   * ✅ APLICAR FILTROS - 🔥 MEJORADO CON LOGS
    */
   applyFilters(): void {
     let filtered = [...this.properties];
 
+    console.log('🎯 Aplicando filtros:', {
+      searchText: this.searchText,
+      filterType: this.filterType,
+      filterStatus: this.filterStatus,
+      priceMin: this.priceMin,
+      priceMax: this.priceMax,
+      totalProperties: this.properties.length
+    });
+
+    // Filtro por texto - 🔥 MEJORADO PARA INCLUIR UBICACIÓN
     if (this.searchText.trim()) {
       const searchLower = this.searchText.toLowerCase();
       filtered = filtered.filter(property =>
@@ -312,39 +375,50 @@ export class PropertyListComponent implements OnInit, OnDestroy {
         this.getFieldAsString(property, 'Dirección').toLowerCase().includes(searchLower) ||
         this.getFieldAsString(property, 'Tipo').toLowerCase().includes(searchLower)
       );
+      console.log('🔍 Después de filtro texto:', filtered.length);
     }
 
+    // Filtro por tipo
     if (this.filterType) {
       filtered = filtered.filter(property =>
         this.getFieldAsString(property, 'Tipo') === this.filterType
       );
+      console.log('🏠 Después de filtro tipo:', filtered.length);
     }
 
+    // Filtro por estado
     if (this.filterStatus) {
       filtered = filtered.filter(property =>
         this.getFieldAsString(property, 'Estado') === this.filterStatus
       );
+      console.log('🏷️ Después de filtro estado:', filtered.length);
     }
 
+    // Filtro por precio mínimo
     if (this.priceMin !== null && this.priceMin > 0) {
       filtered = filtered.filter(property =>
         this.getFieldAsNumber(property, 'Precio') >= this.priceMin!
       );
+      console.log('💰 Después de filtro precio mínimo:', filtered.length);
     }
 
+    // Filtro por precio máximo
     if (this.priceMax !== null && this.priceMax > 0) {
       filtered = filtered.filter(property =>
         this.getFieldAsNumber(property, 'Precio') <= this.priceMax!
       );
+      console.log('💰 Después de filtro precio máximo:', filtered.length);
     }
 
     this.filteredProperties = filtered;
     this.currentPage = 1;
     this.updatePagination();
+
+    console.log('✅ Filtros aplicados - Resultado final:', this.filteredProperties.length);
   }
 
   /**
-   * ✅ LIMPIAR FILTROS
+   * ✅ LIMPIAR FILTROS - 🔥 MEJORADO PARA LIMPIAR URL
    */
   clearFilters(): void {
     this.searchText = '';
@@ -352,7 +426,15 @@ export class PropertyListComponent implements OnInit, OnDestroy {
     this.filterStatus = '';
     this.priceMin = null;
     this.priceMax = null;
+
+    // 🔥 LIMPIAR TAMBIÉN LA URL
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {}
+    });
+
     this.applyFilters();
+    console.log('🧹 Filtros limpiados');
   }
 
   /**
@@ -453,17 +535,14 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔥 CONTACTAR PROPIEDAD (CON STOP PROPAGATION)
+   * 🔥 CONTACTAR PROPIEDAD
    */
   contactProperty(property: Propiedad, event?: Event): void {
-    // Evitar que se propague el click al contenedor padre
     if (event) {
       event.stopPropagation();
     }
 
     console.log('📞 Contactar propiedad:', property.id);
-
-    // TODO: Implementar modal de contacto o navegación
     const propertyTitle = this.getFieldAsString(property, 'Título');
     const propertyAddress = this.getFieldAsString(property, 'Dirección');
 
@@ -471,10 +550,48 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔥 TOGGLE FAVORITO REAL (REEMPLAZAR EL MÉTODO ANTERIOR)
+   * 🔥 SOLICITAR CITA PARA PROPIEDAD - IGUAL QUE PROPERTY-DETAIL
+   */
+  requestAppointment(property: Propiedad, event?: Event): void {
+    // Evitar que se propague el click al card
+    if (event) {
+      event.stopPropagation();
+    }
+
+    if (property?.id) {
+      console.log('📝 Navegando al formulario de citas para la propiedad:', property.id);
+
+      // Navegar al formulario de citas pasando el Record ID de la propiedad - IGUAL QUE PROPERTY-DETAIL
+      this.router.navigate(['/citas'], {
+        queryParams: { propertyRecordId: property.id }
+      });
+    } else {
+      console.error('❌ No se puede solicitar cita: property.id no disponible');
+    }
+  }
+
+  // 🔥 MANTENER EL MÉTODO CONTACTAR COMO BACKUP (COMENTADO)
+  /**
+   * 🔥 CONTACTAR PROPIEDAD (DESHABILITADO - REEMPLAZADO POR SOLICITAR CITA)
+   */
+  /*
+  contactProperty(property: Propiedad, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
+    console.log('📞 Contactar propiedad:', property.id);
+    const propertyTitle = this.getFieldAsString(property, 'Título');
+    const propertyAddress = this.getFieldAsString(property, 'Dirección');
+
+    alert(`📞 Contactar sobre: ${propertyTitle}\n📍 Ubicación: ${propertyAddress}\n\n🚧 Funcionalidad en desarrollo.\n\nPróximamente podrás:\n• Enviar mensaje directo\n• Programar visita\n• Solicitar más información`);
+  }
+  */
+
+  /**
+   * 🔥 TOGGLE FAVORITO REAL
    */
   toggleFavorite(property: Propiedad, event?: Event): void {
-    // Evitar que se propague el click al contenedor padre
     if (event) {
       event.stopPropagation();
     }
@@ -501,7 +618,6 @@ export class PropertyListComponent implements OnInit, OnDestroy {
             console.log('💔 Quitado de favoritos:', propertyTitle);
           }
 
-          // Mostrar mensaje de éxito
           this.showMessage(result.mensaje, 'success');
         },
         error: (error) => {
@@ -512,7 +628,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔥 VERIFICAR SI ES FAVORITO (REAL)
+   * 🔥 VERIFICAR SI ES FAVORITO
    */
   isFavorite(property: Propiedad): boolean {
     return this.favoriteIds.has(property.id);
@@ -522,14 +638,12 @@ export class PropertyListComponent implements OnInit, OnDestroy {
    * 🔥 MOSTRAR MENSAJE AL USUARIO
    */
   private showMessage(message: string, type: 'success' | 'error'): void {
-    // Por ahora, usar alert simple. Después se puede mejorar con toast/snackbar
     if (type === 'success') {
       console.log('✅', message);
     } else {
       console.error('❌', message);
     }
 
-    // Toast simple con timeout
     const toastElement = document.createElement('div');
     toastElement.style.cssText = `
       position: fixed;
@@ -586,5 +700,16 @@ export class PropertyListComponent implements OnInit, OnDestroy {
                    0;
 
     return visits ? String(visits) : '0';
+  }
+
+  /**
+   * 🔍 Verificar si hay filtros activos
+   */
+  hasActiveFilters(): boolean {
+    return !!(this.searchText.trim() ||
+              this.filterType ||
+              this.filterStatus ||
+              (this.priceMin !== null && this.priceMin > 0) ||
+              (this.priceMax !== null && this.priceMax > 0));
   }
 }

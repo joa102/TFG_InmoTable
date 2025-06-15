@@ -276,19 +276,23 @@
       margin-bottom: 0.5rem;
 
       &.text-danger {
+        //color: #dc3545 !important;
         color: #dc3545 !important;
       }
 
       &.text-success {
-        color: #28a745 !important;
+        //color: #28a745 !important;
+        color: #198754 !important;
       }
 
       &.text-warning {
-        color: #fd7e14 !important;
+        //color: #fd7e14 !important;
+        color: #ffc107 !important;
       }
 
       &.text-info {
-        color: #17a2b8 !important;
+        //color: #17a2b8 !important;
+        color: #0dcaf0 !important;
       }
     }
 
@@ -351,7 +355,8 @@
     background: rgba(255, 255, 255, 0.95);
     color: #333;
     padding: 0.25rem 0.75rem;
-    border-radius: 20px;
+    //border-radius: 20px;
+    border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;

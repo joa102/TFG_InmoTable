@@ -291,13 +291,13 @@ export class PropertyListInterestedComponent implements OnInit, OnDestroy {
       case 'disponible':
       case 'available':
         return 'bg-success';
-      case 'vendido':
+      case 'vendida':
       case 'sold':
         return 'bg-danger';
-      case 'alquilado':
+      case 'alquilada':
       case 'rented':
         return 'bg-warning';
-      case 'reservado':
+      case 'reservada':
       case 'reserved':
         return 'bg-info';
       default:
@@ -604,7 +604,7 @@ export class PropertyListInterestedComponent implements OnInit, OnDestroy {
    */
   private showMessage(message: string, type: 'success' | 'error'): void {
     console.log(type === 'success' ? '✅' : '❌', message);
-    
+
     // Toast simple
     const toastElement = document.createElement('div');
     toastElement.style.cssText = `
@@ -620,9 +620,9 @@ export class PropertyListInterestedComponent implements OnInit, OnDestroy {
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     `;
     toastElement.textContent = message;
-    
+
     document.body.appendChild(toastElement);
-    
+
     setTimeout(() => {
       if (document.body.contains(toastElement)) {
         document.body.removeChild(toastElement);

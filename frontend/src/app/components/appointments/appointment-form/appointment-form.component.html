@@ -14,7 +14,7 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
           <a routerLink="/propiedades" class="text-decoration-none">
-            <i class="fas fa-home me-1"></i>
+            <i class="fas fa-building me-1"></i>
             Propiedades
           </a>
         </li>
@@ -38,7 +38,7 @@
           </p>
 
           <!-- 🔥 USER INFO BANNER -->
-          <div class="user-info-banner mt-3" *ngIf="currentUser">
+          <!--<div class="user-info-banner mt-3" *ngIf="currentUser">
             <div class="alert alert-info d-flex align-items-center mb-0">
               <i class="fas fa-user-circle fa-2x me-3"></i>
               <div>
@@ -55,7 +55,8 @@
                 </p>
               </div>
             </div>
-          </div>
+          </div>-->
+
         </div>
         <div class="col-lg-4 text-lg-end">
           <div class="appointment-actions">
@@ -109,10 +110,10 @@
                 <i class="fas fa-form me-2"></i>
                 Formulario de Solicitud de Cita
               </h5>
-              <small *ngIf="propertyRecordId">
+              <!--<small *ngIf="propertyRecordId">
                 <i class="fas fa-home me-1"></i>
                 Propiedad preseleccionada
-              </small>
+              </small>-->
             </div>
           </div>
           <div class="card-body p-0">
@@ -150,7 +151,9 @@
 
     <!-- Additional Info Section -->
     <div class="row mt-4">
-      <div class="col-lg-8">
+
+      <!--<div class="col-lg-8">-->
+      <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
             <h6 class="card-title">
@@ -183,7 +186,8 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+
+      <!--<div class="col-lg-4">
         <div class="card">
           <div class="card-body">
             <h6 class="card-title">
@@ -191,7 +195,6 @@
               Información de la Solicitud
             </h6>
 
-            <!-- Información del usuario -->
             <div class="mb-3" *ngIf="currentUser">
               <strong>Cliente:</strong>
               <span class="text-muted ms-2">{{ currentUser.nombre }}</span>
@@ -201,13 +204,11 @@
               </div>
             </div>
 
-            <!-- Información de la propiedad -->
             <div class="mb-3" *ngIf="propertyRecordId">
               <strong>Propiedad:</strong>
               <div class="small text-muted">ID: {{ propertyRecordId }}</div>
             </div>
 
-            <!-- Botones de acción -->
             <div class="d-grid gap-2 mt-3">
               <button class="btn btn-outline-primary btn-sm" (click)="goToAppointmentCalendar()" *ngIf="currentUser">
                 <i class="fas fa-calendar-alt me-2"></i>
@@ -219,7 +220,6 @@
               </button>
             </div>
 
-            <!-- Información de contacto -->
             <hr class="my-3">
             <h6 class="card-title">
               <i class="fas fa-headset text-primary me-2"></i>
@@ -240,7 +240,8 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
+
     </div>
 
   </div>
