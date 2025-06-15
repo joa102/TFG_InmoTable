@@ -559,7 +559,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
    */
   getConstructionYear(property: Propiedad): string {
     const fields = property.fields as any;
-    
+
     const year = fields['Año de construcción'] ||
                  fields['Año de Construcción'] ||
                  fields['año de construcción'] ||
@@ -568,7 +568,7 @@ export class PropertyListComponent implements OnInit, OnDestroy {
                  fields['Construido en'] ||
                  fields['Año'] ||
                  '';
-                 
+
     return year ? String(year) : '';
   }
 
@@ -577,14 +577,14 @@ export class PropertyListComponent implements OnInit, OnDestroy {
    */
   getVisitCount(property: Propiedad): string {
     const fields = property.fields as any;
-    
+
     const visits = fields['Número de visitas'] ||
                    fields['Número de Visitas'] ||
                    fields['numero de visitas'] ||
                    fields['NumeroDeVisitas'] ||
                    fields['Visitas'] ||
                    0;
-                   
+
     return visits ? String(visits) : '0';
   }
 }

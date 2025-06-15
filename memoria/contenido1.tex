@@ -3,19 +3,98 @@
 \label{sec:intro}
 
 
-En este documento se va a realizar una plantilla que mostrará tanto el formato como el posible contenido de un Trabajo fin de estudios modelo, para los estudios de informática de la Universidad del Almería.
-Servirá de  ayuda  para  la  realización  de  los trabajos  académicos  que,  durante  la  formación  universitaria,  constituyen  una  actividad  permanente.
+El presente capítulo introductorio aborda las motivaciones subyacentes a la concepción de este proyecto, detalla los objetivos establecidos y la consecución de los mismos, además de perfilar la estructura general del documento.
 
-El trabajo académico requiere precisión y rigor conceptual, dominio de fuentes de información y capacidad de argumentación teórica.  No es un  resumen de las ideas de otras personas, sino una disertación sobre un tema, tomando como referencia  la información  que existe sobre el  mismo en diversas fuentes. Recuerda copiar de uno es un plagio, copiar de muchos investigación. \cite{malaga}
 
-Esta  plantilla está escrita en \LaTeX.
-El \LaTeX (escrito LaTeX en texto plano) es un sistema de composición de textos, orientado a la creación de documentos escritos que presenten una alta calidad tipográfica. Por sus características y posibilidades, es usado de forma especialmente intensa en la generación de artículos y libros científicos que incluyen, entre otros elementos, expresiones matemáticas. \cite{wiki}
+\section{Motivación}
 
-LaTeX está formado por un gran conjunto de macros de TeX con la intención de facilitar el uso del lenguaje de composición tipográfica,  \LaTeX, creado por Donald Knuth. Es muy utilizado para la composición de artículos académicos, tesis y libros técnicos, dado que la calidad tipográfica de los documentos. 
 
-Este lenguaje presupone una filosofía de trabajo diferente a la de los procesadores de texto habituales (conocidos como WYSIWYG, es decir, <<lo que ves es lo que obtienes>>) y se basa en instrucciones. Tradicionalmente, este aspecto se ha considerado una desventaja (probablemente la única). Sin embargo, LaTeX, a diferencia de los procesadores de texto de tipo WYSIWYG, permite a quien escribe un documento centrarse exclusivamente en el contenido, sin tener que preocuparse de los detalles del formato. Además de sus capacidades gráficas para representar ecuaciones, fórmulas complicadas, notación científica e incluso musical, permite estructurar fácilmente el documento (con capítulos, secciones, notas, bibliografía, índices analíticos, etc.), lo cual brinda comodidad y lo hace útil para artículos académicos y libros técnicos.
+El objetivo principal de este proyecto es desarrollar una aplicación web para la gestión de propiedades inmobiliarias, utilizando una herramienta de gestión de bases de datos tipo hoja de cálculo (spreadsheet). Este sistema permitirá a los agentes inmobiliarios gestionar eficientemente las propiedades en venta o alquiler.
 
-Para la elaboración de esta guía además de la experiencia de su autora se ha utilizado como referencia las normas sobre Trabajos fin de Grado (TFG) y Trabajos Fin de Master (TFM) del diversas Universidades, entre ellas la Universidad de Málaga \cite{malaga} y la Universidad de Alicante \cite{alicante}
+La elección de este tipo de bases de datos se debe a su creciente popularidad y versatilidad en la gestión de datos y colaboración. A diferencia de las bases de datos tradicionales que requieren un esquema fijo, esta herramienta permite diseñar tablas y campos según las necesidades específicas del usuario. Esto es especialmente útil cuando se trabaja con diferentes tipos de datos y se busca evitar las limitaciones de una estructura predefinida. Su interfaz intuitiva y visualmente atractiva facilita la comprensión y colaboración en tiempo real, permitiendo a múltiples usuarios trabajar simultáneamente con cambios instantáneos. Además, ofrece la posibilidad de crear flujos de trabajo automáticos, ahorrando tiempo en tareas repetitivas.
+
+
+\section{Objetivos}
+
+
+El objetivo principal de este Trabajo Fin de Grado es desarrollar una aplicación web para la gestión de propiedades inmobiliarias. Esta aplicación permitirá a los agentes inmobiliarios gestionar de manera eficiente las propiedades en venta o alquiler.
+
+Para lograr este objetivo principal, se plantean los siguientes objetivos específicos:
+
+\begin{enumerate}
+
+    \item Diseñar y desarrollar una aplicación web funcional que sirva como herramienta para la gestión inmobiliaria.
+
+    \item Integrar una base de datos tipo hoja de cálculo (spreadsheet) como sistema de almacenamiento de la información inmobiliaria, aprovechando su flexibilidad y versatilidad.
+
+    \item Crear un frontend modular y flexible que interactúe con el backend y la API de la base de datos para proporcionar un acceso público a las propiedades inmobiliarias.
+
+    \item Aprovechar las características de las bases de datos tipo spreadsheet, como su interfaz intuitiva, facilidad de uso para usuarios no técnicos, colaboración en tiempo real y acceso remoto, para mejorar la eficiencia en la gestión de propiedades.
+
+    \item Implementar funcionalidades que permitan la creación de flujos de trabajo automáticos para optimizar tareas repetitivas en la gestión inmobiliaria.
+
+\end{enumerate}
+
+
+\section{Planificación Temporal}
+
+
+El desarrollo del Trabajo de Fin de Grado se estructurará en varias fases principales, con una duración estimada para cada una, sumando un total de horas de dedicación que contempla la posible extensión del tiempo inicialmente previsto.
+
+Fase 1: Análisis y Diseño (Estimado: 60-75 horas)
+
+\begin{enumerate}
+    \item Investigación y Definición de Requisitos (20-25 horas):
+    \begin{enumerate}
+        \item Análisis detallado de las necesidades de gestión inmobiliaria.
+        \item Investigación de herramientas de bases de datos tipo spreadsheet y sus APIs.
+        \item Definición de funcionalidades clave para la aplicación web.
+    \end{enumerate}
+    \item Diseño de la Arquitectura (20-25 horas):
+    \begin{enumerate}
+    \item Diseño de la arquitectura general de la aplicación (frontend, backend, integración con la API de la base de datos).
+    \item Definición de la estructura de datos en la hoja de cálculo.
+    \end{enumerate}
+    \item Diseño de Interfaz de Usuario (UI/UX) (20-25 horas):
+    \begin{enumerate}
+    \item Bocetos y prototipos de la interfaz de usuario para el frontend.
+    \end{enumerate}
+\end{enumerate}
+
+Fase 2: Desarrollo del Backend y Conexión con la Base de Datos (Estimado: 100-120 horas)
+
+Configuración del Entorno de Desarrollo (10-15 horas):
+Configuración del servidor, librerías y dependencias necesarias.
+Desarrollo del Backend (40-50 horas):
+Implementación de la lógica de negocio.
+Desarrollo de las APIs para la interacción con el frontend.
+Integración con la Base de Datos Tipo Spreadsheet (50-55 horas):
+Configuración y establecimiento de la conexión con la API de la hoja de cálculo.
+Implementación de operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre los datos de las propiedades.
+Gestión de la autenticación y permisos de acceso a la base de datos.
+Fase 3: Desarrollo del Frontend (Estimado: 80-100 horas)
+
+Desarrollo de Componentes y Vistas (50-60 horas):
+Implementación de la interfaz de usuario diseñada.
+Desarrollo de componentes modulares y flexibles.
+Conexión con las APIs del backend para mostrar y gestionar los datos inmobiliarios.
+Implementación de Flujos de Trabajo Automatizados (30-40 horas):
+Desarrollo de funcionalidades que permitan la automatización de tareas, como la actualización masiva de propiedades o la generación de informes básicos.
+Fase 4: Pruebas y Depuración (Estimado: 40-50 horas)
+
+Pruebas Unitarias e Integración (20-25 horas):
+Verificación del correcto funcionamiento de cada módulo y la interacción entre ellos.
+Pruebas de Usuario y Usabilidad (10-15 horas):
+Evaluación de la experiencia del usuario y la facilidad de uso.
+Corrección de Errores y Optimización (10-10 horas):
+Resolución de fallos detectados y mejora del rendimiento.
+Fase 5: Documentación y Presentación (Estimado: 30-45 horas)
+
+Redacción de la Memoria del TFG (20-30 horas):
+Descripción detallada del proyecto, incluyendo análisis, diseño, implementación, pruebas y resultados.
+Preparación de la Presentación y Defensa (10-15 horas):
+Elaboración de diapositivas y preparación de la exposición oral.
+Total de Horas Estimadas: La suma de las estimaciones mínimas es de 310 horas, y la suma de las estimaciones máximas es de 390 horas. Esto permite un rango que se ajusta a las 300 horas iniciales, con un margen adicional para posibles imprevistos.
 
 
 \chapter{Consideraciones generales} 

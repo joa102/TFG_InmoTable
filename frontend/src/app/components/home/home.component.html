@@ -400,9 +400,15 @@
               <i class="fas fa-envelope me-2"></i>
               Contactar Ahora
             </button>
-            <button class="btn btn-outline-light btn-lg" (click)="requestAppointment()">
-              <i class="fas fa-calendar me-2"></i>
-              Solicitar Cita
+            <!-- 🔥 MOSTRAR SOLO SI NO ESTÁ LOGUEADO -->
+            <button *ngIf="!isLoggedIn" class="btn btn-outline-light btn-lg" (click)="goToRegister()">
+              <i class="fas fa-user-plus me-2"></i>
+              Registrarse
+            </button>
+            <!-- 🔥 MOSTRAR BOTÓN ALTERNATIVO SI ESTÁ LOGUEADO -->
+            <button *ngIf="isLoggedIn" class="btn btn-outline-light btn-lg" (click)="goToProfile()">
+              <i class="fas fa-user me-2"></i>
+              Mi Perfil
             </button>
           </div>
         </div>

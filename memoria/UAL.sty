@@ -153,15 +153,16 @@ at (current page.center)
           {\parbox[b][\paperheight]{\paperwidth}{
            \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{Figuras/logos/TFG_template}
           }};
-\node (titulo) [rectangle,text width=0.55\paperwidth,text centered, xshift=10pt] 
+\node (titulo) [rectangle,text width=0.55\paperwidth,text centered, xshift=10pt, yshift=-50pt] 
 at (fondo)
           {\parbox{0.71\paperwidth}{\centering 
-          \fontsize{45}{50} \selectfont \tituloTFG \\[8cm]
+          \fontsize{45}{50} \selectfont \tituloTFG \\[2cm]
+          \fontsize{35}{40} \selectfont \subTituloTFG \\[6cm]
           }};
-        \node [xshift=-150pt, yshift=-255-\hoffset,right] at (titulo) {\textbf{\LARGE Curso: \curso}};
-        \node [xshift=-150pt, yshift=-330-\hoffset, right] at (titulo) {\textbf{\LARGE\alumno}};
-        \node [xshift=250pt, yshift=-380-\hoffset,left] at (titulo) {\textbf{\LARGE\director}};
-        \node [xshift=250pt, yshift=-400-\hoffset,left] at (titulo) {\textbf{\LARGE\direct}};
+        \node [xshift=-150pt, yshift=-205-\hoffset,right] at (titulo) {\textbf{\LARGE Curso: \curso}};
+        \node [xshift=-150pt, yshift=-280-\hoffset, right] at (titulo) {\textbf{\LARGE\alumno}};
+        \node [xshift=250pt, yshift=-330-\hoffset,left] at (titulo) {\textbf{\LARGE\director}};
+        \node [xshift=250pt, yshift=-350-\hoffset,left] at (titulo) {\textbf{\LARGE\direct}};
   \end{tikzpicture}
 }
 

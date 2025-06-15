@@ -178,11 +178,14 @@
     }
 
     .card-title {
+      font-weight: 700;
+      margin-bottom: 0;
       color: white;
 
       .fa-filter,
       .fa-search {
-        color: rgba(255, 255, 255, 0.9);
+        //color: rgba(255, 255, 255, 0.9);
+        color: white;
       }
     }
   }
@@ -209,13 +212,22 @@
 
         .fa-search,
         .fa-filter {
-          color: rgba(255, 255, 255, 0.9);
+          //color: rgba(255, 255, 255, 0.9);
+          color: white;
         }
       }
     }
 
     .card-body {
       background: white;
+      padding: 1.5rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
     }
   }
 }
@@ -282,7 +294,7 @@
 
     .stats-label {
       font-size: 0.9rem;
-      font-weight: 600;
+      font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #6c757d;
