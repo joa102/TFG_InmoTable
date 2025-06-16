@@ -361,29 +361,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.router.navigate(['/auth/login']);
   }
 
+  /**
+   * 👤 Navegar al perfil del usuario
+   */
   navigateToUserProfile(): void {
-    console.log('👤 Navegando a perfil de usuario...');
-    this.showUserDropdown = false;
-
-    if (!this.currentUser) {
-      console.warn('⚠️ No hay usuario logueado');
-      this.router.navigate(['/auth/login']);
-      return;
-    }
-
-    const userInfo = `
-👤 DATOS DEL USUARIO:
-
-📛 Nombre: ${this.currentUser.nombre}
-📧 Email: ${this.currentUser.email}
-🏷️ Rol: ${this.getRoleLabel()}
-🆔 ID: ${this.currentUser.id}
-
-🚧 Página de perfil en desarrollo.
-Próximamente podrás editar tus datos.
-    `;
-
-    alert(userInfo);
+    console.log('👤 Navegando al perfil del usuario');
+    this.router.navigate(['/perfil']);
+    // this.hideDropdowns(); // 🔥 COMENTAR O QUITAR ESTA LÍNEA
   }
 
   navigateToInterestedProperties(): void {

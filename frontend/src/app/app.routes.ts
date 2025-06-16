@@ -48,6 +48,15 @@ export const routes: Routes = [
     loadComponent: () => import('./components/agents/agent-list/agent-list.component')
       .then(c => c.AgentListComponent)
   },
+
+  // 🔥 NUEVA RUTA: PERFIL DE USUARIO
+  {
+    path: 'perfil',
+    loadComponent: () => import('./components/users/user-form/user-form.component')
+      .then(c => c.UserFormComponent),
+    title: 'Mi Perfil - InmoTable'
+  },
+
   {
     path: 'citas',
     loadComponent: () => import('./components/appointments/appointment-form/appointment-form.component')

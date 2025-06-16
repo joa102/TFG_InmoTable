@@ -5,25 +5,32 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService, User } from '../../../services/auth.service';
+import { PropiedadesService } from '../../../services/propiedades.service'; // 🔥 AÑADIR IMPORT
+import { Propiedad } from '../../../models/airtable.interfaces'; // 🔥 AÑADIR IMPORT
 
 @Component({
-  selector: 'app-appointment-form', // 🔥 CAMBIAR SELECTOR
+  selector: 'app-appointment-form',
   standalone: true,
   imports: [
     CommonModule,
     RouterModule
   ],
-  templateUrl: './appointment-form.component.html', // 🔥 CAMBIAR TEMPLATE
-  styleUrls: ['./appointment-form.component.scss'] // 🔥 CAMBIAR STYLES (CORREGIR styleUrl -> styleUrls)
+  templateUrl: './appointment-form.component.html',
+  styleUrls: ['./appointment-form.component.scss']
 })
-export class AppointmentFormComponent implements OnInit, OnDestroy { // 🔥 CAMBIAR NOMBRE DE CLASE
+export class AppointmentFormComponent implements OnInit, OnDestroy {
 
-  // 🔥 PROPIEDADES PARA MANEJAR LA URL DEL IFRAME
+  // 🔥 PROPIEDADES EXISTENTES
   airtableBaseUrl = 'https://airtable.com/embed/apphONbM2nnoZThgr/pagtZbDsnocCqMAzm/form';
   iframeUrl: SafeResourceUrl = '';
   propertyRecordId: string | null = null;
   currentUser: User | null = null;
   loading = true;
+
+  // 🔥 NUEVAS PROPIEDADES PARA LA PROPIEDAD
+  selectedProperty: Propiedad | null = null;
+  loadingProperty = false;
+  propertyError: string | null = null;
 
   private destroy$ = new Subject<void>();
 
@@ -31,11 +38,12 @@ export class AppointmentFormComponent implements OnInit, OnDestroy { // 🔥 CAM
     private route: ActivatedRoute,
     private router: Router,
     private sanitizer: DomSanitizer,
-    private authService: AuthService
+    private authService: AuthService,
+    private propiedadesService: PropiedadesService // 🔥 AÑADIR SERVICIO
   ) {}
 
   ngOnInit(): void {
-    console.log('📝 Inicializando AppointmentFormComponent...'); // 🔥 ACTUALIZAR LOG
+    console.log('📝 Inicializando AppointmentFormComponent...');
 
     // Suscribirse al usuario actual
     this.authService.getCurrentUser()
@@ -43,7 +51,7 @@ export class AppointmentFormComponent implements OnInit, OnDestroy { // 🔥 CAM
       .subscribe({
         next: (user: User | null) => {
           this.currentUser = user;
-          console.log('👤 Usuario actual en appointment-form:', user); // 🔥 ACTUALIZAR LOG
+          console.log('👤 Usuario actual en appointment-form:', user);
 
           if (user) {
             // Una vez que tenemos el usuario, procesamos los query params
@@ -52,6 +60,12 @@ export class AppointmentFormComponent implements OnInit, OnDestroy { // 🔥 CAM
               .subscribe(params => {
                 this.propertyRecordId = params['propertyRecordId'] || null;
                 console.log('🏠 Property Record ID:', this.propertyRecordId);
+
+                // 🔥 CARGAR DATOS DE LA PROPIEDAD SI HAY ID
+                if (this.propertyRecordId) {
+                  this.loadPropertyData(this.propertyRecordId);
+                }
+
                 this.buildIframeUrl();
               });
           } else {
@@ -69,6 +83,37 @@ export class AppointmentFormComponent implements OnInit, OnDestroy { // 🔥 CAM
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // 🔥 CAMBIAR DE PRIVATE A PUBLIC
+  /**
+   * 🏠 Cargar datos de la propiedad seleccionada
+   */
+  loadPropertyData(propertyId: string): void { // 🔥 QUITAR 'private'
+    this.loadingProperty = true;
+    this.propertyError = null;
+
+    console.log('🔍 Cargando datos de la propiedad:', propertyId);
+
+    this.propiedadesService.getById(propertyId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            this.selectedProperty = response.data;
+            console.log('✅ Propiedad cargada:', this.selectedProperty);
+          } else {
+            this.propertyError = response.message || 'No se pudo cargar la propiedad';
+            console.error('❌ Error en respuesta:', response.message);
+          }
+          this.loadingProperty = false;
+        },
+        error: (error) => {
+          console.error('❌ Error al cargar propiedad:', error);
+          this.propertyError = 'Error al cargar los datos de la propiedad';
+          this.loadingProperty = false;
+        }
+      });
   }
 
   /**
@@ -126,6 +171,79 @@ export class AppointmentFormComponent implements OnInit, OnDestroy { // 🔥 CAM
     this.loading = false;
   }
 
+  // 🔥 NUEVOS MÉTODOS PARA OBTENER DATOS DE LA PROPIEDAD
+  /**
+   * 🏷️ Obtener título de la propiedad
+   */
+  getPropertyTitle(): string {
+    if (!this.selectedProperty?.fields) return 'Propiedad seleccionada';
+    return this.selectedProperty.fields['Título'] || 'Sin título';
+  }
+
+  /**
+   * 📍 Obtener dirección de la propiedad
+   */
+  getPropertyAddress(): string {
+    if (!this.selectedProperty?.fields) return '';
+    return this.selectedProperty.fields['Dirección'] || '';
+  }
+
+  /**
+   * 🏠 Obtener tipo de la propiedad
+   */
+  getPropertyType(): string {
+    if (!this.selectedProperty?.fields) return '';
+    return this.selectedProperty.fields['Tipo'] || '';
+  }
+
+  /**
+   * 💰 Obtener precio formateado de la propiedad
+   */
+  getPropertyPrice(): string {
+    if (!this.selectedProperty?.fields) return '';
+    const precio = this.selectedProperty.fields['Precio'];
+    if (!precio) return 'Consultar precio';
+
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(precio);
+  }
+
+  /**
+   * 🎨 Obtener estado de la propiedad
+   */
+  getPropertyStatus(): string {
+    if (!this.selectedProperty?.fields) return '';
+    return this.selectedProperty.fields['Estado'] || '';
+  }
+
+  /**
+   * 🎨 Obtener clase CSS del estado
+   */
+  getPropertyStatusClass(): string {
+    const estado = this.getPropertyStatus().toLowerCase();
+    switch (estado) {
+      case 'disponible':
+      case 'available':
+        return 'success';
+      case 'vendido':
+      case 'sold':
+        return 'danger';
+      case 'alquilado':
+      case 'rented':
+        return 'warning';
+      case 'reservado':
+      case 'reserved':
+        return 'info';
+      default:
+        return 'secondary';
+    }
+  }
+
+  // 🔥 MÉTODOS EXISTENTES SIN CAMBIOS
   /**
    * 🔙 Volver a propiedades
    */
@@ -138,8 +256,13 @@ export class AppointmentFormComponent implements OnInit, OnDestroy { // 🔥 CAM
    * 🏠 Ir a propiedades
    */
   goToProperty(): void {
-    console.log('🏠 Navegando a propiedades...');
-    this.router.navigate(['/propiedades']);
+    if (this.propertyRecordId) {
+      console.log('🏠 Navegando al detalle de la propiedad:', this.propertyRecordId);
+      this.router.navigate(['/propiedades', this.propertyRecordId]);
+    } else {
+      console.log('🏠 Navegando a la lista de propiedades...');
+      this.router.navigate(['/propiedades']);
+    }
   }
 
   /**
@@ -195,60 +318,3 @@ export class AppointmentFormComponent implements OnInit, OnDestroy { // 🔥 CAM
     `;
   }
 }
-
-/*import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-appointment-list',
-  imports: [],
-  templateUrl: './appointment-list.component.html',
-  styleUrl: './appointment-list.component.scss'
-})
-export class AppointmentListComponent {
-
-}*/
-
-
-/*import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-
-@Component({
-  selector: 'app-appointment-list',
-  standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="container mt-4">
-      <div class="row">
-        <div class="col-12">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="fas fa-calendar-alt me-2"></i>Lista de Citas</h2>
-            <button class="btn btn-primary">
-              <i class="fas fa-plus me-2"></i>Nueva Cita
-            </button>
-          </div>
-
-          <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            <strong>Funcionalidad en desarrollo...</strong>
-            <p class="mb-0">Esta sección estará disponible próximamente.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .container {
-      max-width: 1200px;
-    }
-
-    h2 {
-      color: #2c3e50;
-      font-weight: 600;
-    }
-
-    .alert {
-      border-left: 4px solid #17a2b8;
-    }
-  `]
-})
-export class AppointmentListComponent {}*/

@@ -5,6 +5,7 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\AgenteController;
+use App\Http\Controllers\UsuarioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,20 @@ Route::prefix('agentes')->group(function () {
     Route::post('/{id}/asignar-cliente', [AgenteController::class, 'asignarCliente']);
     Route::post('/{id}/quitar-cliente', [AgenteController::class, 'quitarCliente']);
 });
+
+// 🔥 QUITAR MIDDLEWARE TEMPORALMENTE PARA USUARIOS
+Route::prefix('usuarios')->group(function () {
+    Route::get('/', [UsuarioController::class, 'getByEmail']);
+    Route::get('/{recordId}', [UsuarioController::class, 'show']);
+    Route::put('/{recordId}', [UsuarioController::class, 'update']);
+});
+
+// 🔥 COMENTAR LA VERSIÓN CON AUTH MIENTRAS DEBUGGEAMOS
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('usuarios', [UsuarioController::class, 'getByEmail']);
+//     Route::get('usuarios/{recordId}', [UsuarioController::class, 'show']);
+//     Route::put('usuarios/{recordId}', [UsuarioController::class, 'update']);
+// });
 
 // 🔥 RUTA DE HEALTH CHECK
 Route::get('/health', function () {
