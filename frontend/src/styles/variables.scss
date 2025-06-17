@@ -1,0 +1,168 @@
+// frontend/src/styles/variables.scss
+// ===============================
+// 🎨 SISTEMA DE COLORES PRINCIPAL
+// ===============================
+
+// 🔥 COLORES PRINCIPALES (Estos vendrán de Airtable en el futuro)
+:root {
+  // 🎯 PRIMARIOS
+  //--color-primary: #0d6efd;
+  //--color-primary-dark: #0a58ca;
+  //--color-primary-light: #6ea8fe;
+  //--color-primary-rgb: 13, 110, 253;
+
+  // 🎯 PRIMARIOS AIRTABLE
+  --color-primary: #0d6efd;
+  --color-primary-dark: #0a58ca;
+  --color-primary-light: #6ea8fe;
+  --color-primary-rgb: 13, 110, 253;
+
+  // ✅ SUCCESS
+  --color-success: #28a745;
+  --color-success-dark: #198754;
+  --color-success-light: #75b85a;
+  --color-success-rgb: 40, 167, 69;
+
+  // ❌ DANGER
+  --color-danger: #dc3545;
+  --color-danger-dark: #c82333;
+  --color-danger-light: #e74c3c;
+  --color-danger-rgb: 220, 53, 69;
+
+  // ⚠️ WARNING
+  --color-warning: #fd7e14;
+  --color-warning-dark: #e67e22;
+  --color-warning-light: #f39c12;
+  --color-warning-rgb: 253, 126, 20;
+
+  // ℹ️ INFO
+  --color-info: #17a2b8;
+  --color-info-dark: #0dcaf0;
+  --color-info-light: #5bc0de;
+  --color-info-rgb: 23, 162, 184;
+
+  // 🌑 DARK COLORS
+  --color-dark: #2c3e50;
+  --color-dark-secondary: #495057;
+  --color-dark-light: #6c757d;
+  --color-dark-rgb: 44, 62, 80;
+
+  // 🌫️ GRAY SCALE
+  --color-gray-100: #f8f9fa;
+  --color-gray-200: #e9ecef;
+  --color-gray-300: #dee2e6;
+  --color-gray-400: #ced4da;
+  --color-gray-500: #adb5bd;
+  --color-gray-600: #6c757d;
+  --color-gray-700: #495057;
+  --color-gray-800: #343a40;
+  --color-gray-900: #212529;
+
+  // 🏠 ESPECÍFICOS DE INMOBILIARIA
+  --color-property-price: var(--color-danger-light); // #e74c3c
+  --color-property-available: var(--color-success);
+  --color-property-sold: var(--color-danger);
+  --color-property-rented: var(--color-warning);
+  --color-property-reserved: var(--color-info);
+
+  // 🎨 NAVBAR ESPECÍFICOS
+  --navbar-brand-gold: #ffd700;
+  --navbar-user-gradient-start: #667eea;
+  --navbar-user-gradient-end: #764ba2;
+  --navbar-dropdown-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+  // 🌟 GRADIENTES
+  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  --gradient-success: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);
+  --gradient-danger: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-dark) 100%);
+  --gradient-warning: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
+  --gradient-navbar-user: linear-gradient(135deg, var(--navbar-user-gradient-start) 0%, var(--navbar-user-gradient-end) 100%);
+
+  // 💧 SOMBRAS CON COLORES
+  //--shadow-primary: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+  --shadow-primary: 0 4px 12px var(--color-primary), 0.3;
+  --shadow-success: 0 4px 12px rgba(var(--color-success-rgb), 0.3);
+  --shadow-danger: 0 4px 12px rgba(var(--color-danger-rgb), 0.3);
+  --shadow-warning: 0 4px 12px rgba(var(--color-warning-rgb), 0.3);
+  --shadow-navbar-dropdown: var(--navbar-dropdown-shadow);
+
+  // 🎨 BACKGROUNDS
+  --bg-body: var(--color-gray-100);
+  --bg-card: #ffffff;
+  --bg-navbar: var(--gradient-primary);
+  --bg-sidebar: var(--color-gray-100);
+
+  // 📝 TYPOGRAPHY
+  --text-primary: var(--color-dark);
+  --text-secondary: var(--color-gray-600);
+  --text-muted: var(--color-gray-500);
+  --text-light: var(--color-gray-400);
+
+  // 🔄 TRANSITIONS
+  --transition-base: all 0.3s ease;
+  --transition-fast: all 0.2s ease;
+  --transition-slow: all 0.5s ease;
+
+  // 📐 BORDER RADIUS
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+  --radius-round: 50%;
+  --radius-rectangle: 50px;
+
+  // 🌊 Z-INDEX
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+// 🔥 MIXINS ÚTILES
+@mixin button-variant($bg, $border: $bg, $hover-bg: darken($bg, 7.5%), $hover-border: darken($border, 10%)) {
+  background-color: $bg;
+  border-color: $border;
+
+  &:hover {
+    background-color: $hover-bg;
+    border-color: $hover-border;
+  }
+}
+
+//@mixin card-shadow($color: var(--color-primary-rgb)) {
+@mixin card-shadow($color: --color-primary) {
+  box-shadow: 0 2px 12px rgba($color, 0.1);
+
+  &:hover {
+    box-shadow: 0 8px 25px rgba($color, 0.15);
+  }
+}
+
+// 📱 RESPONSIVE BREAKPOINTS
+$breakpoints: (
+  'xs': 0,
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px,
+  'xl': 1200px,
+  'xxl': 1400px
+);
+
+@function breakpoint($size) {
+  @return map-get($breakpoints, $size);
+}
+
+@mixin media-up($size) {
+  @media (min-width: breakpoint($size)) {
+    @content;
+  }
+}
+
+@mixin media-down($size) {
+  @media (max-width: breakpoint($size) - 1px) {
+    @content;
+  }
+}

@@ -15,7 +15,10 @@ export class EmpresaService {
     private apiService: ApiService,
     private imageService: ImageService,
     private cacheService: CacheService // 🔥 INYECTAR CACHE SERVICE
-  ) {}
+  ) {
+    // Temporalmente en FooterComponent constructor:
+    //this.cacheService.clearEmpresaCache();
+  }
 
   /**
    * 🏢 OBTENER TODAS LAS EMPRESAS (PÚBLICO)
@@ -85,9 +88,9 @@ export class EmpresaService {
    */
   getFirstActive(): Observable<Empresa | null> {
     const filtros = {
-      filterByFormula: `{Estado} = 'Activo'`,
+      filterByFormula: `{Estado} = 'Activo'`, // 🔥 Campo correcto: Estado
       maxRecords: 1,
-      sort: [{ field: 'Nombre', direction: 'asc' }]
+      sort: [{ field: 'Nombre', direction: 'asc' }] // 🔥 Campo correcto: Nombre
     };
 
     return this.getAll(filtros).pipe(
@@ -97,8 +100,6 @@ export class EmpresaService {
         if (response.data && response.data.length > 0) {
           const empresa = response.data[0];
           console.log('✅ Primera empresa activa encontrada:', empresa);
-
-          // 🔥 PROCESAR Y CACHEAR
           return this.processAndCacheEmpresa(empresa);
         } else {
           console.log('⚠️ No se encontró ninguna empresa activa');
@@ -116,7 +117,7 @@ export class EmpresaService {
    * 🔥 PROCESAR EMPRESA Y CACHEAR CON IMAGEN
    */
   private processAndCacheEmpresa(empresa: any): Observable<Empresa> {
-    console.log('🔄 Procesando y cacheando empresa:', empresa);
+    console.log('🔄 Procesando y cacheando empresa completa:', empresa);
 
     // Procesar logo con ImageService
     const empresaProcesada = this.processEmpresaLogo(empresa);
@@ -127,19 +128,35 @@ export class EmpresaService {
 
       return this.cacheService.cacheImage(empresaProcesada.logo).pipe(
         map(cachedImageUrl => {
-          // Crear datos para caché
+          // 🔥 CREAR DATOS COMPLETOS PARA CACHÉ
           const cacheData: EmpresaCacheData = {
             id: empresaProcesada.id,
             nombre: empresaProcesada.nombre,
             logo: empresaProcesada.logo,
             estado: empresaProcesada.estado,
-            logoDataUrl: cachedImageUrl
+            logoDataUrl: cachedImageUrl,
+
+            // 🔥 MAPEAR TODOS LOS CAMPOS ADICIONALES
+            telefono: empresaProcesada['Teléfono'] || empresaProcesada.telefono,
+            email: empresaProcesada.Email || empresaProcesada.email,
+            direccion: empresaProcesada['Dirección'] || empresaProcesada.direccion,
+            web: empresaProcesada.Web || empresaProcesada.web,
+
+            // Redes sociales
+            facebook: empresaProcesada.Facebook || empresaProcesada.facebook,
+            instagram: empresaProcesada.Instagram || empresaProcesada.instagram,
+            twitter: empresaProcesada.Twitter || empresaProcesada.twitter,
+            linkedin: empresaProcesada.LinkedIn || empresaProcesada.linkedin,
+
+            // Otros campos
+            horario: empresaProcesada.Horario || empresaProcesada.horario,
+            idEmpresa: empresaProcesada['ID Empresa'] || empresaProcesada.idEmpresa
           };
 
-          // Guardar en caché
+          // 🔥 GUARDAR DATOS COMPLETOS EN CACHÉ
           this.cacheService.setEmpresa(cacheData);
+          console.log('💾 Empresa completa cacheada con imagen:', cacheData);
 
-          // Retornar empresa con imagen cacheada
           return {
             ...empresaProcesada,
             logo: cachedImageUrl // Usar imagen cacheada
@@ -148,28 +165,64 @@ export class EmpresaService {
         catchError(error => {
           console.warn('⚠️ Error al cachear imagen, usando URL original:', error);
 
-          // Si falla el cache de imagen, al menos cachear los datos
+          // 🔥 SI FALLA EL CACHE DE IMAGEN, AL MENOS CACHEAR LOS DATOS COMPLETOS
           const cacheData: EmpresaCacheData = {
             id: empresaProcesada.id,
             nombre: empresaProcesada.nombre,
             logo: empresaProcesada.logo,
-            estado: empresaProcesada.estado
+            estado: empresaProcesada.estado,
+
+            // 🔥 MAPEAR TODOS LOS CAMPOS ADICIONALES
+            telefono: empresaProcesada['Teléfono'] || empresaProcesada.telefono,
+            email: empresaProcesada.Email || empresaProcesada.email,
+            direccion: empresaProcesada['Dirección'] || empresaProcesada.direccion,
+            web: empresaProcesada.Web || empresaProcesada.web,
+
+            // Redes sociales
+            facebook: empresaProcesada.Facebook || empresaProcesada.facebook,
+            instagram: empresaProcesada.Instagram || empresaProcesada.instagram,
+            twitter: empresaProcesada.Twitter || empresaProcesada.twitter,
+            linkedin: empresaProcesada.LinkedIn || empresaProcesada.linkedin,
+
+            // Otros campos
+            horario: empresaProcesada.Horario || empresaProcesada.horario,
+            idEmpresa: empresaProcesada['ID Empresa'] || empresaProcesada.idEmpresa
           };
 
           this.cacheService.setEmpresa(cacheData);
+          console.log('💾 Empresa completa cacheada sin imagen:', cacheData);
+
           return of(empresaProcesada as Empresa);
         })
       );
     } else {
-      // Si no es imagen, cachear directamente
+      // 🔥 SI NO ES IMAGEN, CACHEAR DIRECTAMENTE CON TODOS LOS CAMPOS
       const cacheData: EmpresaCacheData = {
         id: empresaProcesada.id,
         nombre: empresaProcesada.nombre,
         logo: empresaProcesada.logo,
-        estado: empresaProcesada.estado
+        estado: empresaProcesada.estado,
+
+        // 🔥 MAPEAR TODOS LOS CAMPOS ADICIONALES
+        telefono: empresaProcesada['Teléfono'] || empresaProcesada.telefono,
+        email: empresaProcesada.Email || empresaProcesada.email,
+        direccion: empresaProcesada['Dirección'] || empresaProcesada.direccion,
+        web: empresaProcesada.Web || empresaProcesada.web,
+
+        // Redes sociales
+        facebook: empresaProcesada.Facebook || empresaProcesada.facebook,
+        instagram: empresaProcesada.Instagram || empresaProcesada.instagram,
+        twitter: empresaProcesada.Twitter || empresaProcesada.twitter,
+        linkedin: empresaProcesada.LinkedIn || empresaProcesada.linkedin,
+
+        // Otros campos
+        horario: empresaProcesada.Horario || empresaProcesada.horario,
+        idEmpresa: empresaProcesada['ID Empresa'] || empresaProcesada.idEmpresa
       };
 
       this.cacheService.setEmpresa(cacheData);
+      console.log('💾 Empresa completa cacheada (icono):', cacheData);
+
       return of(empresaProcesada as Empresa);
     }
   }
@@ -310,5 +363,145 @@ export class EmpresaService {
         return of([]);
       })
     );
+  }
+
+  /**
+   * 🔥 FUNCIÓN HELPER PARA BUSCAR CAMPOS CON ACENTOS (CORREGIDA)
+   */
+  buscarCamposConAcentos(empresa: any) {
+    const buscarTelefono = () => {
+      console.log('🔍 Buscando teléfono en TODOS los campos posibles...');
+
+      // 🔥 BUSCAR EN TODOS LOS CAMPOS DISPONIBLES
+      for (const key of Object.keys(empresa)) {
+        const value = empresa[key];
+        if (value && typeof value === 'string' &&
+            (value.includes('+34') || value.includes('6') || value.includes('9'))) {
+          console.log(`📞 POSIBLE TELÉFONO encontrado en campo '${key}':`, value);
+        }
+      }
+
+      const posiblesCampos = [
+        empresa['teléfono'],        // 🔥 AÑADIR MINÚSCULA CON ACENTO (REAL)
+        empresa['Teléfono'],        // Mayúscula con acento
+        empresa['Telefono'],        // Mayúscula sin acento
+        empresa.Telefono,          // Propiedad mayúscula sin acento
+        empresa.telefono,          // Propiedad minúscula sin acento
+        empresa.phone,
+        empresa.Phone,
+        empresa['Número de teléfono'],
+        empresa['Numero de telefono'],
+        empresa['Teléfono Empresa'],
+        empresa['Telefono Empresa']
+      ];
+
+      const telefonoEncontrado = posiblesCampos.find(campo => campo !== undefined && campo !== null && campo !== '');
+      console.log('📞 Teléfono FINAL encontrado:', telefonoEncontrado);
+      console.log('🔍 Array de búsqueda usado:', posiblesCampos.map((campo, index) => ({
+        index,
+        valor: campo,
+        tipo: typeof campo
+      })));
+      return telefonoEncontrado;
+    };
+
+    const buscarDireccion = () => {
+      console.log('🔍 Buscando dirección en TODOS los campos posibles...');
+
+      // 🔥 BUSCAR EN TODOS LOS CAMPOS DISPONIBLES
+      for (const key of Object.keys(empresa)) {
+        const value = empresa[key];
+        if (value && typeof value === 'string' &&
+            (value.includes('Madrid') || value.includes('Calle') || value.includes('Avenida'))) {
+          console.log(`📍 POSIBLE DIRECCIÓN encontrada en campo '${key}':`, value);
+        }
+      }
+
+      const posiblesCampos = [
+        empresa['dirección'],       // 🔥 AÑADIR MINÚSCULA CON ACENTO (REAL)
+        empresa['Dirección'],       // Mayúscula con acento
+        empresa['Direccion'],       // Mayúscula sin acento
+        empresa.Direccion,         // Propiedad mayúscula sin acento
+        empresa.direccion,         // Propiedad minúscula sin acento
+        empresa.address,
+        empresa.Address,
+        empresa['Ubicación'],
+        empresa['Ubicacion'],
+        empresa.Ubicacion,
+        empresa['Dirección Empresa'],
+        empresa['Direccion Empresa']
+      ];
+
+      const direccionEncontrada = posiblesCampos.find(campo => campo !== undefined && campo !== null && campo !== '');
+      console.log('📍 Dirección FINAL encontrada:', direccionEncontrada);
+      console.log('🔍 Array de búsqueda usado:', posiblesCampos.map((campo, index) => ({
+        index,
+        valor: campo,
+        tipo: typeof campo
+      })));
+      return direccionEncontrada;
+    };
+
+    // Ejecutar ambas funciones
+    const telefono = buscarTelefono();
+    const direccion = buscarDireccion();
+
+    return { telefono, direccion };
+  }
+
+  /**
+   * 🔥 FUNCIÓN HELPER PARA MAPEAR CAMPOS COMPLETOS (CORREGIR PARA INCLUIR HORARIO)
+   */
+  mapearCamposCompletos(empresaData: any) {
+    console.log('🔍 Mapeando campos completos, empresa recibida:', empresaData);
+    console.log('🔍 Campos disponibles:', Object.keys(empresaData));
+
+    // 🔥 DEBUG ESPECÍFICO PARA HORARIO
+    console.log('🕐 Horario disponible en:', {
+      'Horario': empresaData['Horario'],
+      'horario': empresaData.horario,
+      'Horario de atención': empresaData['Horario de atención'],
+      'Horarios': empresaData['Horarios']
+    });
+
+    return {
+      id: empresaData.id,
+      nombre: empresaData.nombre,
+      logo: empresaData.logo,
+      estado: empresaData.estado,
+
+      // 🔥 MAPEAR TELÉFONO CON TODAS LAS VARIACIONES
+      telefono: empresaData['teléfono'] ||           // minúscula con acento (REAL en Airtable)
+               empresaData['Teléfono'] ||            // mayúscula con acento
+               empresaData.Telefono ||               // mayúscula sin acento
+               empresaData.telefono,                 // minúscula sin acento
+
+      // 🔥 MAPEAR DIRECCIÓN CON TODAS LAS VARIACIONES
+      direccion: empresaData['dirección'] ||         // minúscula con acento (REAL en Airtable)
+                empresaData['Dirección'] ||          // mayúscula con acento
+                empresaData.Direccion ||             // mayúscula sin acento
+                empresaData.direccion,               // minúscula sin acento
+
+      // 🔥 MAPEAR HORARIO CON TODAS LAS VARIACIONES
+      horario: empresaData['Horario'] ||             // MAYÚSCULA (nombre probable en Airtable)
+              empresaData.Horario ||                 // Propiedad mayúscula
+              empresaData['horario'] ||              // minúscula con corchetes
+              empresaData.horario ||                 // minúscula sin corchetes
+              empresaData['Horario de atención'] ||  // variación larga
+              empresaData['Horarios'],               // plural
+
+      // Otros campos
+      email: empresaData.Email || empresaData.email,
+      web: empresaData.Web || empresaData.web,
+
+      // Redes sociales
+      facebook: empresaData.Facebook || empresaData.facebook,
+      instagram: empresaData.Instagram || empresaData.instagram,
+      twitter: empresaData.Twitter || empresaData.twitter,
+      linkedin: empresaData.LinkedIn || empresaData.linkedin,
+
+      // Campos adicionales
+      idEmpresa: empresaData['ID Empresa'] || empresaData.idEmpresa
+    };
   }
 }

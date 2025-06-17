@@ -1,12 +1,14 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { PropiedadesService } from '../../services/propiedades.service';
-import { Propiedad, PropiedadFields } from '../../models/airtable.interfaces';
-import { EnergyRatingComponent, EnergyRatingData } from '../../shared/components/energy-rating/energy-rating.component';
+import { PropiedadesService } from '../../../services/propiedades.service';
+import { ClientesService } from '../../../services/clientes.service'; // 🔥 AÑADIR
+import { AuthService } from '../../../services/auth.service'; // 🔥 AÑADIR
+import { Propiedad, PropiedadFields } from '../../../models/airtable.interfaces';
+import { EnergyRatingComponent, EnergyRatingData } from '../../../shared/components/energy-rating/energy-rating.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 
 // ✅ LEAFLET SIN CONFIGURACIÓN PERSONALIZADA DE ICONOS
 import * as L from 'leaflet';
@@ -18,7 +20,7 @@ import * as L from 'leaflet';
     CommonModule,
     RouterModule,
     EnergyRatingComponent,
-    NavbarComponent  // 🔥 AÑADIR NAVBAR
+    NavbarComponent
   ],
   templateUrl: './property-detail.component.html',
   styleUrls: ['./property-detail.component.scss']
@@ -30,6 +32,13 @@ export class PropertyDetailComponent implements OnInit, OnDestroy, AfterViewInit
   error: string | null = null;
   currentImageIndex = 0;
 
+  // 🔥 FAVORITOS - IGUAL QUE EN PROPERTY-LIST
+  private favoriteIds: Set<string> = new Set();
+  private favoritesLoaded = false;
+
+  // 🔥 ESTADO DE LOADING PARA FAVORITOS
+  favoriteLoading = false;
+
   // Mapa
   private map: L.Map | null = null;
   private mapInitialized = false;
@@ -39,7 +48,9 @@ export class PropertyDetailComponent implements OnInit, OnDestroy, AfterViewInit
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private propiedadesService: PropiedadesService
+    private propiedadesService: PropiedadesService,
+    private clientesService: ClientesService, // 🔥 AÑADIR
+    private authService: AuthService // 🔥 AÑADIR
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +60,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy, AfterViewInit
         const id = params['id'];
         if (id) {
           this.loadProperty(id);
+          this.loadUserFavorites(); // 🔥 CARGAR FAVORITOS
         }
       });
   }
@@ -402,22 +414,176 @@ export class PropertyDetailComponent implements OnInit, OnDestroy, AfterViewInit
    * Solicitar cita para esta propiedad
    */
   requestAppointment(): void {
-    //console.log('Solicitar cita para propiedad:', this.property?.id);
-    // 🔥 NAVEGAR A CITAS CON PARÁMETRO DE PROPIEDAD
-    this.router.navigate(['/citas'], {
-      queryParams: {
-        //propertyId: this.property?.id,
-        propertyRecordId: this.getFieldAsString('RECORD_ID'),
-        //propertyTitle: this.getFieldAsString('Título'),
-        //propertyAddress: this.getFieldAsString('Dirección')
-      }
-    });
+    if (this.property?.id) {
+      console.log('📝 Navegando al formulario de citas para la propiedad:', this.property.id);
+
+      // Navegar al formulario de citas pasando el Record ID de la propiedad
+      this.router.navigate(['/citas'], {
+        queryParams: { propertyRecordId: this.property.id }
+      });
+    } else {
+      console.error('❌ No se puede solicitar cita: property.id no disponible');
+    }
   }
 
   /**
    * Contactar sobre esta propiedad
    */
-  contactAboutProperty(): void {
-    console.log('Contactar sobre propiedad:', this.property?.id);
+  //contactAboutProperty(): void {
+  //  console.log('Contactar sobre propiedad:', this.property?.id);
+  //}
+
+  /**
+   * ✅ OBTENER NÚMERO DE VISITAS - CAMPO REAL DE AIRTABLE
+   */
+  getVisitCount(): string {
+    const fields = this.property?.fields as any;
+
+    if (!fields) return '0';
+
+    // 🔥 BUSCAR EL CAMPO EXACTO DE VISITAS
+    const visits = fields['Número de visitas'] ||     // Nombre exacto
+                   fields['Número de Visitas'] ||     // Con mayúscula
+                   fields['numero de visitas'] ||     // En minúsculas
+                   fields['NumeroDeVisitas'] ||       // Sin espacios
+                   fields['Visitas'] ||               // Nombre corto
+                   fields['Views'] ||                 // En inglés
+                   0;
+
+    return visits ? String(visits) : '0';
+  }
+
+  /**
+   * ✅ CLASE CSS PARA BADGE DE ESTADO - IGUAL QUE EN PROPERTY-LIST
+   */
+  getStatusBadgeClass(): string {
+    const estado = this.getFieldAsString('Estado').toLowerCase();
+    switch (estado) {
+      case 'disponible':
+      case 'available':
+        return 'bg-success'; // #28a745 (verde)
+      case 'vendido':
+      case 'vendida':
+      case 'sold':
+        return 'bg-danger'; // #dc3545 (rojo)
+      case 'alquilado':
+      case 'alquilada':
+      case 'rented':
+        return 'bg-warning'; // #fd7e14 (naranja)
+      case 'reservado':
+      case 'reservada':
+      case 'reserved':
+        return 'bg-info'; // #17a2b8 (azul claro)
+      default:
+        return 'bg-secondary'; // Gris para estados desconocidos
+    }
+  }
+
+  /**
+   * 🔥 CARGAR FAVORITOS REALES DEL USUARIO - IGUAL QUE PROPERTY-LIST
+   */
+  private loadUserFavorites(): void {
+    if (!this.authService.isAuthenticated) {
+      return;
+    }
+
+    this.clientesService.getMisPropiedadesInteres()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (propiedades) => {
+          this.favoriteIds = new Set(propiedades.map(p => p.id!));
+          this.favoritesLoaded = true;
+          console.log('✅ Favoritos cargados en detail:', this.favoriteIds.size);
+        },
+        error: (error) => {
+          console.error('❌ Error al cargar favoritos en detail:', error);
+          this.favoritesLoaded = true;
+        }
+      });
+  }
+
+  /**
+   * 🔥 TOGGLE FAVORITO REAL - IGUAL QUE PROPERTY-LIST
+   */
+  toggleFavorite(event?: Event): void {
+    // Evitar que se propague el click
+    if (event) {
+      event.stopPropagation();
+    }
+
+    if (!this.authService.isAuthenticated) {
+      alert('⚠️ Debes iniciar sesión para gestionar favoritos');
+      return;
+    }
+
+    if (!this.property?.id || this.favoriteLoading) {
+      return;
+    }
+
+    const propertyId = this.property.id;
+    const propertyTitle = this.getFieldAsString('Título');
+
+    // 🔥 ACTIVAR LOADING
+    this.favoriteLoading = true;
+
+    this.clientesService.toggleInteresUsuario(propertyId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (result) => {
+          if (result.accion === 'agregada') {
+            this.favoriteIds.add(propertyId);
+            console.log('❤️ Agregado a favoritos en detail:', propertyTitle);
+          } else {
+            this.favoriteIds.delete(propertyId);
+            console.log('💔 Quitado de favoritos en detail:', propertyTitle);
+          }
+
+          this.showMessage(result.mensaje, 'success');
+          this.favoriteLoading = false; // 🔥 DESACTIVAR LOADING
+        },
+        error: (error) => {
+          console.error('❌ Error al toggle favorito en detail:', error);
+          this.showMessage('Error al gestionar favoritos', 'error');
+          this.favoriteLoading = false; // 🔥 DESACTIVAR LOADING
+        }
+      });
+  }
+
+  /**
+   * 🔥 VERIFICAR SI ES FAVORITO - IGUAL QUE PROPERTY-LIST
+   */
+  isFavorite(): boolean {
+    return this.property?.id ? this.favoriteIds.has(this.property.id) : false;
+  }
+
+  /**
+   * 🔥 MOSTRAR MENSAJE AL USUARIO - IGUAL QUE PROPERTY-LIST
+   */
+  private showMessage(message: string, type: 'success' | 'error'): void {
+    console.log(type === 'success' ? '✅' : '❌', message);
+
+    // Toast simple
+    const toastElement = document.createElement('div');
+    toastElement.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${type === 'success' ? '#28a745' : '#dc3545'};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 5px;
+      z-index: 9999;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    `;
+    toastElement.textContent = message;
+
+    document.body.appendChild(toastElement);
+
+    setTimeout(() => {
+      if (document.body.contains(toastElement)) {
+        document.body.removeChild(toastElement);
+      }
+    }, 3000);
   }
 }

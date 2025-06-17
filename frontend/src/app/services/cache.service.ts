@@ -13,8 +13,23 @@ export interface EmpresaCacheData {
   nombre: string;
   logo: string;
   estado: string;
-  logoBlob?: Blob;
-  logoDataUrl?: string; // 🔥 Imagen como base64 para persistir
+  logoDataUrl?: string;
+
+  // 🔥 AÑADIR CAMPOS ADICIONALES PARA FOOTER
+  telefono?: string;
+  email?: string;
+  direccion?: string;
+  web?: string;
+
+  // Redes sociales
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  linkedin?: string;
+
+  // Otros campos útiles
+  horario?: string;
+  idEmpresa?: string;
 }
 
 @Injectable({

@@ -1,0 +1,785 @@
+// ===============================
+// 🏠 HOME COMPONENT STYLES - USANDO VARIABLES GLOBALES
+// ===============================
+
+.home-container {
+  // Asegurar que ocupe toda la altura sin navbar overlap
+  // margin-top: 76px; // Altura de navbar
+}
+
+// ===============================
+// 🌟 HERO SECTION
+// ===============================
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-navbar-user); // 🔥 Usar variable en lugar de hardcode
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  // Imagen de fondo opcional
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/assets/images/hero-bg.jpg'); // 🔥 Añadir imagen si existe
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3;
+    z-index: 1;
+  }
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(var(--color-primary-rgb), 0.8); // 🔥 Usar variable con transparencia
+  z-index: 2;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 3;
+
+  .text-primary {
+    color: var(--navbar-brand-gold) !important; // 🔥 Usar dorado de navbar
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 3rem;
+  line-height: 1.6;
+  position: relative;
+  z-index: 3;
+}
+
+// ===============================
+// 🔍 SEARCH CARD
+// ===============================
+.search-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-xl); // 🔥 Usar variable
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 3;
+  margin: 0 auto;
+  max-width: 1000px;
+}
+
+.search-form {
+  .form-floating {
+    .form-control,
+    .form-select {
+      border: 2px solid var(--color-gray-200); // 🔥 Usar variable
+      border-radius: var(--radius-lg); // 🔥 Usar variable
+      font-size: 1rem;
+      height: 58px;
+      transition: var(--transition-base); // 🔥 Usar variable
+
+      &:focus {
+        border-color: var(--color-primary); // 🔥 Usar variable
+        box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); // 🔥 Usar variable
+      }
+    }
+
+    label {
+      font-weight: 600;
+      color: var(--color-gray-600); // 🔥 Usar variable
+
+      i {
+        color: var(--color-primary); // 🔥 Usar variable
+      }
+    }
+  }
+}
+
+.btn-search {
+  height: 58px;
+  border-radius: var(--radius-lg); // 🔥 Usar variable
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: var(--shadow-primary); // 🔥 Usar variable
+  transition: var(--transition-base); // 🔥 Usar variable
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(var(--color-primary-rgb), 0.4); // 🔥 Usar variable
+  }
+}
+
+// ===============================
+// 📊 STATS SECTION
+// ===============================
+.stats-section {
+  padding: 4rem 0;
+  background: var(--bg-body); // 🔥 Usar variable
+  margin-top: -50px;
+  position: relative;
+  z-index: 4;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: var(--bg-card); // 🔥 Usar variable
+  border-radius: var(--radius-lg); // 🔥 Usar variable
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: var(--transition-base); // 🔥 Usar variable
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.stat-icon {
+  width: 80px;
+  height: 80px;
+  background: var(--gradient-primary); // 🔥 Usar variable
+  border-radius: var(--radius-round); // 🔥 Usar variable
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+
+  i {
+    font-size: 2rem;
+    color: white;
+  }
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary); // 🔥 Usar variable
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  color: var(--text-secondary); // 🔥 Usar variable
+  font-weight: 600;
+}
+
+// ===============================
+// 🌟 FEATURED PROPERTIES - IDÉNTICAS A PROPERTY-LIST
+// ===============================
+.featured-properties-section {
+  padding: 5rem 0;
+  background: var(--bg-card); // 🔥 Usar variable
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary); // 🔥 Usar variable
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary); // 🔥 Usar variable
+  margin-bottom: 3rem;
+}
+
+// ===============================
+// 🔥 IMPORTAR TODOS LOS ESTILOS DE CARDS DE PROPERTY-LIST
+// ===============================
+
+.clickeable-card {
+  width: 100%;
+  border-radius: var(--radius-md); // 🔥 Usar variable
+  transition: var(--transition-base); // 🔥 Usar variable
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+    border-color: var(--color-primary); // 🔥 Usar variable
+
+    .card-hover-overlay {
+      opacity: 1;
+    }
+  }
+
+  .property-image {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .card-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200px; // 🔥 Mantener misma altura
+    background: rgba(var(--color-primary-rgb), 0.85); // 🔥 Usar variable
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition-base); // 🔥 Usar variable
+    z-index: 20; // 🔥 Z-index más alto para estar sobre placeholder
+    font-weight: 600;
+
+    i {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); // 🔥 Sombra para mejor visibilidad
+    }
+
+    span {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); // 🔥 Sombra para mejor visibilidad
+    }
+  }
+
+  .property-status {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm); // 🔥 Usar variable
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: white;
+    z-index: 15;
+    text-transform: uppercase;
+
+    &.status-disponible {
+      background-color: var(--color-property-available); // 🔥 Usar variable
+    }
+
+    &.status-vendida, &.status-vendido {
+      background-color: var(--color-property-sold); // 🔥 Usar variable
+    }
+
+    &.status-alquilada, &.status-alquilado {
+      background-color: var(--color-property-rented); // 🔥 Usar variable
+    }
+
+    &.status-reservada, &.status-reservado {
+      background-color: var(--color-property-reserved); // 🔥 Usar variable
+    }
+  }
+
+  .card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 320px; // 🔥 ALTURA MÍNIMA FIJA PARA UNIFORMIDAD
+  }
+
+  .property-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary); // 🔥 Usar variable
+    margin-bottom: 0;
+    line-height: 1.3;
+    min-height: 2.6rem; // 🔥 Altura fija para 2 líneas máximo
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .property-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary); // 🔥 Usar variable
+    margin-bottom: 0.75rem;
+    min-height: 2rem; // 🔥 Altura fija
+  }
+
+  .property-location {
+    color: var(--text-secondary); // 🔥 Usar variable
+    font-size: 0.9rem;
+    display: flex;
+    align-items: start;
+    min-height: 2.4rem; // 🔥 Altura fija para 2 líneas máximo
+    overflow: hidden;
+
+    i {
+      color: var(--color-primary); // 🔥 Usar variable
+      margin-right: 0.5rem;
+      margin-top: 0.2rem;
+      flex-shrink: 0;
+    }
+
+    span {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .property-specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    min-height: 60px; // 🔥 Altura fija
+    align-items: center;
+
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: var(--text-secondary); // 🔥 Usar variable
+      font-size: 0.85rem;
+      background: var(--color-gray-100); // 🔥 Usar variable
+      border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+      border-radius: var(--radius-sm); // 🔥 Usar variable
+      padding: 8px 4px;
+      text-align: center;
+      min-height: 50px; // 🔥 Altura fija para cada item
+
+      i {
+        color: var(--color-primary); // 🔥 Usar variable
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .feature-number {
+        font-weight: 600;
+        color: var(--text-primary); // 🔥 Usar variable
+        font-size: 0.9rem;
+        line-height: 1;
+      }
+
+      .feature-label {
+        color: var(--text-secondary); // 🔥 Usar variable
+        font-size: 0.7rem;
+        line-height: 1;
+      }
+    }
+  }
+
+  .property-actions {
+    margin-top: auto; // 🔥 Empuja los botones al final
+
+    .btn {
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm); // 🔥 Usar variable
+      font-weight: 600;
+      transition: var(--transition-base); // 🔥 Usar variable
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 PLACEHOLDER DE IMAGEN - IGUAL QUE PROPERTY-LIST
+// ===============================
+.property-image-placeholder {
+  height: 200px; // 🔥 Misma altura que property-image
+  background: var(--color-gray-100); // 🔥 Usar variable
+  border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+  width: 100%;
+  position: relative; // 🔥 Importante para que el overlay se posicione correctamente
+
+  // 🔥 EXACTAMENTE IGUAL QUE EN PROPERTY-LIST
+  .text-center {
+    padding: 1rem;
+
+    i {
+      color: var(--text-muted) !important; // 🔥 Usar variable
+    }
+
+    h6 {
+      color: var(--text-muted) !important; // 🔥 Usar variable
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    p {
+      color: var(--text-muted) !important; // 🔥 Usar variable
+      font-size: 0.8rem;
+      line-height: 1.3;
+    }
+  }
+}
+
+// ===============================
+// 🔥 INFORMACIÓN FIJA - CLASES ESPECÍFICAS E INDEPENDIENTES
+// ===============================
+.property-info-fixed {
+    margin: 1rem 0 0 0;
+    padding: 0.75rem;
+    background: var(--color-gray-100); // 🔥 Usar variable
+    border-radius: var(--radius-md); // 🔥 Usar variable
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+    min-height: 60px; // 🔥 Altura fija para uniformidad
+
+    .row {
+      margin: 0; // 🔥 Quitar márgenes del row
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0;
+      height: 100%; // 🔥 Ocupar toda la altura disponible
+
+      i {
+        font-size: 0.9rem;
+        width: 16px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      .info-content {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+
+        .info-label {
+          font-size: 0.75rem;
+          color: var(--text-secondary); // 🔥 Usar variable
+          font-weight: 600;
+          line-height: 1;
+          margin-bottom: 0;
+          white-space: nowrap;
+        }
+
+        .info-value {
+          font-size: 0.85rem;
+          color: var(--text-primary); // 🔥 Usar variable
+          font-weight: 600;
+          line-height: 1;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    // 🔥 CLASE ESPECÍFICA PARA "CONSTRUIDO EN" - ALINEADO A LA IZQUIERDA
+    .info-item-left {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    // 🔥 CLASE ESPECÍFICA PARA "VISITAS" - ALINEADO A LA DERECHA
+    .info-item-right {
+      justify-content: flex-end;
+      text-align: right;
+    }
+}
+
+// ===============================
+// 🏢 SERVICES SECTION
+// ===============================
+.services-section {
+  padding: 5rem 0;
+  background: var(--bg-body); // 🔥 Usar variable
+}
+
+.service-card {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: var(--bg-card); // 🔥 Usar variable
+  border-radius: var(--radius-xl); // 🔥 Usar variable
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: var(--transition-base); // 🔥 Usar variable
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.service-icon {
+  width: 100px;
+  height: 100px;
+  background: var(--gradient-navbar-user); // 🔥 Usar variable
+  border-radius: var(--radius-round); // 🔥 Usar variable
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+
+  i {
+    font-size: 2.5rem;
+    color: white;
+  }
+}
+
+.service-card h4 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary); // 🔥 Usar variable
+  margin-bottom: 1rem;
+}
+
+.service-card p {
+  color: var(--text-secondary); // 🔥 Usar variable
+  line-height: 1.6;
+  margin: 0;
+}
+
+// ===============================
+// 📞 CALL TO ACTION
+// ===============================
+.cta-section {
+  padding: 5rem 0;
+  background: var(--gradient-navbar-user); // 🔥 Usar variable
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(var(--color-primary-rgb), 0.8); // 🔥 Usar variable
+  }
+}
+
+.cta-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.cta-buttons {
+  position: relative;
+  z-index: 2;
+
+  .btn {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: var(--radius-rectangle); // 🔥 Usar variable (50px equivalente)
+    transition: var(--transition-base); // 🔥 Usar variable
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .btn-outline-light {
+    border-color: white;
+    color: white;
+
+    &:hover {
+      background: white;
+      color: var(--color-primary); // 🔥 Usar variable
+    }
+  }
+}
+
+// ===============================
+// 📱 RESPONSIVE
+// ===============================
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .search-card {
+    padding: 1.5rem;
+    margin: 0 1rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .cta-title {
+    font-size: 2rem;
+  }
+
+  .cta-buttons {
+    .btn {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .clickeable-card {
+    &:hover {
+      transform: translateY(-4px);
+    }
+
+    .property-image {
+      height: 180px;
+    }
+
+    .card-hover-overlay {
+      height: 180px; // 🔥 Mantener consistencia
+    }
+
+    .property-image-placeholder {
+      height: 180px; // 🔥 Mantener consistencia
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .search-form .row .col-lg-2,
+  .search-form .row .col-lg-3 {
+    margin-bottom: 1rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+
+  .clickeable-card {
+    .property-image {
+      height: 160px;
+    }
+
+    .card-hover-overlay {
+      height: 160px;
+    }
+
+    .property-image-placeholder {
+      height: 160px;
+    }
+  }
+}
+
+// ===============================
+// 🎨 MEJORAS ADICIONALES CON VARIABLES
+// ===============================
+
+// Spinner personalizado
+.spinner-border {
+  color: var(--color-primary) !important;
+}
+
+// Botones personalizados
+.btn-primary {
+  background: var(--gradient-primary);
+  border: none;
+
+  &:hover {
+    background: var(--gradient-primary);
+    filter: brightness(1.1);
+  }
+}
+
+.btn-outline-primary {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+
+  &:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+}
+
+.btn-outline-secondary {
+  border-color: var(--color-gray-600);
+  color: var(--color-gray-600);
+
+  &:hover {
+    background: var(--color-gray-600);
+    border-color: var(--color-gray-600);
+  }
+}
+
+// Alertas
+.alert-info {
+  background: rgba(var(--color-info-rgb), 0.1);
+  border-color: var(--color-info);
+  color: var(--color-info-dark);
+}
+
+.alert-warning {
+  background: rgba(var(--color-warning-rgb), 0.1);
+  border-color: var(--color-warning);
+  color: var(--color-warning-dark);
+}
+
+// Cards mejoradas
+.card {
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    box-shadow: var(--shadow-primary);
+  }
+}

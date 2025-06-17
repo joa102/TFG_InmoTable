@@ -339,7 +339,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   navigateToHome(): void {
     console.log('🏠 Navegando a inicio...');
     this.showUserDropdown = false;
-    this.router.navigate(['/propiedades']);
+    this.router.navigate(['/']);
   }
 
   navigateToProperties(): void {
@@ -351,7 +351,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   navigateToContact(): void {
     console.log('📧 Navegando a contacto...');
     this.showUserDropdown = false;
-    alert('🚧 Página de contacto en desarrollo.\n\nPróximamente podrás:\n• Enviar consultas\n• Ver información de contacto\n• Solicitar información');
+    //alert('🚧 Página de contacto en desarrollo.\n\nPróximamente podrás:\n• Enviar consultas\n• Ver información de contacto\n• Solicitar información');
+    this.router.navigate(['/contacto']);
   }
 
   navigateToLogin(): void {
@@ -360,29 +361,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.router.navigate(['/auth/login']);
   }
 
+  /**
+   * 👤 Navegar al perfil del usuario
+   */
   navigateToUserProfile(): void {
-    console.log('👤 Navegando a perfil de usuario...');
-    this.showUserDropdown = false;
-
-    if (!this.currentUser) {
-      console.warn('⚠️ No hay usuario logueado');
-      this.router.navigate(['/auth/login']);
-      return;
-    }
-
-    const userInfo = `
-👤 DATOS DEL USUARIO:
-
-📛 Nombre: ${this.currentUser.nombre}
-📧 Email: ${this.currentUser.email}
-🏷️ Rol: ${this.getRoleLabel()}
-🆔 ID: ${this.currentUser.id}
-
-🚧 Página de perfil en desarrollo.
-Próximamente podrás editar tus datos.
-    `;
-
-    alert(userInfo);
+    console.log('👤 Navegando al perfil del usuario');
+    this.router.navigate(['/perfil']);
+    // this.hideDropdowns(); // 🔥 COMENTAR O QUITAR ESTA LÍNEA
   }
 
   navigateToInterestedProperties(): void {
@@ -395,7 +380,11 @@ Próximamente podrás editar tus datos.
       return;
     }
 
-    alert('❤️ Propiedades de Interés\n\n🚧 Funcionalidad en desarrollo.\n\nPróximamente podrás:\n• Ver tus propiedades favoritas\n• Gestionar tu lista de interés\n• Recibir notificaciones de cambios');
+    //alert('❤️ Propiedades de Interés\n\n🚧 Funcionalidad en desarrollo.\n\nPróximamente podrás:\n• Ver tus propiedades favoritas\n• Gestionar tu lista de interés\n• Recibir notificaciones de cambios');
+    this.router.navigate(['/mis-propiedades-interes']).catch(error => {
+      console.error('❌ Error al navegar a mis propiedades de interes:', error);
+      //alert('📅 Gestión de Citas\n\n🚧 Módulo en desarrollo.\n\nPróximamente podrás:\n• Ver tus citas programadas\n• Solicitar nuevas citas\n• Gestionar tu calendario');
+    });
   }
 
   navigateToAppointments(): void {
@@ -408,9 +397,9 @@ Próximamente podrás editar tus datos.
       return;
     }
 
-    this.router.navigate(['/appointment-calendar']).catch(error => {
+    this.router.navigate(['/calendario']).catch(error => {
       console.error('❌ Error al navegar a calendario:', error);
-      alert('📅 Gestión de Citas\n\n🚧 Módulo en desarrollo.\n\nPróximamente podrás:\n• Ver tus citas programadas\n• Solicitar nuevas citas\n• Gestionar tu calendario');
+      //alert('📅 Gestión de Citas\n\n🚧 Módulo en desarrollo.\n\nPróximamente podrás:\n• Ver tus citas programadas\n• Solicitar nuevas citas\n• Gestionar tu calendario');
     });
   }
 

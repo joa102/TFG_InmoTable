@@ -14,15 +14,15 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
     <div class="login-container">
       <div class="login-card">
         <div class="login-header">
-          <h2><i class="fas fa-sign-in-alt me-2"></i>Demo - Login Falso</h2>
-          <p>Sistema de demostración inmobiliario</p>
+          <h2><i class="fas fa-sign-in-alt me-2"></i>Iniciar sesión</h2>
+          <p>Iniciar sesión en Inmobiliaria</p>
         </div>
 
         <!-- 🔥 USUARIOS DE PRUEBA -->
         <div class="demo-users mb-4">
           <h6 class="text-muted mb-2">👤 Usuarios de prueba:</h6>
           <div class="demo-user-buttons">
-            <button type="button" class="btn btn-outline-primary btn-sm me-2 mb-2" (click)="fillAdmin()">
+            <!--<button type="button" class="btn btn-outline-primary btn-sm me-2 mb-2" (click)="fillAdmin()">
               Admin
             </button>
             <button type="button" class="btn btn-outline-success btn-sm me-2 mb-2" (click)="fillAgent()">
@@ -30,6 +30,15 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
             </button>
             <button type="button" class="btn btn-outline-info btn-sm me-2 mb-2" (click)="fillClient()">
               Cliente
+            </button>-->
+            <button type="button" class="btn btn-outline-primary btn-sm me-2 mb-2" (click)="fillClient1()">
+              Cliente 1
+            </button>
+            <button type="button" class="btn btn-outline-success btn-sm me-2 mb-2" (click)="fillClient2()">
+              Cliente 2
+            </button>
+            <button type="button" class="btn btn-outline-info btn-sm me-2 mb-2" (click)="fillClient3()">
+              Cliente 3
             </button>
           </div>
         </div>
@@ -96,7 +105,7 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
           >
             <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!loading" class="fas fa-sign-in-alt me-2"></i>
-            {{ loading ? 'Iniciando sesión...' : 'Entrar (Demo)' }}
+            {{ loading ? 'Iniciando sesión...' : 'Entrar' }}
           </button>
         </form>
 
@@ -105,7 +114,7 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
           <p class="text-center text-muted">
             <small>
               <i class="fas fa-info-circle me-1"></i>
-              Sistema de demostración - No requiere backend
+              Al iniciar sesión aceptas nuestras condiciones de uso y políticas de privacidad.
             </small>
           </p>
         </div>
@@ -120,6 +129,7 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
       justify-content: center;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       padding: 2rem 1rem;
+      padding-top: 6.2rem;
     }
 
     .login-card {
@@ -196,7 +206,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {
     // Si ya está autenticado, redirigir
     if (this.authService.isAuthenticated) {
-      this.router.navigate(['/dashboard']);
+      //this.router.navigate(['/dashboard']);
+      this.router.navigate(['/propiedades']);
     }
   }
 
@@ -217,7 +228,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   // 🔥 AUTOCOMPLETAR USUARIOS DE PRUEBA
-  fillAdmin(): void {
+  /*fillAdmin(): void {
     this.loginForm.patchValue({
       email: 'admin@inmotable.com',
       password: 'admin123'
@@ -236,6 +247,30 @@ export class LoginComponent implements OnInit, OnDestroy {
   fillClient(): void {
     this.loginForm.patchValue({
       email: 'mireiabayona@fajardo-tamarit.es',
+      password: 'cliente123'
+    });
+    this.clearMessages();
+  }*/
+
+  fillClient1(): void {
+    this.loginForm.patchValue({
+      email: 'mireiabayona@fajardo-tamarit.es',
+      password: 'cliente123'
+    });
+    this.clearMessages();
+  }
+
+  fillClient2(): void {
+    this.loginForm.patchValue({
+      email: 'coliver@rubio.org',
+      password: 'cliente123'
+    });
+    this.clearMessages();
+  }
+
+  fillClient3(): void {
+    this.loginForm.patchValue({
+      email: 'tito19@carrillo.net',
       password: 'cliente123'
     });
     this.clearMessages();
@@ -266,7 +301,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.loading = false;
 
           setTimeout(() => {
-            this.router.navigate(['/dashboard']);
+            //this.router.navigate(['/dashboard']);
+            this.router.navigate(['/propiedades']);
           }, 1000);
         },
         error: (error) => {

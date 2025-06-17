@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\AirtableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class PropertyController extends Controller
 {
@@ -113,7 +114,7 @@ class PropertyController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al obtener propiedades: ' . $e->getMessage());
+            Log::error('Error al obtener propiedades: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -237,7 +238,7 @@ class PropertyController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
-            \Log::error('Error al crear propiedad: ' . $e->getMessage());
+            Log::error('Error al crear propiedad: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -323,7 +324,7 @@ class PropertyController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al actualizar propiedad: ' . $e->getMessage());
+            Log::error('Error al actualizar propiedad: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -420,7 +421,7 @@ class PropertyController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al enviar contacto: ' . $e->getMessage());
+            Log::error('Error al enviar contacto: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -460,7 +461,7 @@ class PropertyController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al obtener propiedades destacadas: ' . $e->getMessage());
+            Log::error('Error al obtener propiedades destacadas: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -483,7 +484,7 @@ class PropertyController extends Controller
                 'Número de visitas' => $visitasActuales + 1
             ]);
         } catch (\Exception $e) {
-            \Log::warning('No se pudo incrementar contador de visitas: ' . $e->getMessage());
+            Log::warning('No se pudo incrementar contador de visitas: ' . $e->getMessage());
         }
     }
 
@@ -510,7 +511,7 @@ class PropertyController extends Controller
 
             return $ultimoNumero;
         } catch (\Exception $e) {
-            \Log::warning('Error al obtener último ID de propiedad: ' . $e->getMessage());
+            Log::warning('Error al obtener último ID de propiedad: ' . $e->getMessage());
             return 0;
         }
     }

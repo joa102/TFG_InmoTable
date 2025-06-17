@@ -5,15 +5,13 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService, User } from '../../../services/auth.service';
-import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-appointment-calendar',
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    NavbarComponent  // 🔥 AÑADIR NAVBAR
+    RouterModule
   ],
   templateUrl: './appointment-calendar.component.html',
   styleUrls: ['./appointment-calendar.component.scss']
@@ -139,10 +137,19 @@ export class AppointmentCalendarComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 📅 Ir a la lista de citas
+   * 📅 Solicitar nueva cita (navegar a formulario de citas)
    */
   goToAppointmentList(): void {
-    console.log('📅 Navegando a lista de citas...');
+    console.log('📅 Navegando a solicitar nueva cita...');
+    this.router.navigate(['/citas']);
+  }
+
+  // 🔥 OPCIONAL: Añadir método más específico
+  /**
+   * 📅 Solicitar cita específica
+   */
+  requestAppointment(): void {
+    console.log('📅 Navegando a solicitar cita...');
     this.router.navigate(['/citas']);
   }
 

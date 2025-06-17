@@ -1,0 +1,164 @@
+<footer class="footer">
+  <div class="container">
+    <!-- 🔥 FOOTER PRINCIPAL -->
+    <div class="footer-main">
+      <div class="row">
+        <!-- Información de la empresa -->
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="footer-section">
+            <h5 class="footer-title">
+              <!-- 🔥 LOGO DINÁMICO IGUAL QUE NAVBAR -->
+
+              <!-- Logo como imagen (SI ES IMAGEN) -->
+              <img *ngIf="isLogoImage()"
+                   [src]="getEmpresaLogo()"
+                   [alt]="empresaNombre + ' Logo'"
+                   class="me-2 footer-logo"
+                   style="height: 32px; width: auto; max-width: 32px; object-fit: contain;"
+                   (error)="onLogoImageError($event)"
+                   (load)="onLogoImageLoad()"
+                   [title]="empresaNombre + ' - Logo'">
+
+              <!-- Logo como icono (SI ES ICONO) -->
+              <i *ngIf="isLogoIcon()"
+                 [class]="getEmpresaLogo() + ' me-2'"
+                 [title]="empresaNombre + ' - Icono'"></i>
+
+              <!-- 🔥 NOMBRE DINÁMICO DESDE AIRTABLE -->
+              {{ empresaNombre }}
+            </h5>
+
+            <div class="footer-contact">
+              <!-- 🔥 TELÉFONO DINÁMICO DESDE AIRTABLE -->
+              <p class="mb-1">
+                <i class="fas fa-phone me-2"></i>
+                {{ empresaTelefono }}  <!-- 🔥 NO empresaTelephone ni telefono -->
+              </p>
+              <!-- 🔥 WEB DINÁMICO DESDE AIRTABLE (EN LUGAR DE EMAIL) -->
+              <p class="mb-1">
+                <i class="fas fa-globe me-2"></i>
+                {{ empresaEmail }}     <!-- 🔥 NO web ni email -->
+              </p>
+              <!-- 🔥 DIRECCIÓN DINÁMICA DESDE AIRTABLE -->
+              <p class="mb-0">
+                <i class="fas fa-map-marker-alt me-2"></i>
+                {{ empresaDireccion }} <!-- 🔥 NO direccion ni address -->
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Horario -->
+        <div class="col-lg-2 col-md-6 mb-4">
+          <div class="footer-section">
+            <h6 class="footer-subtitle">Horario</h6>
+            <!-- 🔥 HORARIO DINÁMICO DESDE AIRTABLE -->
+            <div class="footer-schedule" [innerHTML]="empresaHorario"></div>
+          </div>
+        </div>
+
+        <!-- Espacio -->
+        <div class="col-lg-1 col-md-6 mb-4">
+          <div class="footer-section">
+
+          </div>
+        </div>
+
+        <!-- Enlaces rápidos -->
+        <div class="col-lg-2 col-md-6 mb-4">
+          <div class="footer-section">
+            <h6 class="footer-subtitle">Navegación</h6>
+            <ul class="footer-links">
+              <li><a routerLink="/propiedades">Propiedades</a></li>
+              <li><a routerLink="/dashboard">Dashboard</a></li>
+              <li><a routerLink="/citas">Solicitar Cita</a></li>
+              <li><a routerLink="/calendario">Calendario</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Servicios -->
+        <!--<div class="col-lg-2 col-md-6 mb-4">
+          <div class="footer-section">
+            <h6 class="footer-subtitle">Servicios</h6>
+            <ul class="footer-links">
+              <li><a href="#" (click)="$event.preventDefault()">Compra</a></li>
+              <li><a href="#" (click)="$event.preventDefault()">Venta</a></li>
+              <li><a href="#" (click)="$event.preventDefault()">Alquiler</a></li>
+              <li><a href="#" (click)="$event.preventDefault()">Asesoramiento</a></li>
+            </ul>
+          </div>
+        </div>-->
+
+        <!-- Redes sociales y contacto -->
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="footer-section">
+            <h6 class="footer-subtitle">Síguenos</h6>
+            <div class="footer-social">
+              <!-- 🔥 FACEBOOK DINÁMICO DESDE AIRTABLE -->
+              <a
+                class="social-link"
+                (click)="navigateToSocial('Facebook', facebookUrl)"
+                [style.cursor]="facebookUrl !== '#' ? 'pointer' : 'default'"
+                [style.opacity]="facebookUrl !== '#' ? '1' : '0.5'"
+                title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+
+              <!-- 🔥 INSTAGRAM DINÁMICO DESDE AIRTABLE -->
+              <a
+                class="social-link"
+                (click)="navigateToSocial('Instagram', instagramUrl)"
+                [style.cursor]="instagramUrl !== '#' ? 'pointer' : 'default'"
+                [style.opacity]="instagramUrl !== '#' ? '1' : '0.5'"
+                title="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+
+              <!-- 🔥 TWITTER DINÁMICO DESDE AIRTABLE -->
+              <a
+                class="social-link"
+                (click)="navigateToSocial('Twitter', twitterUrl)"
+                [style.cursor]="twitterUrl !== '#' ? 'pointer' : 'default'"
+                [style.opacity]="twitterUrl !== '#' ? '1' : '0.5'"
+                title="Twitter">
+                <i class="fab fa-twitter"></i>
+              </a>
+
+              <!-- 🔥 LINKEDIN DINÁMICO DESDE AIRTABLE -->
+              <a
+                class="social-link"
+                (click)="navigateToSocial('LinkedIn', linkedinUrl)"
+                [style.cursor]="linkedinUrl !== '#' ? 'pointer' : 'default'"
+                [style.opacity]="linkedinUrl !== '#' ? '1' : '0.5'"
+                title="LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🔥 FOOTER BOTTOM -->
+    <div class="footer-bottom">
+      <div class="row align-items-center ms-2 me-2">
+        <div class="col-md-6">
+          <p class="footer-copyright mb-0">
+            <!-- 🔥 COPYRIGHT CON NOMBRE DINÁMICO -->
+            © {{ currentYear }} {{ empresaNombre }}. Todos los derechos reservados.
+          </p>
+        </div>
+        <div class="col-md-6">
+          <div class="footer-legal">
+            <a href="#" (click)="$event.preventDefault()">Política de Privacidad</a>
+            <span class="separator">|</span>
+            <a href="#" (click)="$event.preventDefault()">Términos de Uso</a>
+            <span class="separator">|</span>
+            <a href="#" (click)="$event.preventDefault()">Cookies</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

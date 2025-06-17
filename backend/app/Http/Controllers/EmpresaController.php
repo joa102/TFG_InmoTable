@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\AirtableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class EmpresaController extends Controller
 {
@@ -62,7 +63,7 @@ class EmpresaController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al obtener empresas: ' . $e->getMessage());
+            Log::error('Error al obtener empresas: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -93,7 +94,7 @@ class EmpresaController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Error al obtener empresa: ' . $e->getMessage());
+            Log::error('Error al obtener empresa: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
@@ -140,7 +141,7 @@ class EmpresaController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
-            \Log::error('Error al crear empresa: ' . $e->getMessage());
+            Log::error('Error al crear empresa: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,

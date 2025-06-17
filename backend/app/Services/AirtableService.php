@@ -88,7 +88,7 @@ class AirtableService
             ]);
 
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->token, // 🔥 USAR token
+                'Authorization' => 'Bearer ' . $this->token,
             ])->get($url);
 
             if ($response->successful()) {
@@ -97,7 +97,7 @@ class AirtableService
                     'id' => $record['id'],
                     'recordId' => $record['id'],
                     'createdTime' => $record['createdTime'] ?? null,
-                    ...$this->transformFields($record['fields'] ?? [])
+                    'fields' => $record['fields'] ?? [] // 🔥 MANTENER FIELDS SIN TRANSFORMAR
                 ];
 
                 Log::info("✅ Registro obtenido exitosamente", $result);
@@ -107,7 +107,7 @@ class AirtableService
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
-                return null;
+                throw new \Exception("Error al obtener registro: " . $response->body());
             }
         } catch (\Exception $e) {
             Log::error("❌ Error en getRecord", [
@@ -292,4 +292,128 @@ class AirtableService
             throw $e;
         }
     }
+
+    /**
+     * BUSCAR REGISTROS CON FÓRMULA (CORREGIDO)
+     */
+    public function searchRecords($tableName, $filterFormula)
+    {
+        try {
+            $url = "{$this->baseUrl}/{$this->baseId}/{$tableName}";
+
+            $filters = [
+                'filterByFormula' => $filterFormula
+            ];
+
+            Log::info("🔍 Buscando registros con fórmula", [
+                'url' => $url,
+                'table' => $tableName,
+                'formula' => $filterFormula
+            ]);
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->token,
+            ])->get($url, $filters);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $records = collect($data['records'] ?? [])->map(function ($record) {
+                    return [
+                        'id' => $record['id'],
+                        'recordId' => $record['id'],
+                        'createdTime' => $record['createdTime'] ?? null,
+                        'fields' => $record['fields'] ?? [] // 🔥 MANTENER FIELDS SIN TRANSFORMAR
+                    ];
+                })->toArray();
+
+                Log::info("✅ Búsqueda completada", [
+                    'count' => count($records),
+                    'formula' => $filterFormula,
+                    'records' => $records // 🔥 LOG COMPLETO PARA DEBUG
+                ]);
+
+                return $records;
+            } else {
+                Log::error("❌ Error en búsqueda", [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                    'formula' => $filterFormula
+                ]);
+                throw new \Exception("Error en búsqueda: " . $response->body());
+            }
+        } catch (\Exception $e) {
+            Log::error("❌ Error en searchRecords", [
+                'exception' => $e->getMessage(),
+                'table' => $tableName,
+                'formula' => $filterFormula
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * OBTENER REGISTROS CON ORDENAMIENTO (MÉTODO FALTANTE)
+     */
+    public function getRecordsOrdered($tableName, $sortField = 'Fecha de Registro', $sortDirection = 'desc', $filters = [])
+    {
+        try {
+            $url = "{$this->baseUrl}/{$this->baseId}/{$tableName}";
+
+            // Agregar ordenamiento
+            $queryParams = [
+                'sort[0][field]' => $sortField,
+                'sort[0][direction]' => $sortDirection,
+                'pageSize' => 100
+            ];
+
+            // Combinar con filtros adicionales
+            $queryParams = array_merge($queryParams, $filters);
+
+            Log::info("📊 Consultando registros ordenados", [
+                'url' => $url,
+                'table' => $tableName,
+                'sortField' => $sortField,
+                'sortDirection' => $sortDirection,
+                'filters' => $filters
+            ]);
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->token,
+            ])->get($url, $queryParams);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $records = collect($data['records'] ?? [])->map(function ($record) {
+                    return [
+                        'id' => $record['id'],
+                        'recordId' => $record['id'],
+                        'createdTime' => $record['createdTime'] ?? null,
+                        'fields' => $record['fields'] ?? [],
+                        ...$this->transformFields($record['fields'] ?? [])
+                    ];
+                })->toArray();
+
+                Log::info("✅ Registros ordenados obtenidos", [
+                    'count' => count($records),
+                    'sortField' => $sortField
+                ]);
+
+                return $records;
+            } else {
+                Log::error("❌ Error al obtener registros ordenados", [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                throw new \Exception("Error al obtener registros ordenados: " . $response->body());
+            }
+        } catch (\Exception $e) {
+            Log::error("❌ Error en getRecordsOrdered", [
+                'exception' => $e->getMessage(),
+                'table' => $tableName,
+                'sortField' => $sortField
+            ]);
+            throw $e;
+        }
+    }
+
 }
