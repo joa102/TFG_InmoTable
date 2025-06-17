@@ -6,6 +6,12 @@
 // 🔥 COLORES PRINCIPALES (Estos vendrán de Airtable en el futuro)
 :root {
   // 🎯 PRIMARIOS
+  //--color-primary: #0d6efd;
+  //--color-primary-dark: #0a58ca;
+  //--color-primary-light: #6ea8fe;
+  //--color-primary-rgb: 13, 110, 253;
+
+  // 🎯 PRIMARIOS AIRTABLE
   --color-primary: #0d6efd;
   --color-primary-dark: #0a58ca;
   --color-primary-light: #6ea8fe;
@@ -59,17 +65,26 @@
   --color-property-rented: var(--color-warning);
   --color-property-reserved: var(--color-info);
 
+  // 🎨 NAVBAR ESPECÍFICOS
+  --navbar-brand-gold: #ffd700;
+  --navbar-user-gradient-start: #667eea;
+  --navbar-user-gradient-end: #764ba2;
+  --navbar-dropdown-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
   // 🌟 GRADIENTES
   --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   --gradient-success: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%);
   --gradient-danger: linear-gradient(135deg, var(--color-danger) 0%, var(--color-danger-dark) 100%);
   --gradient-warning: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
+  --gradient-navbar-user: linear-gradient(135deg, var(--navbar-user-gradient-start) 0%, var(--navbar-user-gradient-end) 100%);
 
   // 💧 SOMBRAS CON COLORES
-  --shadow-primary: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+  //--shadow-primary: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+  --shadow-primary: 0 4px 12px var(--color-primary), 0.3;
   --shadow-success: 0 4px 12px rgba(var(--color-success-rgb), 0.3);
   --shadow-danger: 0 4px 12px rgba(var(--color-danger-rgb), 0.3);
   --shadow-warning: 0 4px 12px rgba(var(--color-warning-rgb), 0.3);
+  --shadow-navbar-dropdown: var(--navbar-dropdown-shadow);
 
   // 🎨 BACKGROUNDS
   --bg-body: var(--color-gray-100);
@@ -94,6 +109,7 @@
   --radius-lg: 12px;
   --radius-xl: 20px;
   --radius-round: 50%;
+  --radius-rectangle: 50px;
 
   // 🌊 Z-INDEX
   --z-dropdown: 1000;
@@ -109,16 +125,17 @@
 @mixin button-variant($bg, $border: $bg, $hover-bg: darken($bg, 7.5%), $hover-border: darken($border, 10%)) {
   background-color: $bg;
   border-color: $border;
-  
+
   &:hover {
     background-color: $hover-bg;
     border-color: $hover-border;
   }
 }
 
-@mixin card-shadow($color: var(--color-primary-rgb)) {
+//@mixin card-shadow($color: var(--color-primary-rgb)) {
+@mixin card-shadow($color: --color-primary) {
   box-shadow: 0 2px 12px rgba($color, 0.1);
-  
+
   &:hover {
     box-shadow: 0 8px 25px rgba($color, 0.15);
   }

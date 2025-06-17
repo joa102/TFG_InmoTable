@@ -1,16 +1,21 @@
 // ===============================
-// 🎨 NAVBAR PRINCIPAL
+// 🎨 NAVBAR PRINCIPAL - USANDO VARIABLES GLOBALES
 // ===============================
 
 .navbar {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-navbar-dropdown);
   backdrop-filter: blur(10px);
-  z-index: 1030;
+  z-index: var(--z-fixed);
+
+  // 🔥 SOBRESCRIBIR BOOTSTRAP BG-PRIMARY PARA USAR VARIABLES GLOBALES
+  &.bg-primary {
+    background: var(--gradient-primary) !important;
+  }
 
   .navbar-brand {
     font-size: 1.5rem;
     font-weight: 700;
-    transition: all 0.3s ease;
+    transition: var(--transition-base);
 
     &:hover {
       transform: translateY(-1px);
@@ -19,8 +24,8 @@
     }
 
     i {
-      color: #ffd700;
-      transition: all 0.3s ease;
+      color: var(--navbar-brand-gold);
+      transition: var(--transition-base);
     }
 
     &:hover i {
@@ -29,7 +34,7 @@
 
     // 🔥 ANIMACIÓN SUAVE PARA CAMBIOS DE CONTENIDO
     span {
-      transition: all 0.3s ease;
+      transition: var(--transition-base);
     }
 
     // 🔥 ESTILO PARA INDICADOR DE FALLBACK
@@ -41,8 +46,8 @@
 
   .nav-link {
     font-weight: 500;
-    transition: all 0.3s ease;
-    border-radius: 6px;
+    transition: var(--transition-base);
+    border-radius: var(--radius-sm);
     margin: 0 2px;
     position: relative;
 
@@ -54,7 +59,7 @@
 
     i {
       opacity: 0.8;
-      transition: all 0.3s ease;
+      transition: var(--transition-base);
     }
 
     &:hover i {
@@ -65,12 +70,43 @@
 }
 
 // ===============================
+// 🔥 SOBRESCRIBIR CLASES DE BOOTSTRAP PARA USAR VARIABLES GLOBALES
+// ===============================
+
+// Sobrescribir botón primary en navbar
+.navbar .btn-primary,
+.navbar .btn.btn-primary {
+  background: var(--gradient-primary) !important;
+  border-color: var(--color-primary) !important;
+
+  &:hover {
+    background: var(--gradient-primary) !important;
+    filter: brightness(1.1);
+    border-color: var(--color-primary-dark) !important;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25) !important;
+  }
+}
+
+// Sobrescribir texto primary en navbar
+.navbar .text-primary {
+  color: var(--color-primary) !important;
+}
+
+// Sobrescribir badges en navbar
+.navbar .badge.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+// ===============================
 // 🖼️ LOGO DE LA EMPRESA MEJORADO
 // ===============================
 
 .navbar-logo {
-  transition: all 0.3s ease;
-  border-radius: 4px;
+  transition: var(--transition-base);
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.1);
   padding: 2px;
 
@@ -84,7 +120,7 @@
 }
 
 .navbar-brand {
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
 
   &:hover {
     transform: translateX(2px);
@@ -101,7 +137,7 @@
 
 // 🔥 LOADING SPINNER MEJORADO
 .fas.fa-spinner.fa-spin {
-  color: #ffc107; // Color amarillo más visible
+  color: var(--color-warning) !important; // 🔥 CORREGIDO PARA USAR VARIABLE
   opacity: 0.9;
   animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
 }
@@ -144,10 +180,10 @@
   display: flex !important;
   align-items: center;
   padding: 0.5rem 1rem !important;
-  border-radius: 50px !important;
+  border-radius: var(--radius-xl) !important;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
 
   &:hover {
     background: rgba(255, 255, 255, 0.2);
@@ -165,8 +201,8 @@
 .user-avatar {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius-round);
+  background: var(--gradient-navbar-user);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,14 +210,14 @@
   font-weight: 700;
   font-size: 0.8rem;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
 }
 
 .user-avatar-large {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius-round);
+  background: var(--gradient-navbar-user);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -213,12 +249,12 @@
 
 .dropdown-menu {
   border: none;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  border-radius: 12px;
+  box-shadow: var(--shadow-navbar-dropdown);
+  border-radius: var(--radius-lg);
   padding: 0;
   min-width: 300px;
   margin-top: 0.5rem !important;
-  z-index: 1050;
+  z-index: var(--z-modal);
 
   position: absolute !important;
   top: 100% !important;
@@ -228,20 +264,20 @@
 
   .dropdown-header {
     padding: 1rem 1.5rem;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-radius: 12px 12px 0 0;
-    border-bottom: 1px solid #dee2e6;
+    background: linear-gradient(135deg, var(--color-gray-100) 0%, var(--color-gray-200) 100%);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-bottom: 1px solid var(--color-gray-300);
   }
 
   .dropdown-item {
     padding: 0.75rem 1.5rem;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: var(--transition-fast);
     border: none;
     background: none;
 
     &:hover {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--gradient-navbar-user);
       color: white;
       transform: translateX(5px);
 
@@ -256,22 +292,22 @@
 
     &:focus {
       outline: none;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--gradient-navbar-user);
       color: white;
     }
 
     i {
       width: 20px;
       opacity: 0.7;
-      transition: all 0.2s ease;
+      transition: var(--transition-fast);
     }
 
     small {
-      transition: all 0.2s ease;
+      transition: var(--transition-fast);
     }
 
     &.text-danger:hover {
-      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      background: var(--gradient-danger);
       color: white;
     }
   }
@@ -279,6 +315,28 @@
   .dropdown-divider {
     margin: 0.5rem 0;
     opacity: 0.3;
+  }
+
+  // 🔥 SOBRESCRIBIR BADGES EN DROPDOWN
+  .badge {
+    &.bg-primary {
+      background-color: var(--color-primary) !important;
+    }
+    &.bg-success {
+      background-color: var(--color-success) !important;
+    }
+    &.bg-danger {
+      background-color: var(--color-danger) !important;
+    }
+    &.bg-info {
+      background-color: var(--color-info) !important;
+    }
+    &.bg-warning {
+      background-color: var(--color-warning) !important;
+    }
+    &.bg-secondary {
+      background-color: var(--color-gray-600) !important;
+    }
   }
 }
 
@@ -417,13 +475,13 @@ html {
   display: block;
   opacity: 1;
   transform: translateY(0);
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
 }
 
 .dropdown-menu {
   opacity: 0;
   transform: translateY(-10px);
-  transition: all 0.3s ease;
+  transition: var(--transition-base);
 }
 
 // ===============================
@@ -444,25 +502,26 @@ html {
 
 @media (prefers-color-scheme: dark) {
   .dropdown-menu {
-    background-color: #343a40;
-    border: 1px solid #495057;
+    background-color: var(--color-gray-800);
+    border: 1px solid var(--color-gray-700);
 
     .dropdown-item {
       color: #ffffff;
 
       &:hover {
-        background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+        background: linear-gradient(135deg, var(--color-gray-700) 0%, var(--color-gray-600) 100%);
       }
     }
 
     .dropdown-header {
-      background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+      background: linear-gradient(135deg, var(--color-gray-700) 0%, var(--color-gray-800) 100%);
       color: #ffffff;
     }
   }
 }
 
+// 🔥 CORREGIR TEXT-MUTED PARA USAR VARIABLES GLOBALES
 .text-muted {
-    --bs-text-opacity: 1;
-    color: #F97316 !important;
+  --bs-text-opacity: 1;
+  color: var(--text-muted) !important; // 🔥 USAR VARIABLE EN LUGAR DE color-warning-light
 }

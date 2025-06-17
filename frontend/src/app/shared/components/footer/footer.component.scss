@@ -1,9 +1,9 @@
 // ===============================
-// 🔥 FOOTER COMPONENT STYLES
+// 🔥 FOOTER COMPONENT STYLES - USANDO VARIABLES GLOBALES
 // ===============================
 
 .footer {
-  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-dark-secondary) 100%); // 🔥 USAR VARIABLES
   color: #ecf0f1;
   margin-top: auto; // Para que se pegue al final
   position: relative;
@@ -15,7 +15,7 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent 0%, #3498db 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, var(--color-primary) 50%, transparent 100%); // 🔥 USAR VARIABLE
   }
 
   // ===============================
@@ -27,11 +27,11 @@
   }
 
   // ===============================
-  // 🔥 LOGO DEL FOOTER (IGUAL QUE NAVBAR)
+  // 🔥 LOGO DEL FOOTER (IGUAL QUE NAVBAR) - USANDO VARIABLES
   // ===============================
   .footer-logo {
-    transition: all 0.3s ease;
-    border-radius: 4px;
+    transition: var(--transition-base); // 🔥 USAR VARIABLE
+    border-radius: var(--radius-sm); // 🔥 USAR VARIABLE
     background: rgba(255, 255, 255, 0.1);
     padding: 2px;
 
@@ -48,13 +48,13 @@
     height: 100%;
 
     .footer-title {
-      color: #3498db;
+      color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
       font-size: 1.5rem;
       font-weight: 700;
       margin-bottom: 1rem;
       display: flex;
       align-items: center;
-      transition: all 0.3s ease;
+      transition: var(--transition-base); // 🔥 USAR VARIABLE
 
       // 🔥 HOVER PARA TÍTULO CON LOGO
       &:hover {
@@ -68,13 +68,13 @@
       }
 
       i {
-        color: #e74c3c;
-        transition: all 0.3s ease;
+        color: var(--navbar-brand-gold); // 🔥 USAR VARIABLE EN LUGAR DE #e74c3c
+        transition: var(--transition-base); // 🔥 USAR VARIABLE
       }
     }
 
     .footer-subtitle {
-      color: #bdc3c7;
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
       font-size: 1rem;
       font-weight: 600;
       margin-bottom: 1rem;
@@ -83,7 +83,7 @@
     }
 
     .footer-description {
-      color: #bdc3c7;
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
       line-height: 1.6;
       margin-bottom: 1.5rem;
       font-size: 0.95rem;
@@ -91,14 +91,14 @@
 
     .footer-contact {
       p {
-        color: #bdc3c7;
+        color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
         font-size: 0.9rem;
         display: flex;
         align-items: center;
-        transition: color 0.3s ease;
+        transition: var(--transition-fast); // 🔥 USAR VARIABLE
 
         i {
-          color: #3498db;
+          color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
           width: 16px;
           text-align: center;
         }
@@ -111,7 +111,7 @@
 
     // 🔥 ESTILOS PARA HORARIO DINÁMICO
     .footer-schedule {
-      color: #bdc3c7;
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
       font-size: 0.9rem;
       line-height: 1.4;
 
@@ -121,7 +121,7 @@
   }
 
   // ===============================
-  // ENLACES DEL FOOTER
+  // ENLACES DEL FOOTER - USANDO VARIABLES
   // ===============================
   .footer-links {
     list-style: none;
@@ -132,10 +132,10 @@
       margin-bottom: 0.5rem;
 
       a {
-        color: #bdc3c7;
+        color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
         text-decoration: none;
         font-size: 0.9rem;
-        transition: all 0.3s ease;
+        transition: var(--transition-base); // 🔥 USAR VARIABLE
         position: relative;
         padding-left: 1rem;
 
@@ -143,13 +143,13 @@
           content: '▸';
           position: absolute;
           left: 0;
-          color: #3498db;
+          color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
           transform: translateX(-2px);
-          transition: transform 0.3s ease;
+          transition: var(--transition-fast); // 🔥 USAR VARIABLE
         }
 
         &:hover {
-          color: #3498db;
+          color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
           padding-left: 1.2rem;
 
           &::before {
@@ -161,7 +161,7 @@
   }
 
   // ===============================
-  // 🔥 REDES SOCIALES MEJORADAS
+  // 🔥 REDES SOCIALES MEJORADAS - USANDO VARIABLES
   // ===============================
   .footer-social {
     display: flex;
@@ -175,19 +175,19 @@
       width: 40px;
       height: 40px;
       background: rgba(255, 255, 255, 0.1);
-      color: #bdc3c7;
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
       text-decoration: none;
-      border-radius: 50%;
+      border-radius: var(--radius-round); // 🔥 USAR VARIABLE EN LUGAR DE 50%
       font-size: 1.1rem;
-      transition: all 0.3s ease;
+      transition: var(--transition-base); // 🔥 USAR VARIABLE
       backdrop-filter: blur(10px);
       cursor: pointer;
 
       &:hover {
-        background: #3498db;
+        background: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
         color: white;
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3); // 🔥 USAR VARIABLE
       }
 
       // 🔥 ESTADOS DESHABILITADOS PARA REDES SIN URL
@@ -196,7 +196,7 @@
 
         &:hover {
           background: rgba(255, 255, 255, 0.1) !important;
-          color: #bdc3c7 !important;
+          color: var(--color-gray-300) !important; // 🔥 USAR VARIABLE
           transform: none !important;
           box-shadow: none !important;
         }
@@ -213,18 +213,18 @@
   }
 
   // ===============================
-  // NEWSLETTER
+  // NEWSLETTER - USANDO VARIABLES
   // ===============================
   .footer-newsletter {
     .newsletter-title {
-      color: #bdc3c7;
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
       font-size: 0.95rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
 
     .newsletter-text {
-      color: #95a5a6;
+      color: var(--color-gray-500); // 🔥 USAR VARIABLE EN LUGAR DE #95a5a6
       font-size: 0.85rem;
       margin-bottom: 1rem;
     }
@@ -234,33 +234,33 @@
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
         color: #ecf0f1;
-        border-radius: 6px 0 0 6px;
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm); // 🔥 USAR VARIABLE
         padding: 0.5rem 0.75rem;
         font-size: 0.9rem;
 
         &::placeholder {
-          color: #95a5a6;
+          color: var(--color-gray-500); // 🔥 USAR VARIABLE EN LUGAR DE #95a5a6
         }
 
         &:focus {
           background: rgba(255, 255, 255, 0.15);
-          border-color: #3498db;
-          box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+          border-color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+          box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); // 🔥 USAR VARIABLE
           color: #ecf0f1;
         }
       }
 
       .btn {
-        border-radius: 0 6px 6px 0;
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0; // 🔥 USAR VARIABLE
         padding: 0.5rem 1rem;
-        border: 1px solid #3498db;
-        background: #3498db;
+        border: 1px solid var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+        background: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
         color: white;
-        transition: all 0.3s ease;
+        transition: var(--transition-base); // 🔥 USAR VARIABLE
 
         &:hover {
-          background: #2980b9;
-          border-color: #2980b9;
+          background: var(--color-primary-dark); // 🔥 USAR VARIABLE EN LUGAR DE #2980b9
+          border-color: var(--color-primary-dark); // 🔥 USAR VARIABLE EN LUGAR DE #2980b9
           transform: translateY(-1px);
         }
 
@@ -272,14 +272,14 @@
   }
 
   // ===============================
-  // FOOTER BOTTOM
+  // FOOTER BOTTOM - USANDO VARIABLES
   // ===============================
   .footer-bottom {
     padding: 1.5rem 0;
     background: rgba(0, 0, 0, 0.2);
 
     .footer-copyright {
-      color: #95a5a6;
+      color: var(--color-gray-500); // 🔥 USAR VARIABLE EN LUGAR DE #95a5a6
       font-size: 0.85rem;
     }
 
@@ -287,25 +287,25 @@
       text-align: right;
 
       a {
-        color: #bdc3c7;
+        color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
         text-decoration: none;
         font-size: 0.85rem;
-        transition: color 0.3s ease;
+        transition: var(--transition-fast); // 🔥 USAR VARIABLE
 
         &:hover {
-          color: #3498db;
+          color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
         }
       }
 
       .separator {
-        color: #7f8c8d;
+        color: var(--color-gray-600); // 🔥 USAR VARIABLE EN LUGAR DE #7f8c8d
         margin: 0 0.5rem;
       }
     }
   }
 }
 
-// 🔥 ANIMACIÓN PARA LOGOS (IGUAL QUE NAVBAR)
+// 🔥 ANIMACIÓN PARA LOGOS (IGUAL QUE NAVBAR) - USANDO VARIABLES
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -318,7 +318,7 @@
 }
 
 // ===============================
-// RESPONSIVE DESIGN - AJUSTADO PARA LOGO
+// RESPONSIVE DESIGN - USANDO VARIABLES
 // ===============================
 @media (max-width: 768px) {
   .footer {
@@ -415,6 +415,74 @@
       a, .separator {
         font-size: 0.75rem !important;
       }
+    }
+  }
+}
+
+// ===============================
+// 🔥 MEJORAS ADICIONALES CON VARIABLES GLOBALES
+// ===============================
+
+// Sobrescribir Bootstrap en footer si es necesario
+.footer .btn-primary {
+  background: var(--gradient-primary) !important;
+  border-color: var(--color-primary) !important;
+
+  &:hover {
+    background: var(--gradient-primary) !important;
+    filter: brightness(1.1);
+    border-color: var(--color-primary-dark) !important;
+  }
+}
+
+// Cards en footer si las hay
+.footer .card {
+  background: var(--color-dark-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+
+  .card-header {
+    background: var(--gradient-primary);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+}
+
+// Texto con colores consistentes
+.footer .text-primary {
+  color: var(--color-primary) !important;
+}
+
+.footer .text-muted {
+  color: var(--text-muted) !important;
+}
+
+.footer .text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+// ===============================
+// 🔥 PRINT STYLES - IGUAL QUE OTROS COMPONENTES
+// ===============================
+@media print {
+  .footer {
+    background: var(--color-gray-100) !important;
+    color: var(--text-primary) !important;
+    
+    .footer-title,
+    .footer-subtitle,
+    .footer-description,
+    .footer-contact p,
+    .footer-schedule,
+    .footer-links a {
+      color: var(--text-primary) !important;
+    }
+    
+    .footer-social {
+      display: none;
+    }
+    
+    .footer-newsletter {
+      display: none;
     }
   }
 }

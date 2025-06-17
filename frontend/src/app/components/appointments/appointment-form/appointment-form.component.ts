@@ -243,6 +243,19 @@ export class AppointmentFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * 🔍 Verificar si la propiedad tiene características para mostrar
+   */
+  hasPropertyFeatures(): boolean {
+    if (!this.selectedProperty?.fields) return false;
+    
+    return !!(
+      this.selectedProperty.fields['Habitaciones'] ||
+      this.selectedProperty.fields['Baños'] ||
+      this.selectedProperty.fields['Superficie']
+    );
+  }
+
   // 🔥 MÉTODOS EXISTENTES SIN CAMBIOS
   /**
    * 🔙 Volver a propiedades

@@ -364,6 +364,27 @@ export class PropertyListInterestedComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * 🔥 AÑADIR: SOLICITAR CITA PARA PROPIEDAD - IGUAL QUE PROPERTY-LIST
+   */
+  requestAppointment(property: Propiedad, event?: Event): void {
+    // Evitar que se propague el click al card
+    if (event) {
+      event.stopPropagation();
+    }
+
+    if (property?.id) {
+      console.log('📝 Navegando al formulario de citas para la propiedad:', property.id);
+
+      // Navegar al formulario de citas pasando el Record ID de la propiedad - IGUAL QUE PROPERTY-LIST
+      this.router.navigate(['/citas'], {
+        queryParams: { propertyRecordId: property.id }
+      });
+    } else {
+      console.error('❌ No se puede solicitar cita: property.id no disponible');
+    }
+  }
+
+  /**
    * ✅ CAMBIO EN BÚSQUEDA
    */
   onSearchChange(): void {

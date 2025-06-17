@@ -9,10 +9,6 @@
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
               <li class="breadcrumb-item">
-                <!--<a routerLink="/dashboard" class="text-decoration-none">
-                  <i class="fas fa-tachometer-alt me-1"></i>
-                  Dashboard
-                </a>-->
                 <a routerLink="/propiedades" class="text-decoration-none">
                   <i class="fas fa-building me-1"></i>
                   Propiedades
@@ -25,20 +21,6 @@
             </ol>
           </nav>
         </div>
-
-        <!-- Botones -->
-        <!--<div class="col-auto">
-          <div class="header-actions">
-            <button class="btn btn-outline-primary btn-sm" (click)="toggleView()">
-              <i class="fas" [class.fa-th-large]="viewMode === 'grid'" [class.fa-list]="viewMode === 'list'"></i>
-              {{ viewMode === 'grid' ? 'Lista' : 'Grid' }}
-            </button>
-            <button class="btn btn-primary btn-sm" (click)="refreshProperties()">
-              <i class="fas fa-sync-alt me-1"></i>
-              Actualizar
-            </button>
-          </div>
-        </div>-->
       </div>
     </div>
 
@@ -55,12 +37,7 @@
           </p>
         </div>
         <div class="col-lg-4 text-lg-end">
-          <!-- 🔥 ESTRUCTURA IGUAL QUE PROPERTY-LIST -->
           <div class="header-actions d-flex gap-2 justify-content-lg-end justify-content-center mt-3 mt-lg-0">
-            <!--<button class="btn btn-outline-success" (click)="goToPropertyList()">
-              <i class="fas fa-search me-2"></i>
-              Explorar Más
-            </button>-->
             <button class="btn btn-outline-primary" (click)="toggleView()">
               <i class="fas" [class.fa-th-large]="viewMode === 'grid'" [class.fa-list]="viewMode === 'list'"></i>
               {{ viewMode === 'grid' ? 'Lista' : 'Grid' }}
@@ -74,48 +51,7 @@
       </div>
     </div>
 
-    <!-- ✅ FILTROS SIMPLIFICADOS (SOLO BÚSQUEDA) -->
-    <!--<div class="filters-section mb-4">
-      <div class="filter-card card">
-        <div class="card-header">
-          <h5 class="card-title mb-0">
-            <i class="fas fa-search me-2"></i>
-            Buscar en mis propiedades de interés
-          </h5>
-        </div>
-        <div class="card-body">
-          <div class="row g-3">-->
-            <!-- Búsqueda por texto -->
-            <!--<div class="col-md-10">
-              <label class="form-label">Búsqueda general</label>
-              <div class="input-group">
-                <span class="input-group-text">
-                  <i class="fas fa-search text-primary"></i>
-                </span>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Buscar en mis propiedades favoritas..."
-                  [(ngModel)]="searchText"
-                  (input)="onSearchChange()"
-                />
-              </div>
-            </div>-->
-
-            <!-- Botón limpiar -->
-            <!--<div class="col-md-2">
-              <label class="form-label">&nbsp;</label>
-              <button class="btn btn-outline-secondary w-100" (click)="clearFilters()" title="Limpiar búsqueda">
-                <i class="fas fa-times me-2"></i>
-                Limpiar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>-->
-
-    <!-- ✅ FILTROS COMPLETOS - COPIADOS DE PROPERTY-LIST -->
+    <!-- ✅ FILTROS COMPLETOS -->
     <div class="filters-section mb-4">
       <div class="filter-card card">
         <div class="card-header">
@@ -277,12 +213,12 @@
         </div>
       </div>
 
-      <!-- ✅ GRID VIEW - CARDS IDÉNTICAS A PROPERTY-LIST -->
+      <!-- ✅ GRID VIEW - 🔥 CARDS IDÉNTICAS A PROPERTY-LIST -->
       <div *ngIf="!loading && !error && viewMode === 'grid'">
         <div class="row g-4" *ngIf="filteredProperties.length > 0">
           <div class="col-xl-4 col-lg-6 col-md-6" *ngFor="let property of paginatedProperties; trackBy: trackByProperty">
 
-            <!-- 🔥 CARD IDÉNTICA A PROPERTY-LIST -->
+            <!-- 🔥 CARD EXACTAMENTE IGUAL QUE PROPERTY-LIST -->
             <div class="clickeable-card"
                  (click)="navigateToDetail(property)"
                  [title]="'Ver detalles de ' + getFieldAsString(property, 'Título')">
@@ -316,7 +252,7 @@
                   {{ getFieldAsString(property, 'Estado') || 'Disponible' }}
                 </div>
 
-                <!-- Badge de favorito -->
+                <!-- 🔥 FAVORITE BADGE - SIEMPRE VISIBLE EN PROPERTY-LIST-INTERESTED -->
                 <div class="favorite-badge">
                   <i class="fas fa-heart text-danger"></i>
                 </div>
@@ -371,7 +307,7 @@
                   </div>
                 </div>
 
-                <!-- Información fija -->
+                <!-- 🔥 INFORMACIÓN FIJA - EXACTAMENTE IGUAL QUE PROPERTY-LIST -->
                 <div class="property-info-fixed">
                   <div class="row g-1">
                     <div class="col-6">
@@ -395,20 +331,22 @@
                   </div>
                 </div>
 
-                <!-- Botones de acción específicos -->
+                <!-- 🔥 BOTONES DE ACCIÓN - ADAPTADOS PARA PROPERTY-LIST-INTERESTED -->
                 <div class="property-actions">
                   <div class="row g-2">
                     <div class="col-6">
+                      <!-- 🔥 BOTÓN PRINCIPAL: SOLICITAR CITA (IGUAL QUE PROPERTY-LIST) -->
                       <button
-                        class="btn btn-outline-success w-100"
-                        (click)="contactProperty(property, $event)"
-                        title="Contactar sobre esta propiedad"
+                        class="btn btn-primary btn-lg w-100"
+                        (click)="requestAppointment(property, $event)"
+                        title="Solicitar cita para esta propiedad"
                       >
-                        <i class="fas fa-phone me-2"></i>
-                        Contactar
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        Solicitar Cita
                       </button>
                     </div>
                     <div class="col-6">
+                      <!-- 🔥 BOTÓN SECUNDARIO: QUITAR DE FAVORITOS (ESPECÍFICO PARA INTERESTED) -->
                       <button
                         class="btn btn-outline-danger w-100"
                         (click)="removeFromInterest(property, $event)"
@@ -465,29 +403,30 @@
         </div>
       </div>
 
-      <!-- ✅ LIST VIEW - TABLA CORREGIDA CON PLACEHOLDER -->
-      <div *ngIf="!loading && !error && viewMode === 'list'" class="card shadow-sm">
+      <!-- ✅ LIST VIEW - 🔥 TABLA IDÉNTICA A PROPERTY-LIST -->
+      <div *ngIf="!loading && !error && viewMode === 'list'" class="table-view">
         <div class="card">
-          <div class="table-responsive" style="border-radius: 20px;">
+          <div class="table-responsive">
             <table class="table mb-0">
               <thead>
                 <tr>
-                  <th class="border-0">Imagen</th>
-                  <th class="border-0">Propiedad</th>
-                  <th class="border-0">Tipo</th>
-                  <th class="border-0">Precio</th>
-                  <th class="border-0">Ubicación</th>
-                  <th class="border-0">Características</th>
-                  <th class="border-0">Estado</th>
-                  <th class="border-0">Acciones</th>
+                  <th>Imagen</th>
+                  <th>Propiedad</th>
+                  <th>Tipo</th>
+                  <th>Precio</th>
+                  <th>Ubicación</th>
+                  <th>Características</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let property of paginatedProperties; trackBy: trackByProperty" style="border-style: hidden !important;">
+                <tr *ngFor="let property of paginatedProperties; trackBy: trackByProperty"
+                    (click)="navigateToDetail(property)"
+                    [title]="'Ver detalles de ' + getFieldAsString(property, 'Título')">
 
-                  <!-- 🔥 CELDA DE IMAGEN CORREGIDA CON PLACEHOLDER -->
+                  <!-- 🔥 CELDA DE IMAGEN CON PLACEHOLDER -->
                   <td class="align-middle">
-                    <!-- 🔥 CASO 1: HAY IMAGEN VÁLIDA -->
                     <div *ngIf="hasPropertyImage(property); else noImageTableTemplate">
                       <img
                         [src]="getPropertyImage(property)"
@@ -498,7 +437,6 @@
                       />
                     </div>
 
-                    <!-- 🔥 CASO 2: NO HAY IMAGEN - PLACEHOLDER PARA TABLA -->
                     <ng-template #noImageTableTemplate>
                       <div class="d-flex align-items-center justify-content-center bg-light rounded"
                            style="width: 60px; height: 60px;">
@@ -507,7 +445,7 @@
                     </ng-template>
                   </td>
 
-                  <!-- 🔥 RESTO CELDAS SIN CAMBIOS -->
+                  <!-- 🔥 RESTO DE CELDAS EXACTAMENTE IGUAL QUE PROPERTY-LIST -->
                   <td class="align-middle">
                     <div class="d-flex align-items-center">
                       <div>
@@ -518,6 +456,7 @@
                           {{ getFieldAsString(property, 'Descripción') }}
                         </small>
                       </div>
+                      <!-- 🔥 SIEMPRE MOSTRAR CORAZÓN ROJO EN INTERESTED -->
                       <i class="fas fa-heart text-danger ms-2" title="En mis favoritos"></i>
                     </div>
                   </td>
@@ -556,12 +495,13 @@
                   </td>
                   <td class="align-middle">
                     <div class="btn-group" role="group">
+                      <!-- 🔥 BOTONES ADAPTADOS PARA INTERESTED -->
                       <button
-                        class="btn btn-sm btn-outline-success"
-                        (click)="contactProperty(property, $event)"
-                        title="Contactar"
+                        class="btn btn-sm btn-primary"
+                        (click)="requestAppointment(property, $event)"
+                        title="Solicitar cita"
                       >
-                        <i class="fas fa-phone"></i>
+                        <i class="fas fa-calendar-alt"></i>
                       </button>
                       <button
                         class="btn btn-sm btn-outline-danger"

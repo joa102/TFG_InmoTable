@@ -1,29 +1,30 @@
 // ===============================
-// 🎯 PROPERTY LIST INTERESTED - ESTILOS BASADOS EN PROPERTY-DETAIL
+// 🎯 PROPERTY LIST INTERESTED - ESTILOS IDÉNTICOS A PROPERTY-LIST
 // ===============================
 
-// 🔥 NAVBAR - IGUAL QUE PROPERTY-DETAIL
+// 🔥 NAVBAR - IGUAL QUE PROPERTY-DETAIL Y PROPERTY-LIST
 .pt-navbar {
   padding-top: 5rem !important;
 }
 
 // ===============================
-// 🔥 CONTENEDOR GENERAL - IGUAL QUE PROPERTY-DETAIL
+// 🔥 CONTENEDOR GENERAL - USANDO VARIABLES
 // ===============================
 
 .property-list-interested-container {
-  min-height: 100vh;
-  background-color: #f8f9fa;
+  min-height: calc(100vh - 80px); // 🔥 IGUAL QUE PROPERTY-LIST
+  background-color: var(--bg-body);
+  padding-bottom: 2rem; // 🔥 IGUAL QUE PROPERTY-LIST
 
   .container-fluid {
-    max-width: 1400px;      // 🔥 IGUAL QUE PROPERTY-DETAIL
-    margin: 0 auto;         // 🔥 IGUAL QUE PROPERTY-DETAIL
-    padding: 20px;          // 🔥 IGUAL QUE PROPERTY-DETAIL
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
   }
 }
 
 // ===============================
-// LOADING STATE - IGUAL QUE PROPERTY-DETAIL
+// LOADING STATE - USANDO VARIABLES
 // ===============================
 
 .loading-container {
@@ -32,23 +33,25 @@
   .spinner-border {
     width: 3rem;
     height: 3rem;
+    color: var(--color-primary) !important;
   }
 
   .card {
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     border: none;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    background: var(--bg-card);
   }
 }
 
 // ===============================
-// 🔥 TOP NAVIGATION BAR - IGUAL QUE PROPERTY-DETAIL
+// 🔥 TOP NAVIGATION BAR - USANDO VARIABLES
 // ===============================
 
 .top-navigation {
-  background: white;
+  background: var(--bg-card);
   padding: 1rem 1.5rem;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
 
@@ -63,19 +66,19 @@
       font-size: 0.95rem;
 
       a {
-        color: #0d6efd;
+        color: var(--color-primary);
         text-decoration: none;
         font-weight: 500;
-        transition: all 0.2s ease;
+        transition: var(--transition-fast);
 
         &:hover {
-          color: #0a58ca;
+          color: var(--color-primary-dark);
           text-decoration: underline;
         }
       }
 
       &.active {
-        color: #6c757d;
+        color: var(--text-secondary);
         font-weight: 500;
         max-width: none !important;
         overflow: visible !important;
@@ -87,7 +90,7 @@
       }
 
       &:not(.active)::before {
-        color: #6c757d;
+        color: var(--text-secondary);
         font-weight: 600;
       }
     }
@@ -99,10 +102,10 @@
     flex-shrink: 0;
 
     .btn {
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       padding: 0.5rem 1rem;
       font-weight: 500;
-      transition: all 0.3s ease;
+      transition: var(--transition-base);
       white-space: nowrap;
 
       &:hover {
@@ -114,43 +117,41 @@
 }
 
 // ===============================
-// 🔥 HEADER DE PROPIEDADES - IGUAL QUE PROPERTY-DETAIL
+// 🔥 HEADER DE PROPIEDADES - USANDO VARIABLES
 // ===============================
 
 .property-list-header {
-  background: white;
+  background: var(--bg-card);
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
 
   .property-list-title {
-    color: #2c3e50;
+    color: var(--text-primary);
     font-weight: 700;
     margin-bottom: 1rem;
 
     .fa-heart {
       animation: heartbeat 2s ease-in-out infinite;
+      color: var(--color-danger);
     }
   }
 
   .property-list-subtitle {
+    color: var(--text-secondary);
     font-size: 1.1rem;
-    color: #7f8c8d;
+    margin-bottom: 1rem;
   }
 
-  // 🔥 HEADER ACTIONS - IGUAL QUE EN TOP-NAVIGATION
   .header-actions {
     display: flex;
-    gap: 0.5rem; // 🔥 MISMO GAP QUE TOP-NAVIGATION
-    flex-shrink: 0;
+    gap: 0.5rem;
 
     .btn {
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       font-weight: 600;
-      transition: all 0.3s;
-      //padding: 0.5rem 1rem; // 🔥 MISMO PADDING QUE TOP-NAVIGATION
-      //Swhite-space: nowrap;
+      transition: var(--transition-base);
 
       &:hover {
         transform: translateY(-2px);
@@ -161,167 +162,164 @@
 }
 
 // ===============================
-// 🔥 CARDS GENERALES - IGUAL QUE PROPERTY-DETAIL
+// CARDS GENERALES - USANDO VARIABLES
 // ===============================
-
 .card {
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: none;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  background: var(--bg-card);
 
   .card-header {
-    border-radius: 12px 12px 0 0 !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
-    &.bg-primary {
-      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
-    }
-
-    .card-title {
-      font-weight: 700;
-      margin-bottom: 0;
-      color: white;
-
-      .fa-filter,
-      .fa-search {
-        //color: rgba(255, 255, 255, 0.9);
-        color: white;
-      }
+    &.bg-gradient-primary {
+      background: var(--gradient-primary) !important;
     }
   }
 
   .card-footer {
-    border-radius: 0 0 12px 12px !important;
-    background: #f8f9fa;
-    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important;
+    background: var(--color-gray-100);
+    border-top: 1px solid var(--color-gray-300);
+  }
+
+  .card-title {
+    font-weight: 700;
+    color: var(--text-primary);
   }
 }
 
 // ===============================
-// 🔥 FILTROS - ESTILO MEJORADO BASADO EN PROPERTY-DETAIL
+// FILTROS - USANDO VARIABLES
 // ===============================
-
 .filters-section {
   .filter-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border: none;
+
     .card-header {
-      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+      background: var(--gradient-primary) !important;
       color: white;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
       .card-title {
+        font-weight: 700;
+        margin-bottom: 0;
         color: white;
-
-        .fa-search,
-        .fa-filter {
-          //color: rgba(255, 255, 255, 0.9);
-          color: white;
-        }
       }
     }
 
     .card-body {
-      background: white;
       padding: 1.5rem;
     }
 
     .form-label {
       font-weight: 600;
-      color: #495057;
+      color: var(--color-gray-700);
       margin-bottom: 0.5rem;
       font-size: 0.9rem;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-gray-300);
+      transition: var(--transition-base);
+
+      &:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25);
+      }
+    }
+
+    .input-group-text {
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
+      border: 1px solid var(--color-gray-300);
+      background: var(--color-gray-100);
     }
   }
 }
 
 // ===============================
-// 🔥 ESTADÍSTICAS - IGUAL QUE PROPERTY-DETAIL
+// ESTADÍSTICAS - USANDO VARIABLES
 // ===============================
-
 .stats-section {
   .stats-card {
-    background: white;
-    border-radius: 12px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border: none;
 
-    .card-body {
-      padding: 0;
+    .stats-item {
+      padding: 1.5rem;
+      text-align: center;
+      border-right: 1px solid var(--color-gray-300);
 
-      .row {
-        margin: 0;
+      &:last-child {
+        border-right: none;
+      }
 
-        .col-md-3 {
-          padding: 0;
+      .stats-number {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+
+        &.text-primary {
+          color: var(--color-primary) !important;
+        }
+
+        &.text-success {
+          color: var(--color-success) !important;
+        }
+
+        &.text-warning {
+          color: var(--color-warning) !important;
+        }
+
+        &.text-info {
+          color: var(--color-info) !important;
+        }
+
+        &.text-danger {
+          color: var(--color-danger) !important;
         }
       }
-    }
-  }
 
-  .stats-item {
-    padding: 1.5rem;
-    text-align: center;
-    border-right: 1px solid #f0f0f0;
-    transition: all 0.3s ease;
-
-    &:last-child {
-      border-right: none;
-    }
-
-    &:hover {
-      background: #f8f9fa;
-      transform: translateY(-2px);
-    }
-
-    .stats-number {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-
-      &.text-danger {
-        //color: #dc3545 !important;
-        color: #dc3545 !important;
+      .stats-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
-
-      &.text-success {
-        //color: #28a745 !important;
-        color: #198754 !important;
-      }
-
-      &.text-warning {
-        //color: #fd7e14 !important;
-        color: #ffc107 !important;
-      }
-
-      &.text-info {
-        //color: #17a2b8 !important;
-        color: #0dcaf0 !important;
-      }
-    }
-
-    .stats-label {
-      font-size: 0.9rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #6c757d;
     }
   }
 }
 
 // ===============================
-// 🔥 PROPERTY CARDS - MEJORADAS BASADAS EN PROPERTY-DETAIL
+// 🔥 CARDS DE PROPIEDADES - EXACTAMENTE IGUALES A PROPERTY-LIST
 // ===============================
-
 .clickeable-card {
-  background: white;
-  border-radius: 12px;
+  width: 100%;
+  border-radius: var(--radius-md); // 🔥 IGUAL QUE PROPERTY-LIST
+  transition: var(--transition-base);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
+  border: 1px solid var(--color-gray-300);
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px); // 🔥 IGUAL QUE PROPERTY-LIST
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+    border-color: var(--color-primary);
 
     .card-hover-overlay {
       opacity: 1;
@@ -329,65 +327,80 @@
 
     .favorite-badge {
       transform: scale(1.1);
-      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+      box-shadow: var(--shadow-danger);
     }
   }
 
   .property-image {
-    width: 100%;
-    height: 250px;
+    height: 200px; // 🔥 IGUAL QUE PROPERTY-LIST (era 250px)
     object-fit: cover;
-    transition: transform 0.3s ease;
+    width: 100%;
   }
 
-  .property-image-placeholder {
+  .card-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 250px;
-    background: #f8f9fa;
-    border: 2px dashed #dee2e6;
-    color: #6c757d;
+    height: 200px; // 🔥 IGUAL QUE PROPERTY-LIST (era 250px)
+    background: rgba(var(--color-primary-rgb), 0.85);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition-base);
+    z-index: 10;
+    font-weight: 600;
+
+    i {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    span {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
   }
 
   .property-status {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(255, 255, 255, 0.95);
-    color: #333;
-    padding: 0.25rem 0.75rem;
-    //border-radius: 20px;
-    border-radius: 4px;
-    font-size: 0.75rem;
+    top: 0.75rem; // 🔥 IGUAL QUE PROPERTY-LIST
+    right: 0.75rem; // 🔥 IGUAL QUE PROPERTY-LIST
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.7rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: white;
     z-index: 15;
+    text-transform: uppercase;
 
     &.status-disponible {
-      background: #28a745;
-      color: white;
+      background-color: var(--color-property-available);
     }
 
-    &.status-vendida,
-    &.status-vendido {
-      background: #dc3545;
-      color: white;
+    &.status-vendida, &.status-vendido {
+      background-color: var(--color-property-sold);
     }
 
-    &.status-alquilada,
-    &.status-alquilado {
-      background: #fd7e14;
-      color: white;
+    &.status-alquilada, &.status-alquilado {
+      background-color: var(--color-property-rented);
+    }
+
+    &.status-reservada, &.status-reservado {
+      background-color: var(--color-property-reserved);
     }
   }
 
   .favorite-badge {
     position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
+    top: 0.75rem; // 🔥 IGUAL QUE PROPERTY-LIST
+    left: 0.75rem; // 🔥 IGUAL QUE PROPERTY-LIST
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 50%;
+    border-radius: var(--radius-round);
     width: 36px;
     height: 36px;
     display: flex;
@@ -395,336 +408,268 @@
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     z-index: 16;
-    transition: all 0.3s ease;
+    transition: var(--transition-base);
 
     i {
       font-size: 1.1rem;
-      color: #dc3545;
+      color: var(--color-danger);
       filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
       animation: heartbeat 1.5s ease-in-out infinite;
     }
   }
 
-  .card-hover-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(13, 110, 253, 0.9);
+  .card-body {
+    padding: 1.25rem; // 🔥 IGUAL QUE PROPERTY-LIST (era 1.5rem)
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 10;
+    min-height: 320px; // 🔥 IGUAL QUE PROPERTY-LIST (añadido)
+  }
+
+  .property-title {
+    font-size: 1.1rem; // 🔥 IGUAL QUE PROPERTY-LIST (era 1.25rem)
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem; // 🔥 IGUAL QUE PROPERTY-LIST (era 1rem)
+    line-height: 1.3;
+    min-height: 2.6rem; // 🔥 IGUAL QUE PROPERTY-LIST (añadido)
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .property-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary); // 🔥 USAR COLOR PRIMARIO COMO PROPERTY-LIST
+    margin-bottom: 0.75rem; // 🔥 IGUAL QUE PROPERTY-LIST (era 1rem)
+    min-height: 2rem; // 🔥 IGUAL QUE PROPERTY-LIST (añadido)
+  }
+
+  .property-location {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem; // 🔥 IGUAL QUE PROPERTY-LIST (era 1.5rem)
+    display: flex;
+    align-items: start; // 🔥 IGUAL QUE PROPERTY-LIST
+    min-height: 2.4rem; // 🔥 IGUAL QUE PROPERTY-LIST (añadido)
+    overflow: hidden;
 
     i {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
+      color: var(--color-primary); // 🔥 IGUAL QUE PROPERTY-LIST
+      margin-right: 0.5rem;
+      margin-top: 0.2rem;
+      flex-shrink: 0;
     }
 
     span {
-      font-weight: 600;
-      font-size: 1.1rem;
-    }
-  }
-
-  .card-body {
-    padding: 1.5rem;
-
-    .property-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #2c3e50;
-      margin-bottom: 1rem;
-      line-height: 1.3;
-      display: -webkit-box;
+      display: -webkit-box; // 🔥 IGUAL QUE PROPERTY-LIST
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      text-overflow: ellipsis;
     }
+  }
 
-    .property-price {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #e74c3c;
-      margin-bottom: 1rem;
-    }
+  .property-specs {
+    display: grid; // 🔥 IGUAL QUE PROPERTY-LIST (era flex)
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin: 12px 0; // 🔥 IGUAL QUE PROPERTY-LIST (era margin-bottom: 1.5rem)
+    padding: 8px 0; // 🔥 IGUAL QUE PROPERTY-LIST (era padding: 1rem)
+    min-height: 60px; // 🔥 IGUAL QUE PROPERTY-LIST (añadido)
+    align-items: center;
 
-    .property-location {
-      color: #7f8c8d;
-      margin-bottom: 1.5rem;
+    .spec-item {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: center;
+      gap: 4px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      background: var(--color-gray-100);
+      border: 1px solid var(--color-gray-300);
+      border-radius: var(--radius-sm);
+      padding: 8px 4px; // 🔥 IGUAL QUE PROPERTY-LIST
+      text-align: center;
+      min-height: 50px; // 🔥 IGUAL QUE PROPERTY-LIST
 
       i {
-        color: #e74c3c;
-        flex-shrink: 0;
+        color: var(--color-primary);
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
       }
 
-      span {
-        font-size: 0.95rem;
-        line-height: 1.4;
-      }
-    }
-
-    .property-specs {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: #f8f9fa;
-      border-radius: 8px;
-
-      .spec-item {
-        text-align: center;
-        flex: 1;
-
-        i {
-          font-size: 1.2rem;
-          color: #0d6efd;
-          margin-bottom: 0.5rem;
-          display: block;
-        }
-
-        .feature-number {
-          font-weight: 700;
-          font-size: 1.1rem;
-          color: #2c3e50;
-        }
-
-        .feature-label {
-          font-size: 0.8rem;
-          color: #6c757d;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-      }
-    }
-
-    .property-info-fixed {
-      background: #f8f9fa;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-
-      .info-item {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.5rem 0;
-
-        &.info-item-right {
-          border-left: 1px solid #dee2e6;
-          padding-left: 1rem;
-        }
-
-        i {
-          font-size: 1rem;
-          width: 16px;
-          text-align: center;
-        }
-
-        .info-content {
-          flex: 1;
-
-          .info-label {
-            display: block;
-            font-size: 0.75rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
-          }
-
-          .info-value {
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 0.9rem;
-          }
-        }
-      }
-    }
-
-    .property-actions {
-      .btn {
-        border-radius: 8px;
+      .feature-number {
         font-weight: 600;
-        transition: all 0.3s;
+        color: var(--text-primary);
         font-size: 0.9rem;
-        padding: 0.6rem 1rem;
+        line-height: 1;
+      }
 
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
+      .feature-label {
+        color: var(--text-secondary);
+        font-size: 0.7rem;
+        line-height: 1;
+      }
+    }
+  }
 
-        &.btn-outline-success:hover {
-          background-color: #28a745;
-          border-color: #28a745;
-          color: white;
-        }
+  .property-actions {
+    margin-top: auto; // 🔥 IGUAL QUE PROPERTY-LIST
 
-        &.btn-outline-danger {
-          color: #dc3545;
-          border-color: #dc3545;
+    .btn {
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      transition: var(--transition-base);
 
-          &:hover {
-            background-color: #dc3545;
-            border-color: #dc3545;
-            color: white;
-
-            .fa-heart-broken {
-              animation: shake 0.5s ease-in-out;
-            }
-          }
-        }
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       }
     }
   }
 }
 
 // ===============================
-// 🔥 TABLE VIEW - MEJORADA BASADA EN PROPERTY-DETAIL
+// 🔥 PLACEHOLDER DE IMAGEN - EXACTAMENTE IGUAL QUE PROPERTY-LIST
 // ===============================
+.property-image-placeholder {
+  height: 200px; // 🔥 IGUAL QUE PROPERTY-LIST (era 250px)
+  background: var(--color-gray-100);
+  border: 1px solid var(--color-gray-300);
+  width: 100%;
 
-.table-view {
-  .card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
+  .text-center {
+    padding: 1rem;
+
+    i {
+      color: var(--text-muted) !important;
+    }
+
+    h6 {
+      color: var(--text-muted) !important;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    p {
+      color: var(--text-muted) !important;
+      font-size: 0.8rem;
+      line-height: 1.3;
+    }
   }
+}
 
+// ===============================
+// 🔥 INFORMACIÓN FIJA - EXACTAMENTE IGUAL QUE PROPERTY-LIST
+// ===============================
+.property-info-fixed {
+    margin: 1rem 0; // 🔥 IGUAL QUE PROPERTY-LIST (era margin: 1rem 0 0 0)
+    padding: 0.75rem;
+    background: var(--color-gray-100);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-gray-300);
+    min-height: 60px;
+
+    .row {
+      margin: 0;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0;
+      height: 100%;
+
+      i {
+        font-size: 0.9rem;
+        width: 16px;
+        text-align: center;
+        flex-shrink: 0;
+        color: var(--color-primary);
+      }
+
+      .info-content {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+
+        .info-label {
+          font-size: 0.75rem;
+          color: var(--text-secondary);
+          font-weight: 600;
+          line-height: 1;
+          margin-bottom: 0;
+          white-space: nowrap;
+        }
+
+        .info-value {
+          font-size: 0.85rem;
+          color: var(--text-primary);
+          font-weight: 600;
+          line-height: 1;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    .info-item-left {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    .info-item-right {
+      justify-content: flex-end;
+      text-align: right;
+    }
+}
+
+// ===============================
+// VISTA DE TABLA - USANDO VARIABLES
+// ===============================
+.table-view {
   .table {
-    margin: 0;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 
     thead {
-      background: #f8f9fa;
+      background: var(--gradient-primary);
+      color: white;
 
       th {
-        border-bottom: 2px solid #dee2e6;
+        border: none;
         font-weight: 600;
-        color: #2c3e50;
-        padding: 1rem;
-        font-size: 0.9rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        font-size: 0.85rem;
+        padding: 1rem 0.75rem;
       }
     }
 
     tbody {
       tr {
-        position: relative;
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: var(--transition-base);
+        border: none;
 
         &:hover {
-          background-color: #f8f9fa;
-          transform: translateX(4px);
-        }
-
-        &::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 4px;
-          height: 100%;
-          background: linear-gradient(135deg, #dc3545, #c82333);
-          opacity: 0.7;
-          transition: opacity 0.3s ease;
-        }
-
-        &:hover::before {
-          opacity: 1;
+          background-color: rgba(var(--color-primary-rgb), 0.05) !important;
+          transform: scale(1.01);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         td {
-          padding: 1rem;
-          vertical-align: middle;
-          border-bottom: 1px solid #f0f0f0;
-
-          .fw-bold {
-            color: #2c3e50;
-          }
-
-          .text-primary {
-            color: #e74c3c !important;
-            font-weight: 700;
-          }
-
-          .badge {
-            font-weight: 600;
-            padding: 0.375rem 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-        }
-      }
-    }
-  }
-}
-
-// ===============================
-// 🔥 EMPTY STATES - MEJORADOS BASADOS EN PROPERTY-DETAIL
-// ===============================
-
-.empty-state {
-  .card {
-    background: white;
-    border-radius: 12px;
-    text-align: center;
-    padding: 3rem 2rem;
-
-    .card-body {
-      .empty-icon {
-        margin-bottom: 2rem;
-
-        i {
-          font-size: 4rem;
-          color: #dc3545;
-
-          &.fa-heart-broken {
-            animation: heartbreak 2s ease-in-out infinite;
-          }
-        }
-      }
-
-      .empty-title {
-        font-size: 1.75rem;
-        color: #2c3e50;
-        font-weight: 700;
-        margin-bottom: 1rem;
-      }
-
-      .empty-description {
-        font-size: 1.1rem;
-        color: #6c757d;
-        line-height: 1.6;
-        margin-bottom: 2rem;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .btn {
-        border-radius: 8px;
-        font-weight: 600;
-        padding: 0.75rem 2rem;
-        transition: all 0.3s;
-
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        &.btn-primary {
-          background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
           border: none;
+          padding: 1rem 0.75rem;
+          vertical-align: middle;
         }
       }
     }
@@ -732,91 +677,150 @@
 }
 
 // ===============================
-// 🔥 PAGINACIÓN - IGUAL QUE PROPERTY-DETAIL
+// PAGINACIÓN - USANDO VARIABLES
 // ===============================
-
 .pagination-section {
   .pagination-card {
-    background: white;
-    border-radius: 12px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    border: none;
     padding: 1.5rem;
-    text-align: center;
 
     .pagination {
-      justify-content: center;
       margin-bottom: 1rem;
 
       .page-item {
-        margin: 0 0.25rem;
+        margin: 0 0.125rem;
 
         .page-link {
-          border-radius: 8px;
-          border: 1px solid #dee2e6;
-          padding: 0.5rem 0.75rem;
-          color: #6c757d;
-          font-weight: 500;
-          transition: all 0.3s ease;
+          border: none;
+          border-radius: var(--radius-md);
+          color: var(--color-primary);
+          font-weight: 600;
+          padding: 0.75rem 1rem;
+          transition: var(--transition-base);
 
           &:hover {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
+            background: var(--color-primary);
             color: white;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-primary);
           }
         }
 
         &.active .page-link {
-          background-color: #0d6efd;
-          border-color: #0d6efd;
+          background: var(--color-primary);
           color: white;
-          font-weight: 600;
+          box-shadow: var(--shadow-primary);
         }
 
         &.disabled .page-link {
-          opacity: 0.5;
-          cursor: not-allowed;
+          color: var(--text-secondary);
+          background: transparent;
+
+          &:hover {
+            transform: none;
+            box-shadow: none;
+          }
         }
       }
     }
 
     .pagination-info {
+      color: var(--text-secondary);
       font-size: 0.9rem;
-      color: #6c757d;
-      font-weight: 500;
+      text-align: center;
     }
   }
 }
 
 // ===============================
-// 🔥 BADGES DE ESTADO - IGUALES A PROPERTY-DETAIL
+// ESTADOS VACÍOS Y ERRORES - USANDO VARIABLES
 // ===============================
+.empty-state,
+.error-state {
+  text-align: center;
+  padding: 3rem;
 
-.badge {
-  &.bg-success {
-    background-color: #28a745 !important;
+  .empty-icon,
+  .error-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
   }
 
-  &.bg-danger {
-    background-color: #dc3545 !important;
+  .empty-title,
+  .error-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
   }
 
-  &.bg-warning {
-    background-color: #fd7e14 !important;
-    color: white !important;
+  .empty-description,
+  .error-description {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
   }
 
-  &.bg-info {
-    background-color: #17a2b8 !important;
-  }
+  .btn {
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    transition: var(--transition-base);
 
-  &.bg-secondary {
-    background-color: #6c757d !important;
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
   }
 }
 
 // ===============================
-// 🔥 ANIMACIONES - IGUALES A PROPERTY-DETAIL
+// 🔥 BADGES DE ESTADO - USANDO VARIABLES
 // ===============================
+.badge {
+  &.bg-success {
+    background-color: var(--color-success) !important;
+  }
+
+  &.bg-danger {
+    background-color: var(--color-danger) !important;
+  }
+
+  &.bg-warning {
+    background-color: var(--color-warning) !important;
+    color: white !important;
+  }
+
+  &.bg-info {
+    background-color: var(--color-info) !important;
+  }
+
+  &.bg-secondary {
+    background-color: var(--color-gray-600) !important;
+  }
+
+  &.bg-primary {
+    background-color: var(--color-primary) !important;
+  }
+}
+
+// ===============================
+// ANIMACIONES - IGUAL QUE PROPERTY-LIST
+// ===============================
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @keyframes heartbeat {
   0% {
@@ -830,54 +834,43 @@
   }
 }
 
-@keyframes heartbreak {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(0.9);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-2px);
-  }
-  75% {
-    transform: translateX(2px);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .property-content {
-  animation: fadeIn 0.5s ease-in-out;
+  animation: fadeInUp 0.6s ease-out; // 🔥 IGUAL QUE PROPERTY-LIST
 }
 
 // ===============================
-// 🔥 RESPONSIVE - IGUAL QUE PROPERTY-DETAIL CON AJUSTES DE CONTAINER-FLUID
+// RESPONSIVE - IGUAL QUE PROPERTY-LIST
 // ===============================
-
 @media (max-width: 768px) {
-  // 🔥 AJUSTAR CONTAINER-FLUID EN MOBILE IGUAL QUE PROPERTY-DETAIL
-  .property-list-interested-container {
-    .container-fluid {
-      padding: 15px;  // 🔥 Reducir padding en mobile igual que property-detail
+  .pt-navbar {
+    padding-top: 5rem !important;
+  }
+
+  .container-fluid {
+    padding: 15px;
+  }
+
+  .property-list-header {
+    text-align: center;
+    padding: 1.5rem;
+
+    .property-list-title {
+      font-size: 1.8rem; // 🔥 AJUSTADO PARA MOBILE
+      margin-bottom: 0.75rem;
+    }
+
+    .property-list-subtitle {
+      font-size: 1rem;
+    }
+
+    .header-actions {
+      justify-content: center;
+      margin-top: 1rem;
+
+      .btn {
+        flex: 1;
+        margin: 0 0.25rem;
+      }
     }
   }
 
@@ -919,15 +912,6 @@
     }
   }
 
-  .property-list-header {
-    padding: 1.5rem;
-    text-align: center;
-
-    .property-list-title {
-      font-size: 1.8rem;
-    }
-  }
-
   .stats-section {
     .stats-item {
       padding: 1rem 0.5rem;
@@ -943,9 +927,17 @@
   }
 
   .clickeable-card {
+    &:hover {
+      transform: translateY(-4px);
+    }
+
     .property-image,
     .property-image-placeholder {
-      height: 200px;
+      height: 180px; // 🔥 IGUAL QUE PROPERTY-LIST
+    }
+
+    .card-hover-overlay {
+      height: 180px; // 🔥 IGUAL QUE PROPERTY-LIST
     }
 
     .favorite-badge {
@@ -960,10 +952,9 @@
 }
 
 @media (max-width: 576px) {
-  // 🔥 AJUSTAR CONTAINER-FLUID EN MOBILE PEQUEÑO IGUAL QUE PROPERTY-DETAIL
-  .property-list-interested-container {
-    .container-fluid {
-      padding: 15px;  // 🔥 Mantener padding consistente en mobile pequeño
+  .property-list-header {
+    .property-list-title {
+      font-size: 1.75rem; // 🔥 IGUAL QUE PROPERTY-LIST
     }
   }
 
@@ -989,15 +980,16 @@
     }
   }
 
-  .property-list-header {
-    padding: 1rem;
-
-    .property-list-title {
-      font-size: 1.5rem;
-    }
-  }
-
   .clickeable-card {
+    .property-image,
+    .property-image-placeholder {
+      height: 160px; // 🔥 IGUAL QUE PROPERTY-LIST
+    }
+
+    .card-hover-overlay {
+      height: 160px; // 🔥 IGUAL QUE PROPERTY-LIST
+    }
+
     .favorite-badge {
       width: 28px;
       height: 28px;
@@ -1028,9 +1020,147 @@
 }
 
 // ===============================
-// 🔥 PRINT STYLES - IGUAL QUE PROPERTY-DETAIL
+// BOTONES MEJORADOS CON VARIABLES
 // ===============================
+.btn {
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: var(--transition-base);
 
+  &.btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+
+    &:hover {
+      background: var(--gradient-primary);
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-primary);
+    }
+  }
+
+  &.btn-outline-primary {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+
+    &:hover {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: white;
+    }
+  }
+
+  &.btn-outline-secondary {
+    border-color: var(--color-gray-600);
+    color: var(--color-gray-600);
+
+    &:hover {
+      background: var(--color-gray-600);
+      border-color: var(--color-gray-600);
+      color: white;
+    }
+  }
+
+  &.btn-danger {
+    background: var(--gradient-danger);
+    border: none;
+
+    &:hover {
+      background: var(--gradient-danger);
+      filter: brightness(1.1);
+    }
+  }
+
+  &.btn-outline-danger {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+
+    &:hover {
+      background: var(--color-danger);
+      border-color: var(--color-danger);
+      color: white;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// ===============================
+// ALERTAS CON VARIABLES
+// ===============================
+.alert {
+  border: none;
+  border-radius: var(--radius-md);
+
+  &.alert-info {
+    background: rgba(var(--color-info-rgb), 0.1);
+    border: 1px solid var(--color-info);
+    color: var(--color-info-dark);
+  }
+
+  &.alert-warning {
+    background: rgba(var(--color-warning-rgb), 0.1);
+    border: 1px solid var(--color-warning);
+    color: var(--color-warning-dark);
+  }
+
+  &.alert-danger {
+    background: rgba(var(--color-danger-rgb), 0.1);
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger-dark);
+  }
+
+  &.alert-success {
+    background: rgba(var(--color-success-rgb), 0.1);
+    border: 1px solid var(--color-success);
+    color: var(--color-success-dark);
+  }
+}
+
+// ===============================
+// SPINNER PERSONALIZADO
+// ===============================
+.spinner-border {
+  color: var(--color-primary) !important;
+}
+
+// ===============================
+// TEXTO CON COLORES DE MARCA
+// ===============================
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.text-success {
+  color: var(--color-success) !important;
+}
+
+.text-danger {
+  color: var(--color-danger) !important;
+}
+
+.text-warning {
+  color: var(--color-warning) !important;
+}
+
+.text-info {
+  color: var(--color-info) !important;
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+// ===============================
+// 🔥 PRINT STYLES
+// ===============================
 @media print {
   .favorite-badge {
     display: none;
@@ -1054,23 +1184,22 @@
 
   .top-navigation {
     box-shadow: none;
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--color-gray-300);
   }
 }
 
 // ===============================
 // 🔥 MEJORAS DE ACCESIBILIDAD
 // ===============================
-
 .btn-outline-danger {
   &:focus {
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(var(--color-danger-rgb), 0.25);
   }
 }
 
 .clickeable-card {
   &:focus {
-    outline: 2px solid #0d6efd;
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
 }
@@ -1080,10 +1209,6 @@
     cursor: default;
   }
 }
-
-// ===============================
-// 🔥 CURSOR POINTER PARA ELEMENTOS CLICKEABLES
-// ===============================
 
 .cursor-pointer {
   cursor: pointer;

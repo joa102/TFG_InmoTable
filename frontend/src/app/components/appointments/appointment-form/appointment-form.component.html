@@ -1,4 +1,4 @@
-<div class="appointment-form-container pt-navbar"> <!-- 🔥 CAMBIAR CLASE CONTENEDOR -->
+<div class="appointment-form-container pt-navbar">
 
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-container d-flex flex-column align-items-center justify-content-center py-5">
@@ -20,7 +20,7 @@
         </li>
         <li class="breadcrumb-item active" aria-current="page">
           <i class="fas fa-calendar-plus me-1"></i>
-          Formulario de Cita <!-- 🔥 ACTUALIZAR TEXTO -->
+          Formulario de Cita
         </li>
       </ol>
     </nav>
@@ -31,32 +31,11 @@
         <div class="col-lg-8">
           <h1 class="appointment-title display-5 fw-bold mb-2">
             <i class="fas fa-calendar-plus text-primary me-3"></i>
-            Formulario de Cita <!-- 🔥 ACTUALIZAR TÍTULO -->
+            Formulario de Cita
           </h1>
           <p class="lead text-muted mb-0">
             {{ propertyRecordId ? 'Complete el formulario para solicitar una cita de visita' : 'Complete el formulario para solicitar una cita' }}
           </p>
-
-          <!-- 🔥 USER INFO BANNER -->
-          <!--<div class="user-info-banner mt-3" *ngIf="currentUser">
-            <div class="alert alert-info d-flex align-items-center mb-0">
-              <i class="fas fa-user-circle fa-2x me-3"></i>
-              <div>
-                <h6 class="alert-heading mb-1">
-                  <i class="fas fa-check-circle me-2"></i>
-                  Usuario Conectado
-                </h6>
-                <p class="mb-0">
-                  <strong>{{ currentUser.nombre }}</strong>
-                  <span class="text-muted ms-2">({{ getRoleLabel() }})</span>
-                  <span class="badge bg-{{ getRoleClass() }} ms-2">
-                    {{ currentUser.email }}
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>-->
-
         </div>
         <div class="col-lg-4 text-lg-end">
           <div class="appointment-actions">
@@ -73,29 +52,125 @@
       </div>
     </div>
 
-    <!-- 🔥 PROPERTY INFO BANNER (si hay propertyRecordId) -->
+    <!-- 🔥 PROPERTY INFO BANNER MEJORADO (si hay propertyRecordId) -->
     <div *ngIf="propertyRecordId" class="property-info-banner mb-4">
-      <div class="alert alert-success d-flex align-items-center">
-        <i class="fas fa-home fa-2x me-3"></i>
+
+      <!-- 🔥 LOADING STATE PARA LA PROPIEDAD -->
+      <div *ngIf="loadingProperty" class="alert alert-info d-flex align-items-center">
+        <div class="spinner-border spinner-border-sm text-primary me-3" role="status"></div>
         <div>
           <h6 class="alert-heading mb-1">
-            <i class="fas fa-check-circle me-2"></i>
-            Propiedad Seleccionada
+            <i class="fas fa-search me-2"></i>
+            Cargando información de la propiedad...
           </h6>
           <p class="mb-0">
-            El formulario se ha configurado automáticamente para la propiedad que seleccionó.
-            Complete los datos restantes para solicitar su cita.
-            <small class="d-block text-muted mt-2">
+            Obteniendo los detalles de la propiedad seleccionada.
+            <small class="d-block text-muted mt-1">
               <i class="fas fa-tag me-1"></i>
-              ID de Propiedad: <code>{{ propertyRecordId }}</code>
+              ID: <code>{{ propertyRecordId }}</code>
+            </small>
+          </p>
+        </div>
+      </div>
+
+      <!-- 🔥 ERROR STATE PARA LA PROPIEDAD -->
+      <div *ngIf="propertyError && !loadingProperty" class="alert alert-warning d-flex align-items-center">
+        <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+        <div class="flex-grow-1">
+          <h6 class="alert-heading mb-1">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            Error al cargar la propiedad
+          </h6>
+          <p class="mb-0">
+            {{ propertyError }}
+            <small class="d-block text-muted mt-1">
+              <i class="fas fa-tag me-1"></i>
+              ID solicitado: <code>{{ propertyRecordId }}</code>
             </small>
           </p>
         </div>
         <div class="ms-auto">
-          <button class="btn btn-outline-primary btn-sm" (click)="goToProperty()">
-            <i class="fas fa-eye me-2"></i>
-            Ver Propiedades
+          <button class="btn btn-outline-warning btn-sm" (click)="loadPropertyData(propertyRecordId!)">
+            <i class="fas fa-redo me-2"></i>
+            Reintentar
           </button>
+        </div>
+      </div>
+
+      <!-- 🔥 SUCCESS STATE - DATOS COMPLETOS DE LA PROPIEDAD -->
+      <div *ngIf="selectedProperty && !loadingProperty && !propertyError" class="alert alert-success border-0 shadow-sm">
+        <div class="row align-items-center">
+          <!-- Información principal -->
+          <div class="col-lg-8">
+            <div class="d-flex align-items-start">
+              <i class="fas fa-home fa-2x text-success me-3 mt-1"></i>
+              <div class="flex-grow-1">
+                <h6 class="alert-heading mb-2 d-flex align-items-center">
+                  <i class="fas fa-check-circle me-2"></i>
+                  Propiedad Seleccionada
+                  <span class="badge ms-2" [class]="'bg-' + getPropertyStatusClass()">
+                    {{ getPropertyStatus() || 'Sin estado' }}
+                  </span>
+                </h6>
+
+                <!-- Título y tipo -->
+                <h5 class="mb-2 text-dark fw-bold">
+                  {{ getPropertyTitle() }}
+                  <small class="text-muted ms-2" *ngIf="getPropertyType()">
+                    ({{ getPropertyType() }})
+                  </small>
+                </h5>
+
+                <!-- Dirección -->
+                <p class="mb-2" *ngIf="getPropertyAddress()">
+                  <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                  <span class="text-dark">{{ getPropertyAddress() }}</span>
+                </p>
+
+                <!-- Precio -->
+                <p class="mb-2" *ngIf="getPropertyPrice()">
+                  <i class="fas fa-euro-sign text-success me-2"></i>
+                  <span class="text-dark fw-bold fs-5">{{ getPropertyPrice() }}</span>
+                </p>
+
+                <!-- Características básicas -->
+                <div class="property-features d-flex gap-3 mt-2" *ngIf="hasPropertyFeatures()">
+                  <small class="badge bg-light text-dark border" *ngIf="selectedProperty.fields['Habitaciones']">
+                    <i class="fas fa-bed me-1"></i>
+                    {{ selectedProperty.fields['Habitaciones'] }} hab.
+                  </small>
+                  <small class="badge bg-light text-dark border" *ngIf="selectedProperty.fields['Baños']">
+                    <i class="fas fa-bath me-1"></i>
+                    {{ selectedProperty.fields['Baños'] }} baños
+                  </small>
+                  <small class="badge bg-light text-dark border" *ngIf="selectedProperty.fields['Superficie']">
+                    <i class="fas fa-expand-arrows-alt me-1"></i>
+                    {{ selectedProperty.fields['Superficie'] }} m²
+                  </small>
+                </div>
+
+                <!-- ID técnico -->
+                <!--<small class="text-muted d-block mt-2">
+                  <i class="fas fa-tag me-1"></i>
+                  ID de Propiedad: <code>{{ propertyRecordId }}</code>
+                </small>-->
+              </div>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="col-lg-4 text-lg-end">
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-primary btn-sm" (click)="goToProperty()">
+                <i class="fas fa-eye me-2"></i>
+                Ver Detalles Completos
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" routerLink="/propiedades">
+                <i class="fas fa-search me-2"></i>
+                Buscar Otra Propiedad
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -110,10 +185,10 @@
                 <i class="fas fa-form me-2"></i>
                 Formulario de Solicitud de Cita
               </h5>
-              <!--<small *ngIf="propertyRecordId">
+              <small *ngIf="selectedProperty">
                 <i class="fas fa-home me-1"></i>
-                Propiedad preseleccionada
-              </small>-->
+                {{ getPropertyType() }} preseleccionado
+              </small>
             </div>
           </div>
           <div class="card-body p-0">
@@ -151,8 +226,6 @@
 
     <!-- Additional Info Section -->
     <div class="row mt-4">
-
-      <!--<div class="col-lg-8">-->
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
@@ -186,62 +259,6 @@
           </div>
         </div>
       </div>
-
-      <!--<div class="col-lg-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="card-title">
-              <i class="fas fa-info-circle text-primary me-2"></i>
-              Información de la Solicitud
-            </h6>
-
-            <div class="mb-3" *ngIf="currentUser">
-              <strong>Cliente:</strong>
-              <span class="text-muted ms-2">{{ currentUser.nombre }}</span>
-              <div class="small text-muted">{{ currentUser.email }}</div>
-              <div class="small text-muted" *ngIf="currentUser.recordId">
-                ID: {{ currentUser.recordId }}
-              </div>
-            </div>
-
-            <div class="mb-3" *ngIf="propertyRecordId">
-              <strong>Propiedad:</strong>
-              <div class="small text-muted">ID: {{ propertyRecordId }}</div>
-            </div>
-
-            <div class="d-grid gap-2 mt-3">
-              <button class="btn btn-outline-primary btn-sm" (click)="goToAppointmentCalendar()" *ngIf="currentUser">
-                <i class="fas fa-calendar-alt me-2"></i>
-                Ver Calendario
-              </button>
-              <button class="btn btn-outline-secondary btn-sm" (click)="goToProperty()">
-                <i class="fas fa-home me-2"></i>
-                Ver Propiedades
-              </button>
-            </div>
-
-            <hr class="my-3">
-            <h6 class="card-title">
-              <i class="fas fa-headset text-primary me-2"></i>
-              ¿Necesita ayuda?
-            </h6>
-            <p class="card-text small text-muted mb-3">
-              Si tiene alguna duda o problema con el formulario, no dude en contactarnos.
-            </p>
-            <div class="d-grid gap-2">
-              <a href="tel:+34900000000" class="btn btn-outline-primary btn-sm">
-                <i class="fas fa-phone me-2"></i>
-                Llamar ahora
-              </a>
-              <a href="mailto:info@ejemplo.com" class="btn btn-outline-secondary btn-sm">
-                <i class="fas fa-envelope me-2"></i>
-                Enviar email
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>-->
-
     </div>
 
   </div>

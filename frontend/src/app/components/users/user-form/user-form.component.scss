@@ -1,63 +1,60 @@
 // ===============================
-// 👤 USER FORM STYLES - SIGUIENDO PATRÓN DE CONTACT
+// 👤 USER FORM STYLES - USANDO VARIABLES GLOBALES
 // ===============================
 
 // ===============================
-// NAVBAR - ESTILOS ESPECÍFICOS
+// 🔥 NAVBAR - IGUAL QUE TODOS LOS COMPONENTES
 // ===============================
 .pt-navbar {
   padding-top: 5rem !important;
 }
 
 // ===============================
-// CONTENEDOR GENERAL
+// 🔥 CONTENEDOR GENERAL - USANDO VARIABLES
 // ===============================
-
 .user-form-container {
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: var(--bg-body); // 🔥 Usar variable en lugar de #f8f9fa
 
   .container-fluid {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 1400px; // 🔥 IGUAL QUE TODOS LOS COMPONENTES
+    margin: 0 auto;    // 🔥 IGUAL QUE TODOS LOS COMPONENTES
+    padding: 20px;     // 🔥 IGUAL QUE TODOS LOS COMPONENTES
   }
 }
 
 // ===============================
-// LOADING STATE
+// 🔥 LOADING STATE - USANDO VARIABLES
 // ===============================
-
 .loading-container {
   min-height: 60vh;
 
   .spinner-border {
     width: 3rem;
     height: 3rem;
+    color: var(--color-primary) !important; // 🔥 Usar variable
   }
 }
 
 // ===============================
-// HEADER DE USER FORM
+// 🔥 HEADER DE USER FORM - USANDO VARIABLES
 // ===============================
-
 .user-form-header {
-  background: white;
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 
   .user-form-title {
-    color: #2c3e50;
+    color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
     font-weight: 700;
     margin-bottom: 1rem;
   }
 }
 
 // ===============================
-// HEADER ACTIONS - MISMO ESTILO QUE CONTACT
+// 🔥 HEADER ACTIONS - USANDO VARIABLES
 // ===============================
-
 .user-form-actions {
   display: flex;
   flex-shrink: 0;
@@ -68,9 +65,9 @@
     flex-shrink: 0;
 
     .btn {
-      border-radius: 8px;
+      border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
       font-weight: 600;
-      transition: all 0.3s ease;
+      transition: var(--transition-base); // 🔥 Usar variable en lugar de all 0.3s ease
       white-space: nowrap;
 
       &:hover {
@@ -79,7 +76,7 @@
       }
 
       &:focus {
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); // 🔥 Usar variable
       }
 
       i {
@@ -90,90 +87,122 @@
 }
 
 // ===============================
-// BANNER DE INFORMACIÓN
+// 🔥 BANNER DE INFORMACIÓN - USANDO VARIABLES
 // ===============================
-
 .user-info-banner {
   .alert {
-    border-radius: 12px;
+    border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
     border: none;
-    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.1);
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.1); // 🔥 Usar variable
 
     .alert-heading {
-      color: #0d6efd;
+      color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
     }
 
     &.alert-info .alert-heading {
-      color: #055160;
+      color: var(--color-info-dark); // 🔥 Usar variable en lugar de #055160
     }
 
     &.alert-warning .alert-heading {
-      color: #664d03;
+      color: var(--color-warning-dark); // 🔥 Usar variable en lugar de #664d03
     }
 
-    // Badges dentro de los banners
+    // 🔥 BADGES DENTRO DE LOS BANNERS - USANDO VARIABLES
     .badge {
       font-size: 0.75rem;
       padding: 0.35em 0.65em;
 
-      &.bg-primary { background-color: #0d6efd !important; }
-      &.bg-success { background-color: #198754 !important; }
-      &.bg-info { background-color: #0dcaf0 !important; }
-      &.bg-danger { background-color: #dc3545 !important; }
-      &.bg-secondary { background-color: #6c757d !important; }
+      &.bg-primary { 
+        background-color: var(--color-primary) !important; // 🔥 Usar variable
+      }
+      &.bg-success { 
+        background-color: var(--color-success) !important; // 🔥 Usar variable
+      }
+      &.bg-info { 
+        background-color: var(--color-info) !important; // 🔥 Usar variable
+      }
+      &.bg-danger { 
+        background-color: var(--color-danger) !important; // 🔥 Usar variable
+      }
+      &.bg-secondary { 
+        background-color: var(--color-gray-600) !important; // 🔥 Usar variable
+      }
     }
   }
 }
 
 // ===============================
-// CARD DEL FORMULARIO
+// 🔥 CARD DEL FORMULARIO - USANDO VARIABLES
 // ===============================
-
 .user-form-card {
-  border-radius: 12px;
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
   border: none;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  background: var(--bg-card); // 🔥 Usar variable
 
   .card-header {
-    border-radius: 12px 12px 0 0 !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; // 🔥 Usar variable
     border-bottom: none;
+
+    &.bg-primary {
+      background: var(--gradient-primary) !important; // 🔥 Usar variable
+    }
   }
 
   .card-footer {
-    border-radius: 0 0 12px 12px !important;
-    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important; // 🔥 Usar variable
+    border-top: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+    background: var(--color-gray-100); // 🔥 Usar variable
   }
 }
 
 // ===============================
-// CARDS GENERALES
+// 🔥 CARDS GENERALES - USANDO VARIABLES
 // ===============================
-
 .card {
-  border-radius: 12px;
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
   border: none;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  background: var(--bg-card); // 🔥 Usar variable
 
   .card-header {
-    border-radius: 12px 12px 0 0 !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; // 🔥 Usar variable
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    .card-title {
+      margin-left: 0.7em;
+    }
   }
 
   .card-footer {
-    border-radius: 0 0 12px 12px !important;
-    background: #f8f9fa;
-    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important; // 🔥 Usar variable
+    background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+    border-top: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+  }
+
+  .card-body {
+    padding: 1.5rem;
+
+    strong {
+      color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
+    }
+
+    code {
+      background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm); // 🔥 Usar variable en lugar de 4px
+      font-size: 0.85rem;
+    }
   }
 }
 
 // ===============================
-// BREADCRUMB
+// 🔥 BREADCRUMB - USANDO VARIABLES
 // ===============================
-
 .breadcrumb {
-  background: white;
-  border-radius: 8px;
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
+  border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
   padding: 1rem 1.5rem;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
@@ -181,92 +210,94 @@
     font-size: 0.95rem;
 
     a {
-      color: #0d6efd;
+      color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
       text-decoration: none;
+      transition: var(--transition-fast); // 🔥 Usar variable
 
       &:hover {
+        color: var(--color-primary-dark); // 🔥 Usar variable
         text-decoration: underline;
       }
     }
 
     &.active {
-      color: #6c757d;
+      color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
     }
   }
 }
 
 // ===============================
-// 📝 FORMULARIO
+// 🔥 FORMULARIO - USANDO VARIABLES
 // ===============================
 .form-label {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
   margin-bottom: 0.5rem;
 
   .fas {
-    color: #007bff;
+    color: var(--color-primary); // 🔥 Usar variable en lugar de #007bff
     margin-right: 0.5rem;
   }
 
   .text-danger {
-    color: #dc3545 !important;
+    color: var(--color-danger) !important; // 🔥 Usar variable
   }
 }
 
 .form-control {
-  border: 2px solid #e9ecef;
-  border-radius: 8px;
+  border: 2px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #e9ecef
+  border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
   padding: 0.75rem 1rem;
-  transition: all 0.3s ease;
+  transition: var(--transition-base); // 🔥 Usar variable en lugar de all 0.3s ease
   font-size: 0.95rem;
 
   &:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: var(--color-primary); // 🔥 Usar variable en lugar de #007bff
+    box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); // 🔥 Usar variable
   }
 
   &.is-valid {
-    border-color: #28a745;
+    border-color: var(--color-success); // 🔥 Usar variable en lugar de #28a745
     background-image: none;
 
     &:focus {
-      border-color: #28a745;
-      box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+      border-color: var(--color-success); // 🔥 Usar variable
+      box-shadow: 0 0 0 0.2rem rgba(var(--color-success-rgb), 0.25); // 🔥 Usar variable
     }
   }
 
   &.is-invalid {
-    border-color: #dc3545;
+    border-color: var(--color-danger); // 🔥 Usar variable en lugar de #dc3545
     background-image: none;
 
     &:focus {
-      border-color: #dc3545;
-      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+      border-color: var(--color-danger); // 🔥 Usar variable
+      box-shadow: 0 0 0 0.2rem rgba(var(--color-danger-rgb), 0.25); // 🔥 Usar variable
     }
   }
 }
 
 .input-group {
   .btn {
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #e9ecef
     border-left: none;
 
     &:hover {
-      background-color: #f8f9fa;
+      background-color: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
     }
   }
 }
 
 // ===============================
-// 🎨 ALERTAS PERSONALIZADAS
+// 🔥 ALERTAS PERSONALIZADAS - USANDO VARIABLES
 // ===============================
 .alert {
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 10px
   padding: 1rem 1.5rem;
 
   &.alert-danger {
-    background: linear-gradient(135deg, #dc3545, #c82333);
+    background: var(--gradient-danger); // 🔥 Usar variable
     color: white;
 
     .btn-close {
@@ -275,7 +306,7 @@
   }
 
   &.alert-success {
-    background: linear-gradient(135deg, #28a745, #218838);
+    background: var(--gradient-success); // 🔥 Usar variable
     color: white;
 
     .btn-close {
@@ -284,12 +315,12 @@
   }
 
   &.alert-warning {
-    background: linear-gradient(135deg, #ffc107, #e0a800);
-    color: #856404;
+    background: var(--gradient-warning); // 🔥 Usar variable
+    color: var(--color-dark); // 🔥 Usar variable en lugar de #856404
   }
 
   &.alert-info {
-    background: linear-gradient(135deg, #17a2b8, #138496);
+    background: var(--gradient-primary); // 🔥 Usar variable (equivalente al gradiente de info)
     color: white;
 
     .alert-heading {
@@ -299,11 +330,10 @@
 }
 
 // ===============================
-// ICONOS Y ANIMACIONES
+// 🔥 ICONOS Y ANIMACIONES - USANDO VARIABLES
 // ===============================
-
 .fa-2x {
-  transition: all 0.3s ease;
+  transition: var(--transition-base); // 🔥 Usar variable en lugar de all 0.3s ease
 }
 
 .card:hover .fa-2x {
@@ -311,13 +341,12 @@
 }
 
 // ===============================
-// BOTONES
+// 🔥 BOTONES MEJORADOS - USANDO VARIABLES
 // ===============================
-
 .btn {
-  border-radius: 8px;
+  border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
   font-weight: 600;
-  transition: all 0.3s;
+  transition: var(--transition-base); // 🔥 Usar variable en lugar de all 0.3s
 
   &:hover {
     transform: translateY(-1px);
@@ -325,54 +354,59 @@
   }
 
   &.btn-success {
-    background: linear-gradient(135deg, #28a745, #218838);
+    background: var(--gradient-success); // 🔥 Usar variable
     border: none;
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, #218838, #1e7e34);
+      background: var(--gradient-success); // 🔥 Usar variable
+      filter: brightness(1.1);
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+      box-shadow: var(--shadow-success); // 🔥 Usar variable
+    }
+  }
+
+  &.btn-primary {
+    background: var(--gradient-primary); // 🔥 Usar variable
+    border: none;
+
+    &:hover:not(:disabled) {
+      background: var(--gradient-primary); // 🔥 Usar variable
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-primary); // 🔥 Usar variable
     }
   }
 
   &.btn-outline-warning {
-    border: 2px solid #ffc107;
-    color: #ffc107;
+    border: 2px solid var(--color-warning); // 🔥 Usar variable en lugar de #ffc107
+    color: var(--color-warning); // 🔥 Usar variable
 
     &:hover:not(:disabled) {
-      background: #ffc107;
-      color: #856404;
+      background: var(--color-warning); // 🔥 Usar variable
+      border-color: var(--color-warning); // 🔥 Usar variable
+      color: var(--color-dark); // 🔥 Usar variable en lugar de #856404
       transform: translateY(-1px);
     }
   }
 
-  /*&.btn-primary {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    border: none;
-
-    &:hover:not(:disabled) {
-      background: linear-gradient(135deg, #0056b3, #004085);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-    }
-  }*/
-
   &.btn-outline-secondary {
-    border: 2px solid #6c757d;
-    color: #6c757d;
+    border: 2px solid var(--color-gray-600); // 🔥 Usar variable en lugar de #6c757d
+    color: var(--color-gray-600); // 🔥 Usar variable
 
     &:hover:not(:disabled) {
-      background: #6c757d;
+      background: var(--color-gray-600); // 🔥 Usar variable
+      border-color: var(--color-gray-600); // 🔥 Usar variable
       color: white;
     }
   }
 
   &.btn-outline-primary {
-    border: 2px solid #007bff;
-    color: #007bff;
+    border: 2px solid var(--color-primary); // 🔥 Usar variable en lugar de #007bff
+    color: var(--color-primary); // 🔥 Usar variable
 
     &:hover:not(:disabled) {
-      background: #007bff;
+      background: var(--color-primary); // 🔥 Usar variable
+      border-color: var(--color-primary); // 🔥 Usar variable
       color: white;
     }
   }
@@ -384,60 +418,46 @@
 }
 
 // ===============================
-// 🏷️ BADGES PERSONALIZADOS
+// 🔥 BADGES PERSONALIZADOS - USANDO VARIABLES
 // ===============================
-
 .badge {
-  &.bg-danger { background-color: #dc3545 !important; }
-  &.bg-success { background-color: #198754 !important; }
-  &.bg-primary { background-color: #0d6efd !important; }
-  &.bg-secondary { background-color: #6c757d !important; }
-  &.bg-info { background-color: #0dcaf0 !important; }
-}
+  font-weight: 600;
 
-// ===============================
-// 📊 CARDS LATERALES
-// ===============================
-
-.card {
-  .card-header {
-    //background: #f8f9fa;
-    //border-bottom: 2px solid #e9ecef;
-    //padding: 1rem 1.5rem;
-    border-radius: 12px 12px 0 0 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-
-    .card-title {
-      //margin: 0;
-      //font-weight: 600;
-      //color: #2c3e50;
-      margin-left: 0.7em;
-    }
+  &.bg-danger { 
+    background-color: var(--color-danger) !important; // 🔥 Usar variable
+    color: white;
   }
-
-  .card-body {
-    padding: 1.5rem;
-
-    strong {
-      color: #2c3e50;
-    }
-
-    code {
-      background: #f8f9fa;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.85rem;
-    }
+  &.bg-success { 
+    background-color: var(--color-success) !important; // 🔥 Usar variable
+    color: white;
+  }
+  &.bg-primary { 
+    background-color: var(--color-primary) !important; // 🔥 Usar variable
+    color: white;
+  }
+  &.bg-secondary { 
+    background-color: var(--color-gray-600) !important; // 🔥 Usar variable
+    color: white;
+  }
+  &.bg-info { 
+    background-color: var(--color-info) !important; // 🔥 Usar variable
+    color: white;
+  }
+  &.bg-warning {
+    background-color: var(--color-warning) !important; // 🔥 Usar variable
+    color: white;
   }
 }
 
 // ===============================
-// RESPONSIVE DESIGN
+// 🔥 RESPONSIVE DESIGN - USANDO VARIABLES
 // ===============================
-
 @media (max-width: 768px) {
+  // 🔥 AJUSTAR CONTAINER-FLUID EN MOBILE IGUAL QUE OTROS COMPONENTES
   .user-form-container {
-    padding: 1rem;
+    .container-fluid {
+      padding: 15px; // 🔥 Reducir padding en mobile igual que otros componentes
+    }
   }
 
   .user-form-header {
@@ -451,6 +471,7 @@
 
     .user-form-actions {
       justify-content: center;
+      margin-top: 1rem;
 
       .header-actions {
         flex-direction: column;
@@ -483,6 +504,13 @@
 }
 
 @media (max-width: 480px) {
+  // 🔥 AJUSTAR CONTAINER-FLUID EN MOBILE PEQUEÑO
+  .user-form-container {
+    .container-fluid {
+      padding: 15px; // 🔥 Mantener padding consistente
+    }
+  }
+
   .user-form-header {
     padding: 1rem;
 
@@ -515,9 +543,8 @@
 }
 
 // ===============================
-// ANIMACIONES
+// 🔥 ANIMACIONES - USANDO VARIABLES
 // ===============================
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -534,14 +561,78 @@
 }
 
 // ===============================
-// 🐛 DEBUG STYLES
+// 🔥 SPINNER PERSONALIZADO
+// ===============================
+.spinner-border {
+  color: var(--color-primary) !important; // 🔥 Usar variable
+}
+
+// ===============================
+// 🔥 TEXTO CON COLORES DE MARCA
+// ===============================
+.text-primary {
+  color: var(--color-primary) !important; // 🔥 Usar variable
+}
+
+.text-success {
+  color: var(--color-success) !important; // 🔥 Usar variable
+}
+
+.text-danger {
+  color: var(--color-danger) !important; // 🔥 Usar variable
+}
+
+.text-warning {
+  color: var(--color-warning) !important; // 🔥 Usar variable
+}
+
+.text-info {
+  color: var(--color-info) !important; // 🔥 Usar variable
+}
+
+.text-muted {
+  color: var(--text-muted) !important; // 🔥 Usar variable
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important; // 🔥 Usar variable
+}
+
+// ===============================
+// 🔥 MEJORAS DE ACCESIBILIDAD
+// ===============================
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); // 🔥 Usar variable
+}
+
+// ===============================
+// 🔥 DEBUG STYLES - USANDO VARIABLES
 // ===============================
 pre {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
+  background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+  border: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #e9ecef
+  border-radius: var(--radius-sm); // 🔥 Usar variable en lugar de 6px
   padding: 0.75rem;
   font-size: 0.8rem;
   line-height: 1.4;
   overflow-x: auto;
+}
+
+// ===============================
+// 🔥 PRINT STYLES - IGUAL QUE OTROS COMPONENTES
+// ===============================
+@media print {
+  .user-form-actions {
+    display: none;
+  }
+
+  .user-info-banner {
+    box-shadow: none;
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+  }
+
+  .breadcrumb {
+    box-shadow: none;
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+  }
 }

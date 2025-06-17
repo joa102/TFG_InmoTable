@@ -1,27 +1,27 @@
 // ===============================
-// NAVBAR - CONSISTENTE CON PROPERTY-DETAIL
+// NAVBAR - CONSISTENTE CON PROPERTY-DETAIL Y HOME
 // ===============================
 .pt-navbar {
-    padding-top: 5rem !important; // 🔥 Mismo padding que property-detail
+    padding-top: 5rem !important; // 🔥 Mismo padding que property-detail y home
 }
 
 // ===============================
-// CONTENEDOR GENERAL - AJUSTADO PARA FOOTER
+// CONTENEDOR GENERAL - USANDO VARIABLES
 // ===============================
 .property-list-container {
   min-height: calc(100vh - 80px); // 🔥 Restar altura aproximada del footer
-  background-color: #f8f9fa; // 🔥 Mismo background que property-detail
+  background-color: var(--bg-body); // 🔥 Usar variable en lugar de #f8f9fa
   padding-bottom: 2rem; // 🔥 Espaciado antes del footer
 
   .container-fluid {
-    max-width: 1400px; // 🔥 Mismo max-width
+    max-width: 1400px; // 🔥 Mismo max-width que property-detail y home
     margin: 0 auto;
     padding: 20px;
   }
 }
 
 // ===============================
-// LOADING STATE - CONSISTENTE CON PROPERTY-DETAIL
+// LOADING STATE - USANDO VARIABLES
 // ===============================
 .loading-container {
   min-height: 60vh;
@@ -29,16 +29,17 @@
   .spinner-border {
     width: 3rem;
     height: 3rem;
+    color: var(--color-primary) !important; // 🔥 Usar variable
   }
 }
 
 // ===============================
-// 🔥 TOP NAVIGATION BAR - IGUAL AL PROPERTY-DETAIL
+// 🔥 TOP NAVIGATION BAR - IGUAL AL PROPERTY-DETAIL Y HOME
 // ===============================
 .top-navigation {
-  background: white;
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
   padding: 1rem 1.5rem;
-  border-radius: 12px;
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
 
@@ -53,19 +54,19 @@
       font-size: 0.95rem;
 
       a {
-        color: #0d6efd;
+        color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
         text-decoration: none;
         font-weight: 500;
-        transition: all 0.2s ease;
+        transition: var(--transition-fast); // 🔥 Usar variable
 
         &:hover {
-          color: #0a58ca;
+          color: var(--color-primary-dark); // 🔥 Usar variable en lugar de #0a58ca
           text-decoration: underline;
         }
       }
 
       &.active {
-        color: #6c757d;
+        color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
         font-weight: 500;
         max-width: none !important;
         overflow: visible !important;
@@ -77,7 +78,7 @@
       }
 
       &:not(.active)::before {
-        color: #6c757d;
+        color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
         font-weight: 600;
       }
     }
@@ -89,10 +90,10 @@
     flex-shrink: 0;
 
     .btn {
-      border-radius: 8px;
+      border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
       padding: 0.5rem 1rem;
       font-weight: 500;
-      transition: all 0.3s ease;
+      transition: var(--transition-base); // 🔥 Usar variable
       white-space: nowrap;
 
       &:hover {
@@ -104,23 +105,23 @@
 }
 
 // ===============================
-// HEADER DE PROPIEDADES - INSPIRADO EN PROPERTY-DETAIL
+// HEADER DE PROPIEDADES - USANDO VARIABLES
 // ===============================
 .property-list-header {
-  background: white;
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
 
   .property-list-title {
-    color: #2c3e50;
+    color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
     font-weight: 700;
     margin-bottom: 1rem;
   }
 
   .property-list-subtitle {
-    color: #7f8c8d;
+    color: var(--text-secondary); // 🔥 Usar variable en lugar de #7f8c8d
     font-size: 1.1rem;
     margin-bottom: 1rem;
   }
@@ -130,9 +131,9 @@
     gap: 0.5rem;
 
     .btn {
-      border-radius: 8px;
+      border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
       font-weight: 600;
-      transition: all 0.3s;
+      transition: var(--transition-base); // 🔥 Usar variable
 
       &:hover {
         transform: translateY(-2px);
@@ -143,49 +144,49 @@
 }
 
 // ===============================
-// CARDS GENERALES - MISMO ESTILO QUE PROPERTY-DETAIL
+// CARDS GENERALES - USANDO VARIABLES
 // ===============================
 .card {
-  border-radius: 12px; // 🔥 Mismo border-radius
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
   border: none;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); // 🔥 Misma sombra
-  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
 
   .card-header {
-    border-radius: 12px 12px 0 0 !important;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; // 🔥 Usar variable
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
     &.bg-gradient-primary {
-      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+      background: var(--gradient-primary) !important; // 🔥 Usar variable
     }
   }
 
   .card-footer {
-    border-radius: 0 0 12px 12px !important;
-    background: #f8f9fa;
-    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important; // 🔥 Usar variable
+    background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+    border-top: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
   }
 
   .card-title {
     font-weight: 700;
-    color: #2c3e50; // 🔥 Mismo color de título
+    color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
   }
 }
 
 // ===============================
-// FILTROS - ESTILO PROPERTY-DETAIL
+// FILTROS - USANDO VARIABLES
 // ===============================
 .filters-section {
   .filter-card {
-    background: white;
-    border-radius: 12px; // 🔥 Consistente
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); // 🔥 Misma sombra
+    background: var(--bg-card); // 🔥 Usar variable en lugar de white
+    border-radius: var(--radius-lg); // 🔥 Usar variable
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     border: none;
 
     .card-header {
-      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important; // 🔥 Mismo gradiente
+      background: var(--gradient-primary) !important; // 🔥 Usar variable
       color: white;
-      border-radius: 12px 12px 0 0 !important;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; // 🔥 Usar variable
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
       .card-title {
@@ -201,58 +202,79 @@
 
     .form-label {
       font-weight: 600;
-      color: #495057;
+      color: var(--color-gray-700); // 🔥 Usar variable en lugar de #495057
       margin-bottom: 0.5rem;
       font-size: 0.9rem;
     }
 
     .form-control,
     .form-select {
-      border-radius: 8px;
-      border: 1px solid #dee2e6;
-      transition: all 0.3s ease;
+      border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+      border: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+      transition: var(--transition-base); // 🔥 Usar variable
 
       &:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        border-color: var(--color-primary); // 🔥 Usar variable en lugar de #007bff
+        box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); // 🔥 Usar variable
       }
     }
 
     .input-group-text {
-      border-radius: 8px 0 0 8px;
-      border: 1px solid #dee2e6;
-      background: #f8f9fa;
+      border-radius: var(--radius-md) 0 0 var(--radius-md); // 🔥 Usar variable
+      border: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+      background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
     }
   }
 }
 
 // ===============================
-// ESTADÍSTICAS - IGUAL A PROPERTY-DETAIL
+// ESTADÍSTICAS - USANDO VARIABLES
 // ===============================
 .stats-section {
   .stats-card {
-    background: white;
-    border-radius: 12px;
+    background: var(--bg-card); // 🔥 Usar variable en lugar de white
+    border-radius: var(--radius-lg); // 🔥 Usar variable
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     border: none;
 
     .stats-item {
       padding: 1.5rem;
       text-align: center;
-      border-right: 1px solid #dee2e6;
+      border-right: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
 
       &:last-child {
         border-right: none;
       }
 
+      /*&:hover {
+        background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+        transform: translateY(-2px);
+      }*/
+
       .stats-number {
         font-size: 2rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
+
+        &.text-primary {
+          color: var(--color-primary) !important; // 🔥 Usar variable
+        }
+
+        &.text-success {
+          color: var(--color-success) !important; // 🔥 Usar variable
+        }
+
+        &.text-warning {
+          color: var(--color-warning) !important; // 🔥 Usar variable
+        }
+
+        &.text-info {
+          color: var(--color-info) !important; // 🔥 Usar variable
+        }
       }
 
       .stats-label {
-        color: #6c757d;
+        color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
         font-size: 0.9rem;
         font-weight: 500;
         text-transform: uppercase;
@@ -263,33 +285,32 @@
 }
 
 // ===============================
-// 🔥 CARDS DE PROPIEDADES - MANTENER EXACTAMENTE COMO ESTABAN + FAVORITE BADGE
+// 🔥 CARDS DE PROPIEDADES - MIGRAR COLORES A VARIABLES
 // ===============================
 .clickeable-card {
   width: 100%;
-  border-radius: 10px;
-  transition: all 0.3s ease;
+  border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 10px
+  transition: var(--transition-base); // 🔥 Usar variable
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   cursor: pointer;
   position: relative;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #e0e0e0
 
   &:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
-    border-color: #007bff;
+    border-color: var(--color-primary); // 🔥 Usar variable en lugar de #007bff
 
     .card-hover-overlay {
       opacity: 1;
     }
 
-    // 🔥 AÑADIR HOVER PARA FAVORITE BADGE
     .favorite-badge {
       transform: scale(1.1);
-      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+      box-shadow: var(--shadow-danger); // 🔥 Usar variable
     }
   }
 
@@ -304,15 +325,15 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 200px; // 🔥 Mantener misma altura
-    background: rgba(0, 123, 255, 0.85);
+    height: 200px;
+    background: rgba(var(--color-primary-rgb), 0.85); // 🔥 Usar variable con transparencia
     color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: var(--transition-base); // 🔥 Usar variable
     z-index: 10;
     font-weight: 600;
 
@@ -333,7 +354,7 @@
     top: 0.75rem;
     right: 0.75rem;
     padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm); // 🔥 Usar variable en lugar de 4px
     font-size: 0.7rem;
     font-weight: 600;
     color: white;
@@ -341,29 +362,28 @@
     text-transform: uppercase;
 
     &.status-disponible {
-      background-color: #28a745;
+      background-color: var(--color-property-available); // 🔥 Usar variable en lugar de #28a745
     }
 
     &.status-vendida, &.status-vendido {
-      background-color: #dc3545;
+      background-color: var(--color-property-sold); // 🔥 Usar variable en lugar de #dc3545
     }
 
     &.status-alquilada, &.status-alquilado {
-      background-color: #fd7e14;
+      background-color: var(--color-property-rented); // 🔥 Usar variable en lugar de #fd7e14
     }
 
     &.status-reservada, &.status-reservado {
-      background-color: #17a2b8;
+      background-color: var(--color-property-reserved); // 🔥 Usar variable en lugar de #17a2b8
     }
   }
 
-  // 🔥 AÑADIR FAVORITE BADGE - COPIADO DE PROPERTY-LIST-INTERESTED
   .favorite-badge {
     position: absolute;
     top: 0.75rem;
     left: 0.75rem;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 50%;
+    border-radius: var(--radius-round); // 🔥 Usar variable en lugar de 50%
     width: 36px;
     height: 36px;
     display: flex;
@@ -371,11 +391,11 @@
     justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     z-index: 16;
-    transition: all 0.3s ease;
+    transition: var(--transition-base); // 🔥 Usar variable
 
     i {
       font-size: 1.1rem;
-      color: #dc3545;
+      color: var(--color-danger); // 🔥 Usar variable en lugar de #dc3545
       filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
       animation: heartbeat 1.5s ease-in-out infinite;
     }
@@ -385,16 +405,16 @@
     padding: 1.25rem;
     display: flex;
     flex-direction: column;
-    min-height: 320px; // 🔥 ALTURA MÍNIMA FIJA PARA UNIFORMIDAD
+    min-height: 320px;
   }
 
   .property-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
     margin-bottom: 0.5rem;
     line-height: 1.3;
-    min-height: 2.6rem; // 🔥 Altura fija para 2 líneas máximo
+    min-height: 2.6rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -405,22 +425,22 @@
   .property-price {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #007bff;
+    color: var(--color-primary); // 🔥 Usar variable en lugar de #007bff
     margin-bottom: 0.75rem;
-    min-height: 2rem; // 🔥 Altura fija
+    min-height: 2rem;
   }
 
   .property-location {
-    color: #666;
+    color: var(--text-secondary); // 🔥 Usar variable en lugar de #666
     font-size: 0.9rem;
     margin-bottom: 1rem;
     display: flex;
     align-items: start;
-    min-height: 2.4rem; // 🔥 Altura fija para 2 líneas máximo
+    min-height: 2.4rem;
     overflow: hidden;
 
     i {
-      color: #007bff;
+      color: var(--color-primary); // 🔥 Usar variable en lugar de #007bff
       margin-right: 0.5rem;
       margin-top: 0.2rem;
       flex-shrink: 0;
@@ -441,7 +461,7 @@
     gap: 8px;
     margin: 12px 0;
     padding: 8px 0;
-    min-height: 60px; // 🔥 Altura fija
+    min-height: 60px;
     align-items: center;
 
     .spec-item {
@@ -450,30 +470,30 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      color: #666;
+      color: var(--text-secondary); // 🔥 Usar variable en lugar de #666
       font-size: 0.85rem;
-      background: #f8f9fa;
-      border: 1px solid #dee2e6;
-      border-radius: 4px;
+      background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+      border: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+      border-radius: var(--radius-sm); // 🔥 Usar variable en lugar de 4px
       padding: 8px 4px;
       text-align: center;
-      min-height: 50px; // 🔥 Altura fija para cada item
+      min-height: 50px;
 
       i {
-        color: #007bff;
+        color: var(--color-primary); // 🔥 Usar variable en lugar de #007bff
         font-size: 1rem;
         margin-bottom: 0.25rem;
       }
 
       .feature-number {
         font-weight: 600;
-        color: #333;
+        color: var(--text-primary); // 🔥 Usar variable en lugar de #333
         font-size: 0.9rem;
         line-height: 1;
       }
 
       .feature-label {
-        color: #666;
+        color: var(--text-secondary); // 🔥 Usar variable en lugar de #666
         font-size: 0.7rem;
         line-height: 1;
       }
@@ -481,14 +501,14 @@
   }
 
   .property-actions {
-    margin-top: auto; // 🔥 Empuja los botones al final
+    margin-top: auto;
 
     .btn {
       font-size: 0.85rem;
       padding: 0.5rem 1rem;
-      border-radius: 5px;
+      border-radius: var(--radius-sm); // 🔥 Usar variable en lugar de 5px
       font-weight: 600;
-      transition: all 0.3s ease;
+      transition: var(--transition-base); // 🔥 Usar variable
 
       &:hover {
         transform: translateY(-2px);
@@ -499,17 +519,17 @@
 }
 
 // ===============================
-// VISTA DE TABLA - MEJORADA CON ESTILO PROPERTY-DETAIL
+// VISTA DE TABLA - USANDO VARIABLES
 // ===============================
 .table-view {
   .table {
-    background: white;
-    border-radius: 12px; // 🔥 Consistente
+    background: var(--bg-card); // 🔥 Usar variable en lugar de white
+    border-radius: var(--radius-lg); // 🔥 Usar variable
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); // 🔥 Misma sombra
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 
     thead {
-      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); // 🔥 Mismo gradiente
+      background: var(--gradient-primary); // 🔥 Usar variable
       color: white;
 
       th {
@@ -525,11 +545,11 @@
     tbody {
       tr {
         cursor: pointer;
-        transition: all 0.3s ease;
+        transition: var(--transition-base); // 🔥 Usar variable
         border: none;
 
         &:hover {
-          background-color: rgba(0, 123, 255, 0.05) !important;
+          background-color: rgba(var(--color-primary-rgb), 0.05) !important; // 🔥 Usar variable
           transform: scale(1.01);
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -545,12 +565,12 @@
 }
 
 // ===============================
-// PAGINACIÓN - IGUAL A PROPERTY-DETAIL
+// PAGINACIÓN - USANDO VARIABLES
 // ===============================
 .pagination-section {
   .pagination-card {
-    background: white;
-    border-radius: 12px;
+    background: var(--bg-card); // 🔥 Usar variable en lugar de white
+    border-radius: var(--radius-lg); // 🔥 Usar variable
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     border: none;
     padding: 1.5rem;
@@ -563,28 +583,28 @@
 
         .page-link {
           border: none;
-          border-radius: 8px;
-          color: #007bff;
+          border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+          color: var(--color-primary); // 🔥 Usar variable en lugar de #007bff
           font-weight: 600;
           padding: 0.75rem 1rem;
-          transition: all 0.3s ease;
+          transition: var(--transition-base); // 🔥 Usar variable
 
           &:hover {
-            background: #007bff;
+            background: var(--color-primary); // 🔥 Usar variable
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+            box-shadow: var(--shadow-primary); // 🔥 Usar variable
           }
         }
 
         &.active .page-link {
-          background: #007bff;
+          background: var(--color-primary); // 🔥 Usar variable
           color: white;
-          box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+          box-shadow: var(--shadow-primary); // 🔥 Usar variable
         }
 
         &.disabled .page-link {
-          color: #6c757d;
+          color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
           background: transparent;
 
           &:hover {
@@ -596,7 +616,7 @@
     }
 
     .pagination-info {
-      color: #6c757d;
+      color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
       font-size: 0.9rem;
       text-align: center;
     }
@@ -604,34 +624,37 @@
 }
 
 // ===============================
-// 🔥 BADGES DE ESTADO - IGUALES A PROPERTY-DETAIL
+// 🔥 BADGES DE ESTADO - USANDO VARIABLES
 // ===============================
-
 .badge {
   &.bg-success {
-    background-color: #28a745 !important;
+    background-color: var(--color-success) !important; // 🔥 Usar variable
   }
 
   &.bg-danger {
-    background-color: #dc3545 !important;
+    background-color: var(--color-danger) !important; // 🔥 Usar variable
   }
 
   &.bg-warning {
-    background-color: #fd7e14 !important;
+    background-color: var(--color-warning) !important; // 🔥 Usar variable
     color: white !important;
   }
 
   &.bg-info {
-    background-color: #17a2b8 !important;
+    background-color: var(--color-info) !important; // 🔥 Usar variable
   }
 
   &.bg-secondary {
-    background-color: #6c757d !important;
+    background-color: var(--color-gray-600) !important; // 🔥 Usar variable
+  }
+
+  &.bg-primary {
+    background-color: var(--color-primary) !important; // 🔥 Usar variable
   }
 }
 
 // ===============================
-// ESTADOS VACÍOS Y ERRORES - IGUAL A PROPERTY-DETAIL
+// ESTADOS VACÍOS Y ERRORES - USANDO VARIABLES
 // ===============================
 .empty-state,
 .error-state {
@@ -642,29 +665,29 @@
   .error-icon {
     font-size: 4rem;
     margin-bottom: 1.5rem;
-    color: #6c757d;
+    color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
   }
 
   .empty-title,
   .error-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #2c3e50;
+    color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
     margin-bottom: 1rem;
   }
 
   .empty-description,
   .error-description {
-    color: #6c757d;
+    color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
     margin-bottom: 2rem;
     font-size: 1.1rem;
   }
 
   .btn {
-    border-radius: 8px;
+    border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
     font-weight: 600;
     padding: 0.75rem 2rem;
-    transition: all 0.3s ease;
+    transition: var(--transition-base); // 🔥 Usar variable
 
     &:hover {
       transform: translateY(-2px);
@@ -674,7 +697,7 @@
 }
 
 // ===============================
-// ANIMACIONES - CONSISTENTES CON PROPERTY-DETAIL
+// ANIMACIONES - USANDO VARIABLES
 // ===============================
 @keyframes fadeInUp {
   from {
@@ -687,12 +710,24 @@
   }
 }
 
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .property-content {
   animation: fadeInUp 0.6s ease-out;
 }
 
 // ===============================
-// RESPONSIVE - IGUAL A PROPERTY-DETAIL
+// RESPONSIVE - IGUAL A PROPERTY-DETAIL Y HOME
 // ===============================
 @media (max-width: 768px) {
   .pt-navbar {
@@ -775,7 +810,7 @@
     }
 
     .card-hover-overlay {
-      height: 180px; // 🔥 Mantener consistencia
+      height: 180px;
     }
   }
 }
@@ -799,30 +834,29 @@
 }
 
 // ===============================
-// 🔥 PLACEHOLDER DE IMAGEN - IGUAL QUE PROPERTY-DETAIL
+// 🔥 PLACEHOLDER DE IMAGEN - USANDO VARIABLES
 // ===============================
 .property-image-placeholder {
-  height: 200px; // 🔥 Misma altura que property-image
-  background: #f8f9fa; // 🔥 Mismo background que property-detail
-  border: 1px solid #dee2e6;
+  height: 200px;
+  background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+  border: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
   width: 100%;
 
-  // 🔥 EXACTAMENTE IGUAL QUE EN PROPERTY-DETAIL
   .text-center {
     padding: 1rem;
 
     i {
-      color: #6c757d !important; // 🔥 Mismo color que property-detail
+      color: var(--text-muted) !important; // 🔥 Usar variable
     }
 
     h6 {
-      color: #6c757d !important; // 🔥 Mismo color que property-detail
+      color: var(--text-muted) !important; // 🔥 Usar variable
       font-weight: 500;
       font-size: 0.9rem;
     }
 
     p {
-      color: #6c757d !important; // 🔥 Mismo color que property-detail
+      color: var(--text-muted) !important; // 🔥 Usar variable
       font-size: 0.8rem;
       line-height: 1.3;
     }
@@ -830,62 +864,17 @@
 }
 
 // ===============================
-// AJUSTES PARA CARDS EXISTENTES
-// ===============================
-.clickeable-card {
-  // ...existing styles...
-
-  .property-image {
-    height: 200px;
-    object-fit: cover;
-    width: 100%;
-  }
-
-  // 🔥 ACTUALIZAR HOVER OVERLAY PARA QUE NO APAREZCA SIN IMAGEN
-  .card-hover-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 200px; // 🔥 Mantener misma altura
-    background: rgba(0, 123, 255, 0.85);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 10;
-    font-weight: 600;
-
-    i {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-
-    span {
-      font-size: 1.1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-  }
-
-  // ...existing styles...
-}
-
-// ===============================
 // RESPONSIVE PARA PLACEHOLDER
 // ===============================
 @media (max-width: 768px) {
   .property-image-placeholder {
-    height: 180px; // 🔥 Ajustar para mobile como property-image
+    height: 180px;
 
     .text-center {
       padding: 0.75rem;
 
       i {
-        font-size: 2.5rem !important; // 🔥 Reducir un poco para mobile
+        font-size: 2.5rem !important;
       }
 
       h6 {
@@ -898,27 +887,17 @@
       }
     }
   }
-
-  .clickeable-card {
-    .property-image {
-      height: 180px; // 🔥 Mantener consistencia
-    }
-
-    .card-hover-overlay {
-      height: 180px; // 🔥 Mantener consistencia
-    }
-  }
 }
 
 @media (max-width: 576px) {
   .property-image-placeholder {
-    height: 160px; // 🔥 Ajustar para mobile pequeño
+    height: 160px;
 
     .text-center {
       padding: 0.5rem;
 
       i {
-        font-size: 2rem !important; // 🔥 Aún más pequeño
+        font-size: 2rem !important;
         margin-bottom: 0.5rem !important;
       }
 
@@ -932,23 +911,13 @@
       }
     }
   }
-
-  .clickeable-card {
-    .property-image {
-      height: 160px;
-    }
-
-    .card-hover-overlay {
-      height: 160px;
-    }
-  }
 }
 
 // ===============================
-// OTROS ESTILOS EXISTENTES QUE SE MANTIENEN
+// ESTILOS ESPECÍFICOS MANTENIDOS - CON VARIABLES
 // ===============================
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+  background: var(--gradient-primary) !important; // 🔥 Usar variable
 }
 
 .energy-badge {
@@ -961,7 +930,7 @@
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 123, 255, 0.05);
+  background-color: rgba(var(--color-primary-rgb), 0.05); // 🔥 Usar variable
 }
 
 .page-link {
@@ -973,18 +942,18 @@
 }
 
 // ===============================
-// INFORMACIÓN FIJA - CLASES ESPECÍFICAS E INDEPENDIENTES
+// INFORMACIÓN FIJA - USANDO VARIABLES
 // ===============================
 .property-info-fixed {
     margin: 1rem 0;
     padding: 0.75rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-    min-height: 60px; // 🔥 Altura fija para uniformidad
+    background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+    border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+    min-height: 60px;
 
     .row {
-      margin: 0; // 🔥 Quitar márgenes del row
+      margin: 0;
     }
 
     .info-item {
@@ -992,13 +961,14 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0.25rem 0;
-      height: 100%; // 🔥 Ocupar toda la altura disponible
+      height: 100%;
 
       i {
         font-size: 0.9rem;
         width: 16px;
         text-align: center;
         flex-shrink: 0;
+        color: var(--color-primary); // 🔥 Usar variable
       }
 
       .info-content {
@@ -1008,7 +978,7 @@
 
         .info-label {
           font-size: 0.75rem;
-          color: #6c757d;
+          color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
           font-weight: 600;
           line-height: 1;
           margin-bottom: 0;
@@ -1017,7 +987,7 @@
 
         .info-value {
           font-size: 0.85rem;
-          color: #2c3e50;
+          color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
           font-weight: 600;
           line-height: 1;
           white-space: nowrap;
@@ -1025,15 +995,152 @@
       }
     }
 
-    // 🔥 CLASE ESPECÍFICA PARA "CONSTRUIDO EN" - ALINEADO A LA IZQUIERDA
     .info-item-left {
       justify-content: flex-start;
       text-align: left;
     }
 
-    // 🔥 CLASE ESPECÍFICA PARA "VISITAS" - ALINEADO A LA DERECHA
     .info-item-right {
       justify-content: flex-end;
       text-align: right;
     }
+}
+
+// ===============================
+// BOTONES MEJORADOS CON VARIABLES
+// ===============================
+.btn {
+  border-radius: var(--radius-md); // 🔥 Usar variable
+  font-weight: 600;
+  transition: var(--transition-base); // 🔥 Usar variable
+
+  &.btn-primary {
+    background: var(--gradient-primary); // 🔥 Usar variable
+    border: none;
+
+    &:hover {
+      background: var(--gradient-primary); // 🔥 Usar variable
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-primary); // 🔥 Usar variable
+    }
+  }
+
+  &.btn-outline-primary {
+    border-color: var(--color-primary); // 🔥 Usar variable
+    color: var(--color-primary); // 🔥 Usar variable
+
+    &:hover {
+      background: var(--color-primary); // 🔥 Usar variable
+      border-color: var(--color-primary); // 🔥 Usar variable
+      color: white;
+    }
+  }
+
+  &.btn-outline-secondary {
+    border-color: var(--color-gray-600); // 🔥 Usar variable
+    color: var(--color-gray-600); // 🔥 Usar variable
+
+    &:hover {
+      background: var(--color-gray-600); // 🔥 Usar variable
+      border-color: var(--color-gray-600); // 🔥 Usar variable
+      color: white;
+    }
+  }
+
+  &.btn-danger {
+    background: var(--gradient-danger); // 🔥 Usar variable
+    border: none;
+
+    &:hover {
+      background: var(--gradient-danger); // 🔥 Usar variable
+      filter: brightness(1.1);
+    }
+  }
+
+  &.btn-outline-danger {
+    border-color: var(--color-danger); // 🔥 Usar variable
+    color: var(--color-danger); // 🔥 Usar variable
+
+    &:hover {
+      background: var(--color-danger); // 🔥 Usar variable
+      border-color: var(--color-danger); // 🔥 Usar variable
+      color: white;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// ===============================
+// ALERTAS CON VARIABLES
+// ===============================
+.alert {
+  border: none;
+  border-radius: var(--radius-md); // 🔥 Usar variable
+
+  &.alert-info {
+    background: rgba(var(--color-info-rgb), 0.1); // 🔥 Usar variable
+    border: 1px solid var(--color-info); // 🔥 Usar variable
+    color: var(--color-info-dark); // 🔥 Usar variable
+  }
+
+  &.alert-warning {
+    background: rgba(var(--color-warning-rgb), 0.1); // 🔥 Usar variable
+    border: 1px solid var(--color-warning); // 🔥 Usar variable
+    color: var(--color-warning-dark); // 🔥 Usar variable
+  }
+
+  &.alert-danger {
+    background: rgba(var(--color-danger-rgb), 0.1); // 🔥 Usar variable
+    border: 1px solid var(--color-danger); // 🔥 Usar variable
+    color: var(--color-danger-dark); // 🔥 Usar variable
+  }
+
+  &.alert-success {
+    background: rgba(var(--color-success-rgb), 0.1); // 🔥 Usar variable
+    border: 1px solid var(--color-success); // 🔥 Usar variable
+    color: var(--color-success-dark); // 🔥 Usar variable
+  }
+}
+
+// ===============================
+// SPINNER PERSONALIZADO
+// ===============================
+.spinner-border {
+  color: var(--color-primary) !important; // 🔥 Usar variable
+}
+
+// ===============================
+// TEXTO CON COLORES DE MARCA
+// ===============================
+.text-primary {
+  color: var(--color-primary) !important; // 🔥 Usar variable
+}
+
+.text-success {
+  color: var(--color-success) !important; // 🔥 Usar variable
+}
+
+.text-danger {
+  color: var(--color-danger) !important; // 🔥 Usar variable
+}
+
+.text-warning {
+  color: var(--color-warning) !important; // 🔥 Usar variable
+}
+
+.text-info {
+  color: var(--color-info) !important; // 🔥 Usar variable
+}
+
+.text-muted {
+  color: var(--text-muted) !important; // 🔥 Usar variable
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important; // 🔥 Usar variable
 }
