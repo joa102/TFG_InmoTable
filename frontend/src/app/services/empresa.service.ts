@@ -3,7 +3,9 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { ImageService } from './image.service';
-import { CacheService, EmpresaCacheData } from './cache.service'; // 🔥 IMPORTAR CACHE SERVICE
+import { CacheService, EmpresaCacheData } from './cache.service';
+import { ConfigService } from './config.service'; // 🔥 IMPORTAR CONFIG SERVICE
+import { ThemeService } from './theme.service'; // 🔥 IMPORTAR THEME SERVICE
 import { Empresa, EmpresaFormData, ApiResponse, ApiResponseWithStats } from '../interfaces/api.interfaces';
 
 @Injectable({
@@ -14,10 +16,12 @@ export class EmpresaService {
   constructor(
     private apiService: ApiService,
     private imageService: ImageService,
-    private cacheService: CacheService // 🔥 INYECTAR CACHE SERVICE
+    private cacheService: CacheService,
+    private configService: ConfigService, // 🔥 INYECTAR CONFIG SERVICE
+    private themeService: ThemeService // 🔥 INYECTAR THEME SERVICE
   ) {
-    // Temporalmente en FooterComponent constructor:
-    //this.cacheService.clearEmpresaCache();
+    // 🔥 MOSTRAR CONFIGURACIÓN EN DESARROLLO
+    this.configService.logConfiguration();
   }
 
   /**
@@ -42,14 +46,15 @@ export class EmpresaService {
   }
 
   /**
-   * 🔍 OBTENER EMPRESA POR NOMBRE CON CACHÉ (PÚBLICO)
-   * Este es el método principal que necesitamos para el navbar
+   * 🔍 OBTENER EMPRESA POR NOMBRE CON CACHÉ (USANDO CONFIGURACIÓN CENTRALIZADA)
    */
-  getByName(nombre: string): Observable<Empresa | null> {
-    console.log('🔍 Buscando empresa por nombre:', nombre);
+  getByName(nombre?: string): Observable<Empresa | null> {
+    // 🔥 USAR CONFIGURACIÓN CENTRALIZADA SI NO SE PASA NOMBRE
+    const empresaNombre = nombre || this.configService.getEmpresaNombre();
+    console.log('🔍 Buscando empresa por nombre (desde config):', empresaNombre);
 
     // 🔥 VERIFICAR CACHÉ PRIMERO
-    const cachedEmpresa = this.cacheService.getEmpresaByName(nombre);
+    const cachedEmpresa = this.cacheService.getEmpresaByName(empresaNombre);
     if (cachedEmpresa) {
       console.log('✅ Empresa encontrada en caché:', cachedEmpresa);
       return of(this.mapCacheToEmpresa(cachedEmpresa));
@@ -57,13 +62,13 @@ export class EmpresaService {
 
     // Si no está en caché, buscar en API
     const filtros = {
-      search: nombre,
-      filterByFormula: `{Nombre} = '${nombre}'`
+      search: empresaNombre,
+      filterByFormula: `{Nombre} = '${empresaNombre}'`
     };
 
     return this.getAll(filtros).pipe(
       switchMap(response => {
-        console.log('📊 Respuesta de API:', response);
+        console.log('📊 Respuesta de API para empresa:', response);
 
         if (response.data && response.data.length > 0) {
           const empresa = response.data[0];
@@ -72,7 +77,7 @@ export class EmpresaService {
           // 🔥 PROCESAR Y CACHEAR
           return this.processAndCacheEmpresa(empresa);
         } else {
-          console.log('⚠️ No se encontró empresa con nombre:', nombre);
+          console.log('⚠️ No se encontró empresa con nombre:', empresaNombre);
           return of(null);
         }
       }),
@@ -84,13 +89,23 @@ export class EmpresaService {
   }
 
   /**
-   * 🔍 OBTENER PRIMERA EMPRESA ACTIVA CON CACHÉ (FALLBACK)
+   * 🔍 OBTENER EMPRESA PRINCIPAL (MÉTODO SIMPLIFICADO)
+   */
+  getEmpresaPrincipal(): Observable<Empresa | null> {
+    const empresaNombre = this.configService.getEmpresaNombre();
+    console.log('🏢 Cargando empresa principal desde configuración:', empresaNombre);
+    
+    return this.getByName(empresaNombre);
+  }
+
+  /**
+   * 🔍 OBTENER PRIMERA EMPRESA ACTIVA CON CACHÉ (USANDO CONFIGURACIÓN)
    */
   getFirstActive(): Observable<Empresa | null> {
     const filtros = {
-      filterByFormula: `{Estado} = 'Activo'`, // 🔥 Campo correcto: Estado
+      filterByFormula: `{Estado} = 'Activo'`,
       maxRecords: 1,
-      sort: [{ field: 'Nombre', direction: 'asc' }] // 🔥 Campo correcto: Nombre
+      sort: [{ field: 'Nombre', direction: 'asc' }]
     };
 
     return this.getAll(filtros).pipe(
@@ -114,10 +129,13 @@ export class EmpresaService {
   }
 
   /**
-   * 🔥 PROCESAR EMPRESA Y CACHEAR CON IMAGEN
+   * 🔥 PROCESAR EMPRESA Y CACHEAR CON IMAGEN Y COLORES
    */
   private processAndCacheEmpresa(empresa: any): Observable<Empresa> {
-    console.log('🔄 Procesando y cacheando empresa completa:', empresa);
+    console.log('🔄 Procesando empresa completa con colores:', empresa);
+
+    // 🔥 APLICAR COLORES INMEDIATAMENTE
+    this.themeService.applyColorsFromEmpresa(empresa);
 
     // Procesar logo con ImageService
     const empresaProcesada = this.processEmpresaLogo(empresa);
@@ -128,7 +146,7 @@ export class EmpresaService {
 
       return this.cacheService.cacheImage(empresaProcesada.logo).pipe(
         map(cachedImageUrl => {
-          // 🔥 CREAR DATOS COMPLETOS PARA CACHÉ
+          // 🔥 CREAR DATOS COMPLETOS PARA CACHÉ CON COLORES
           const cacheData: EmpresaCacheData = {
             id: empresaProcesada.id,
             nombre: empresaProcesada.nombre,
@@ -136,26 +154,28 @@ export class EmpresaService {
             estado: empresaProcesada.estado,
             logoDataUrl: cachedImageUrl,
 
-            // 🔥 MAPEAR TODOS LOS CAMPOS ADICIONALES
+            // Campos adicionales existentes
             telefono: empresaProcesada['Teléfono'] || empresaProcesada.telefono,
             email: empresaProcesada.Email || empresaProcesada.email,
             direccion: empresaProcesada['Dirección'] || empresaProcesada.direccion,
             web: empresaProcesada.Web || empresaProcesada.web,
-
-            // Redes sociales
             facebook: empresaProcesada.Facebook || empresaProcesada.facebook,
             instagram: empresaProcesada.Instagram || empresaProcesada.instagram,
             twitter: empresaProcesada.Twitter || empresaProcesada.twitter,
             linkedin: empresaProcesada.LinkedIn || empresaProcesada.linkedin,
-
-            // Otros campos
             horario: empresaProcesada.Horario || empresaProcesada.horario,
-            idEmpresa: empresaProcesada['ID Empresa'] || empresaProcesada.idEmpresa
+            idEmpresa: empresaProcesada['ID Empresa'] || empresaProcesada.idEmpresa,
+
+            // 🔥 AÑADIR COLORES AL CACHÉ
+            colorPrimary: empresaProcesada['color-primary'],
+            colorPrimaryDark: empresaProcesada['color-primary-dark'],
+            colorPrimaryLight: empresaProcesada['color-primary-light'],
+            colorPrimaryRgb: empresaProcesada['color-primary-rgb']
           };
 
           // 🔥 GUARDAR DATOS COMPLETOS EN CACHÉ
           this.cacheService.setEmpresa(cacheData);
-          console.log('💾 Empresa completa cacheada con imagen:', cacheData);
+          console.log('💾 Empresa completa cacheada con imagen y colores:', cacheData);
 
           return {
             ...empresaProcesada,
@@ -165,63 +185,67 @@ export class EmpresaService {
         catchError(error => {
           console.warn('⚠️ Error al cachear imagen, usando URL original:', error);
 
-          // 🔥 SI FALLA EL CACHE DE IMAGEN, AL MENOS CACHEAR LOS DATOS COMPLETOS
+          // 🔥 SI FALLA EL CACHE DE IMAGEN, AL MENOS CACHEAR LOS DATOS COMPLETOS CON COLORES
           const cacheData: EmpresaCacheData = {
             id: empresaProcesada.id,
             nombre: empresaProcesada.nombre,
             logo: empresaProcesada.logo,
             estado: empresaProcesada.estado,
 
-            // 🔥 MAPEAR TODOS LOS CAMPOS ADICIONALES
+            // Campos adicionales
             telefono: empresaProcesada['Teléfono'] || empresaProcesada.telefono,
             email: empresaProcesada.Email || empresaProcesada.email,
             direccion: empresaProcesada['Dirección'] || empresaProcesada.direccion,
             web: empresaProcesada.Web || empresaProcesada.web,
-
-            // Redes sociales
             facebook: empresaProcesada.Facebook || empresaProcesada.facebook,
             instagram: empresaProcesada.Instagram || empresaProcesada.instagram,
             twitter: empresaProcesada.Twitter || empresaProcesada.twitter,
             linkedin: empresaProcesada.LinkedIn || empresaProcesada.linkedin,
-
-            // Otros campos
             horario: empresaProcesada.Horario || empresaProcesada.horario,
-            idEmpresa: empresaProcesada['ID Empresa'] || empresaProcesada.idEmpresa
+            idEmpresa: empresaProcesada['ID Empresa'] || empresaProcesada.idEmpresa,
+
+            // 🔥 AÑADIR COLORES AL CACHÉ
+            colorPrimary: empresaProcesada['color-primary'],
+            colorPrimaryDark: empresaProcesada['color-primary-dark'],
+            colorPrimaryLight: empresaProcesada['color-primary-light'],
+            colorPrimaryRgb: empresaProcesada['color-primary-rgb']
           };
 
           this.cacheService.setEmpresa(cacheData);
-          console.log('💾 Empresa completa cacheada sin imagen:', cacheData);
+          console.log('💾 Empresa completa cacheada sin imagen pero con colores:', cacheData);
 
           return of(empresaProcesada as Empresa);
         })
       );
     } else {
-      // 🔥 SI NO ES IMAGEN, CACHEAR DIRECTAMENTE CON TODOS LOS CAMPOS
+      // 🔥 SI NO ES IMAGEN, CACHEAR DIRECTAMENTE CON TODOS LOS CAMPOS Y COLORES
       const cacheData: EmpresaCacheData = {
         id: empresaProcesada.id,
         nombre: empresaProcesada.nombre,
         logo: empresaProcesada.logo,
         estado: empresaProcesada.estado,
 
-        // 🔥 MAPEAR TODOS LOS CAMPOS ADICIONALES
+        // Campos adicionales
         telefono: empresaProcesada['Teléfono'] || empresaProcesada.telefono,
         email: empresaProcesada.Email || empresaProcesada.email,
         direccion: empresaProcesada['Dirección'] || empresaProcesada.direccion,
         web: empresaProcesada.Web || empresaProcesada.web,
-
-        // Redes sociales
         facebook: empresaProcesada.Facebook || empresaProcesada.facebook,
         instagram: empresaProcesada.Instagram || empresaProcesada.instagram,
         twitter: empresaProcesada.Twitter || empresaProcesada.twitter,
         linkedin: empresaProcesada.LinkedIn || empresaProcesada.linkedin,
-
-        // Otros campos
         horario: empresaProcesada.Horario || empresaProcesada.horario,
-        idEmpresa: empresaProcesada['ID Empresa'] || empresaProcesada.idEmpresa
+        idEmpresa: empresaProcesada['ID Empresa'] || empresaProcesada.idEmpresa,
+
+        // 🔥 AÑADIR COLORES AL CACHÉ
+        colorPrimary: empresaProcesada['color-primary'],
+        colorPrimaryDark: empresaProcesada['color-primary-dark'],
+        colorPrimaryLight: empresaProcesada['color-primary-light'],
+        colorPrimaryRgb: empresaProcesada['color-primary-rgb']
       };
 
       this.cacheService.setEmpresa(cacheData);
-      console.log('💾 Empresa completa cacheada (icono):', cacheData);
+      console.log('💾 Empresa completa cacheada (icono) con colores:', cacheData);
 
       return of(empresaProcesada as Empresa);
     }
