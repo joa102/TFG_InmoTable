@@ -1,0 +1,245 @@
+<div class="contact-container pt-navbar">
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container d-flex flex-column align-items-center justify-content-center py-5">
+    <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+    <p class="mt-3 text-muted">Preparando formulario de contacto...</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading" class="container-fluid">
+
+    <div class="top-navigation mb-4">
+      <div class="row align-items-center">
+        <!-- Breadcrumb -->
+        <div class="col">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item">
+                <a routerLink="/propiedades" class="text-decoration-none">
+                  <i class="fas fa-building me-1"></i>
+                  Propiedades
+                </a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                <i class="fas fa-envelope me-1"></i>
+                Contacto
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Header Section -->
+    <div class="contact-header mb-4">
+      <div class="row align-items-center">
+        <div class="col-lg-8">
+          <h1 class="contact-title display-5 fw-bold mb-2">
+            <i class="fas fa-envelope text-primary me-3"></i>
+            Contacto
+          </h1>
+          <p class="lead text-muted mb-0">
+            ¿Tiene alguna pregunta? Nos encantaría ayudarle. Complete el formulario y nos pondremos en contacto con usted.
+          </p>
+
+          <!-- User Info Banner (si está logueado) -->
+          <!--<div class="user-info-banner mt-3" *ngIf="currentUser">
+            <div class="alert alert-info d-flex align-items-center mb-0">
+              <i class="fas fa-user-circle fa-2x me-3"></i>
+              <div>
+                <h6 class="alert-heading mb-1">
+                  <i class="fas fa-check-circle me-2"></i>
+                  Usuario Conectado
+                </h6>
+                <p class="mb-0">
+                  <strong>{{ currentUser.nombre }}</strong>
+                  <span class="text-muted ms-2">({{ getRoleLabel() }})</span>
+                  <span class="badge bg-{{ getRoleClass() }} ms-2">
+                    {{ currentUser.email }}
+                  </span>
+                </p>
+                <small class="text-muted">Sus datos se han prerrellenado automáticamente</small>
+              </div>
+            </div>
+          </div>-->
+
+          <!-- Guest Info Banner (si no está logueado) -->
+          <div class="guest-info-banner mt-3" *ngIf="!currentUser">
+            <div class="alert alert-secondary d-flex align-items-center mb-0">
+              <i class="fas fa-info-circle fa-2x me-3"></i>
+              <div>
+                <h6 class="alert-heading mb-1">
+                  <i class="fas fa-globe me-2"></i>
+                  Formulario Público
+                </h6>
+                <p class="mb-0">
+                  Complete todos los campos para que podamos contactar con usted.
+                  <small class="d-block text-muted mt-1">
+                    Si tiene una cuenta, puede <a routerLink="/auth/login" class="text-decoration-none">iniciar sesión</a> para autocompletar sus datos.
+                  </small>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <div class="contact-actions">
+            <div class="header-actions">
+              <!--<button class="btn btn-outline-primary me-2" (click)="goToAppointmentForm()" *ngIf="currentUser">
+                <i class="fas fa-calendar-plus me-2"></i>
+                Solicitar Cita
+              </button>-->
+              <button class="btn btn-primary" (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>
+                Volver
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content: Formulario de Contacto -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card contact-form-card">
+          <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">
+                <i class="fas fa-form me-2"></i>
+                Formulario de Contacto
+              </h5>
+              <!--<small *ngIf="currentUser">
+                <i class="fas fa-user me-1"></i>
+                Datos prerrellenados
+              </small>-->
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <iframe
+              class="airtable-embed"
+              [src]="iframeUrl"
+              frameborder="0"
+              onmousewheel=""
+              width="100%"
+              height="700"
+              style="background: transparent;"
+              title="Formulario de contacto">
+            </iframe>
+          </div>
+          <div class="card-footer bg-light">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <small class="text-muted">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Todos los campos marcados con * son obligatorios.
+                  Nos pondremos en contacto con usted en un plazo máximo de 24 horas.
+                </small>
+              </div>
+              <div class="col-md-4 text-md-end">
+                <small class="text-muted">
+                  <i class="fas fa-shield-alt me-1"></i>
+                  Sus datos están protegidos
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Info Section -->
+    <div class="row mt-4">
+
+      <!--<div class="col-lg-8">-->
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-handshake text-primary me-2"></i>
+              ¿En qué podemos ayudarle?
+            </h6>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-home fa-2x text-primary mb-2"></i>
+                  <h6>Propiedades</h6>
+                  <small class="text-muted">Información sobre nuestras propiedades disponibles</small>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-calendar-alt fa-2x text-success mb-2"></i>
+                  <h6>Citas</h6>
+                  <small class="text-muted">Programar visitas y reuniones</small>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="text-center">
+                  <i class="fas fa-question-circle fa-2x text-info mb-2"></i>
+                  <h6>Consultas</h6>
+                  <small class="text-muted">Dudas generales y asesoramiento</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--<div class="col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="fas fa-info-circle text-primary me-2"></i>
+              Información de Contacto
+            </h6>
+
+            <div class="mb-3" *ngIf="currentUser">
+              <strong>Usuario:</strong>
+              <span class="text-muted ms-2">{{ currentUser.nombre }}</span>
+              <div class="small text-muted">{{ currentUser.email }}</div>
+              <div class="small text-muted">{{ getRoleLabel() }}</div>
+            </div>
+
+            <div class="mb-3" *ngIf="!currentUser">
+              <strong>Estado:</strong>
+              <span class="badge bg-secondary ms-2">Visitante</span>
+              <div class="small text-muted mt-2">
+                <a routerLink="/auth/login" class="text-decoration-none">Iniciar sesión</a> para autocompletar datos
+              </div>
+            </div>
+
+            <hr class="my-3">
+            <h6 class="card-title">
+              <i class="fas fa-phone text-primary me-2"></i>
+              Otros métodos de contacto
+            </h6>
+
+            <div class="d-grid gap-2 mt-3">
+              <button class="btn btn-outline-primary btn-sm" (click)="goToAppointmentForm()" *ngIf="currentUser">
+                <i class="fas fa-calendar-plus me-2"></i>
+                Solicitar Cita
+              </button>
+              <button class="btn btn-outline-secondary btn-sm" (click)="goToProperties()">
+                <i class="fas fa-home me-2"></i>
+                Ver Propiedades
+              </button>
+              <a href="tel:+34900000000" class="btn btn-outline-success btn-sm">
+                <i class="fas fa-phone me-2"></i>
+                Llamar ahora
+              </a>
+              <a href="mailto:info@ejemplo.com" class="btn btn-outline-info btn-sm">
+                <i class="fas fa-envelope me-2"></i>
+                Enviar email directo
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>-->
+
+    </div>
+
+  </div>
+</div>

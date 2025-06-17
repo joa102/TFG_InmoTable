@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { map, catchError, switchMap } from 'rxjs/operators';
+import { HttpParams } from '@angular/common/http';
 import { ApiService } from './api.service';
+import { AuthService } from './auth.service';
 import {
   Cliente,
   ClienteFormData,
@@ -16,7 +18,10 @@ import {
 })
 export class ClientesService {
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService
+  ) {}
 
   // 🔒 LISTAR CLIENTES (REQUIERE AUTH)
   getAll(filtros?: any): Observable<ApiResponseWithStats<Cliente>> {
@@ -112,13 +117,32 @@ export class ClientesService {
       );
   }
 
-  // 🔒 MIS PROPIEDADES DE INTERÉS (REQUIERE AUTH - CLIENTE)
+  // 🔥 MIS PROPIEDADES DE INTERÉS - CORREGIDO CON TIPOS EXPLÍCITOS
   getMisPropiedadesInteres(): Observable<Propiedad[]> {
-    return this.apiService.getWithStats<Propiedad>('mis-propiedades-interes')
+    // 🔥 OBTENER EMAIL DEL USUARIO ACTUAL DESDE LOCALSTORAGE
+    const currentUser = this.authService.currentUserValue;
+
+    if (!currentUser) {
+      console.warn('⚠️ No hay usuario logueado');
+      return throwError(() => new Error('Usuario no autenticado'));
+    }
+
+    // 🔥 CONSTRUIR URL CON QUERY PARAMETER MANUALMENTE
+    const endpoint = `mis-propiedades-interes?email=${encodeURIComponent(currentUser.email)}`;
+    
+    console.log('📧 Consultando propiedades de interés para:', currentUser.email);
+    
+    return this.apiService.get<Propiedad[]>(endpoint)
       .pipe(
-        map(response => response.data || []),
+        map((response: ApiResponse<Propiedad[]>) => {
+          // 🔥 MANEJO SEGURO DE LA RESPUESTA
+          if (response && response.data) {
+            return Array.isArray(response.data) ? response.data : [];
+          }
+          return [];
+        }),
         catchError(error => {
-          console.error('Error al obtener mis propiedades de interés:', error);
+          console.error('❌ Error al obtener propiedades de interés:', error);
           throw error;
         })
       );
@@ -240,5 +264,113 @@ export class ClientesService {
       link.click();
       document.body.removeChild(link);
     }
+  }
+
+  // 🔥 NUEVOS MÉTODOS PARA GESTIÓN DE INTERÉS
+  
+  /**
+   * 🔥 AGREGAR PROPIEDAD A INTERÉS DEL USUARIO LOGUEADO
+   */
+  agregarInteresUsuario(propiedadId: string): Observable<any> {
+    const currentUser = this.authService.currentUserValue;
+    
+    if (!currentUser) {
+      return throwError(() => new Error('Usuario no autenticado'));
+    }
+
+    const payload = {
+      email: currentUser.email,
+      propiedad_id: propiedadId
+    };
+
+    console.log('❤️ Agregando propiedad a favoritos:', payload);
+
+    return this.apiService.post('agregar-interes', payload)
+      .pipe(
+        map(response => response.data || response),
+        catchError(error => {
+          console.error('❌ Error al agregar a favoritos:', error);
+          throw error;
+        })
+      );
+  }
+
+  /**
+   * 🔥 QUITAR PROPIEDAD DE INTERÉS DEL USUARIO LOGUEADO
+   */
+  quitarInteresUsuario(propiedadId: string): Observable<any> {
+    const currentUser = this.authService.currentUserValue;
+    
+    if (!currentUser) {
+      return throwError(() => new Error('Usuario no autenticado'));
+    }
+
+    // 🔥 USAR QUERY PARAMS EN LA URL EN LUGAR DE PARÁMETROS DE OBJETO
+    const endpoint = `quitar-interes?email=${encodeURIComponent(currentUser.email)}&propiedad_id=${encodeURIComponent(propiedadId)}`;
+
+    console.log('💔 Quitando propiedad de favoritos:', { email: currentUser.email, propiedadId });
+
+    return this.apiService.delete(endpoint) // 🔥 CORREGIDO: Solo un parámetro
+      .pipe(
+        map(response => response.data || response),
+        catchError(error => {
+          console.error('❌ Error al quitar de favoritos:', error);
+          throw error;
+        })
+      );
+  }
+
+  /**
+   * 🔥 VERIFICAR SI UNA PROPIEDAD ESTÁ EN INTERÉS DEL USUARIO LOGUEADO
+   */
+  verificarInteresUsuario(propiedadId: string): Observable<boolean> {
+    const currentUser = this.authService.currentUserValue;
+    
+    if (!currentUser) {
+      return of(false);
+    }
+
+    // 🔥 USAR QUERY PARAMS EN LA URL
+    const endpoint = `verificar-interes?email=${encodeURIComponent(currentUser.email)}&propiedad_id=${encodeURIComponent(propiedadId)}`;
+
+    return this.apiService.get(endpoint)
+      .pipe(
+        map(response => {
+          // 🔥 TIPADO SEGURO PARA EVITAR ERROR
+          const data = response.data as any;
+          return data?.es_favorito || false;
+        }),
+        catchError(error => {
+          console.error('❌ Error al verificar favorito:', error);
+          return of(false);
+        })
+      );
+  }
+
+  /**
+   * 🔥 TOGGLE INTERÉS (AGREGAR O QUITAR SEGÚN ESTADO ACTUAL)
+   */
+  toggleInteresUsuario(propiedadId: string): Observable<{ accion: 'agregada' | 'quitada', mensaje: string }> {
+    return this.verificarInteresUsuario(propiedadId).pipe(
+      switchMap(esFavorito => {
+        if (esFavorito) {
+          // Ya es favorito, quitarlo
+          return this.quitarInteresUsuario(propiedadId).pipe(
+            map(() => ({
+              accion: 'quitada' as const,
+              mensaje: 'Propiedad quitada de favoritos'
+            }))
+          );
+        } else {
+          // No es favorito, agregarlo
+          return this.agregarInteresUsuario(propiedadId).pipe(
+            map(() => ({
+              accion: 'agregada' as const,
+              mensaje: 'Propiedad agregada a favoritos'
+            }))
+          );
+        }
+      })
+    );
   }
 }

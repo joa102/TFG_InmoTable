@@ -1,0 +1,919 @@
+// ===============================
+// 🎯 PROPERTY DETAIL - USANDO VARIABLES GLOBALES
+// ===============================
+
+// 🔥 NAVBAR - IGUAL QUE PROPERTY-LIST Y PROPERTY-LIST-INTERESTED
+.pt-navbar {
+  padding-top: 5rem !important;
+}
+
+// ===============================
+// 🔥 MAPA - ESTILOS ESPECÍFICOS USANDO VARIABLES
+// ===============================
+
+#propertyMap {
+  height: 400px !important;
+  width: 100% !important;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+
+  // Asegurar que el mapa se vea correctamente
+  .leaflet-container {
+    height: 400px !important;
+    width: 100% !important;
+  }
+
+  // Estilos para el popup del mapa
+  .leaflet-popup-content {
+    margin: 8px;
+
+    .map-popup {
+      min-width: 200px;
+
+      h6 {
+        color: var(--text-primary); // 🔥 Usar variable en lugar de #333
+        margin-bottom: 4px;
+      }
+
+      .text-muted {
+        font-size: 0.875rem;
+        color: var(--text-muted) !important; // 🔥 Usar variable
+      }
+
+      .text-primary {
+        color: var(--color-primary) !important; // 🔥 Usar variable en lugar de #0d6efd
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 CONTENEDOR GENERAL - USANDO VARIABLES
+// ===============================
+
+.property-detail-container {
+  min-height: 100vh;
+  background-color: var(--bg-body); // 🔥 Usar variable en lugar de #f8f9fa
+
+  .container-fluid {
+    max-width: 1400px; // 🔥 IGUAL QUE PROPERTY-LIST Y PROPERTY-LIST-INTERESTED
+    margin: 0 auto;    // 🔥 IGUAL QUE PROPERTY-LIST Y PROPERTY-LIST-INTERESTED
+    padding: 20px;     // 🔥 IGUAL QUE PROPERTY-LIST Y PROPERTY-LIST-INTERESTED
+  }
+}
+
+// ===============================
+// 🔥 LOADING STATE - USANDO VARIABLES
+// ===============================
+
+.loading-container {
+  min-height: 60vh;
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: var(--color-primary) !important; // 🔥 Usar variable
+  }
+}
+
+// ===============================
+// 🔥 HEADER DE PROPIEDAD - USANDO VARIABLES
+// ===============================
+
+.property-header {
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
+  padding: 2rem;
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  .property-title {
+    color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .property-price {
+    color: var(--color-property-price); // 🔥 Usar variable en lugar de #e74c3c
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .property-location {
+    font-size: 1.1rem;
+    color: var(--text-secondary); // 🔥 Usar variable en lugar de #7f8c8d
+
+    i {
+      color: var(--color-property-price); // 🔥 Usar variable en lugar de #e74c3c
+    }
+  }
+}
+
+// ===============================
+// 🔥 INFO BADGES - USANDO VARIABLES
+// ===============================
+
+.property-quick-info {
+  .info-badge {
+    background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+    border-radius: var(--radius-xl); // 🔥 Usar variable en lugar de 20px
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+    margin: 4px;
+    font-size: 0.9rem;
+
+    i {
+      margin-right: 6px;
+      color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+    }
+  }
+}
+
+// ===============================
+// 🔥 GALERÍA DE IMÁGENES - USANDO VARIABLES
+// ===============================
+
+.property-gallery {
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  .main-image-container {
+    position: relative;
+
+    .main-image {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0; // 🔥 Usar variable en lugar de 12px
+    }
+
+    .btn {
+      opacity: 0.8;
+      transition: var(--transition-base); // 🔥 Usar variable
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .thumbnails {
+    padding: 1rem;
+
+    .thumbnail-img {
+      border: 2px solid transparent;
+      border-radius: var(--radius-sm); // 🔥 Usar variable en lugar de 6px
+      transition: var(--transition-base); // 🔥 Usar variable
+
+      &:hover {
+        border-color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+        transform: scale(1.05);
+      }
+
+      &.active {
+        border-color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+        box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.3); // 🔥 Usar variable
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 DESCRIPCIÓN - USANDO VARIABLES
+// ===============================
+
+.description-section {
+  .description-content {
+    background: var(--bg-card); // 🔥 Usar variable en lugar de white
+    border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+    p {
+      line-height: 1.6;
+      color: var(--color-gray-700); // 🔥 Usar variable en lugar de #495057
+    }
+  }
+}
+
+// ===============================
+// 🔥 CARDS LATERALES - USANDO VARIABLES
+// ===============================
+
+.card {
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  .card-header {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; // 🔥 Usar variable en lugar de 12px
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    &.bg-primary {
+      background: var(--gradient-primary) !important; // 🔥 Usar variable
+    }
+  }
+
+  .card-footer {
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important; // 🔥 Usar variable en lugar de 12px
+    background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+    border-top: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+  }
+}
+
+// ===============================
+// 🔥 BOTONES DE ACCIÓN - USANDO VARIABLES
+// ===============================
+
+.action-buttons {
+  .btn {
+    border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+    font-weight: 600;
+    transition: var(--transition-base); // 🔥 Usar variable
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    // 🔥 ESTILOS ESPECÍFICOS PARA BOTÓN DE FAVORITOS - USANDO VARIABLES
+    &.btn-danger {
+      background-color: var(--color-danger); // 🔥 Usar variable en lugar de #dc3545
+      border-color: var(--color-danger); // 🔥 Usar variable en lugar de #dc3545
+
+      &:hover {
+        background-color: var(--color-danger-dark); // 🔥 Usar variable en lugar de #c82333
+        border-color: var(--color-danger-dark); // 🔥 Usar variable
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-danger); // 🔥 Usar variable
+      }
+    }
+
+    &.btn-outline-danger {
+      color: var(--color-danger); // 🔥 Usar variable en lugar de #dc3545
+      border-color: var(--color-danger); // 🔥 Usar variable en lugar de #dc3545
+      background: transparent;
+
+      &:hover {
+        background-color: var(--color-danger); // 🔥 Usar variable en lugar de #dc3545
+        border-color: var(--color-danger); // 🔥 Usar variable en lugar de #dc3545
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-danger); // 🔥 Usar variable
+      }
+    }
+
+    // 🔥 ICONO DE CORAZÓN CON ANIMACIÓN
+    .fa-heart {
+      transition: var(--transition-base); // 🔥 Usar variable
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    // 🔥 EFECTOS ESPECIALES PARA EL BOTÓN DE FAVORITOS
+    &.btn-danger .fa-heart,
+    &.btn-outline-danger:hover .fa-heart {
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+  }
+}
+
+// 🔥 ANIMACIÓN DE HEARTBEAT PARA EL CORAZÓN - SIN CAMBIOS
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.1);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+// 🔥 ESTILOS RESPONSIVOS PARA BOTONES
+@media (max-width: 768px) {
+  .action-buttons {
+    .btn {
+      font-size: 0.95rem;
+      padding: 0.75rem 1.5rem;
+
+      &:hover {
+        transform: translateY(-1px); // 🔥 Menos movimiento en mobile
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .action-buttons {
+    .btn {
+      font-size: 0.9rem;
+      padding: 0.7rem 1.25rem;
+    }
+  }
+}
+
+// ===============================
+// 🔥 TOP NAVIGATION BAR - USANDO VARIABLES
+// ===============================
+
+.top-navigation {
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+
+  .breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    // 🔥 PERMITIR QUE USE TODO EL ANCHO DISPONIBLE
+    width: 100%;
+
+    .breadcrumb-item {
+      font-size: 0.95rem;
+
+      a {
+        color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition-fast); // 🔥 Usar variable
+
+        &:hover {
+          color: var(--color-primary-dark); // 🔥 Usar variable en lugar de #0a58ca
+          text-decoration: underline;
+        }
+      }
+
+      &.active {
+        color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
+        font-weight: 500;
+        // 🔥 REMOVER RESTRICCIONES DE ANCHO Y PERMITIR QUEBRADO
+        max-width: none !important;
+        overflow: visible !important;
+        text-overflow: initial !important;
+        white-space: normal !important;
+        display: inline !important;
+        word-break: break-word;
+        line-height: 1.4;
+      }
+
+      &:not(.active)::before {
+        color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
+        font-weight: 600;
+      }
+    }
+  }
+
+  // 🔥 HEADER ACTIONS - USANDO VARIABLES
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+
+    .btn {
+      border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      transition: var(--transition-base); // 🔥 Usar variable
+      white-space: nowrap;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  // 🔥 BOTÓN BACK CON VARIABLES
+  .back-button {
+    border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    border: 1px solid var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+    color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+    background: transparent;
+    transition: var(--transition-base); // 🔥 Usar variable
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+
+    &:hover {
+      background: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+      color: white;
+      border-color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); // 🔥 Usar variable
+    }
+
+    i {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// ===============================
+// 🔥 BREADCRUMB GENERAL - USANDO VARIABLES
+// ===============================
+
+.breadcrumb {
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
+  border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+  padding: 12px 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  .breadcrumb-item {
+    font-size: 0.95rem;
+
+    a {
+      color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition-fast); // 🔥 Usar variable
+
+      &:hover {
+        color: var(--color-primary-dark); // 🔥 Usar variable en lugar de #0a58ca
+        text-decoration: underline;
+      }
+    }
+
+    &.active {
+      color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
+      font-weight: 500;
+      // 🔥 CONFIGURACIÓN RESPONSIVE MEJORADA
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+      line-height: 1.4;
+    }
+
+    &:not(.active)::before {
+      color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
+      font-weight: 600;
+    }
+  }
+}
+
+// ===============================
+// 🔥 RESPONSIVE PARA TOP NAVIGATION - USANDO VARIABLES
+// ===============================
+
+@media (max-width: 768px) {
+  .top-navigation {
+    padding: 0.75rem 1rem;
+
+    .row {
+      // 🔥 MANTENER DISTRIBUCIÓN HORIZONTAL EN MÓVILES
+      flex-direction: row !important;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .col {
+      // 🔥 PERMITIR QUE EL BREADCRUMB USE EL ESPACIO DISPONIBLE
+      flex: 1;
+      min-width: 0;
+    }
+
+    .col-auto {
+      // 🔥 MANTENER EL BOTÓN EN SU TAMAÑO
+      flex-shrink: 0;
+    }
+
+    .breadcrumb {
+      margin-bottom: 0;
+
+      .breadcrumb-item {
+        font-size: 0.85rem;
+
+        &.active {
+          // 🔥 PERMITIR MÚLTIPLES LÍNEAS EN MÓVILES
+          word-break: break-word;
+          overflow-wrap: break-word;
+          hyphens: auto;
+        }
+      }
+    }
+
+    // 🔥 HEADER ACTIONS EN MOBILE
+    .header-actions .btn {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+    }
+
+    // 🔥 BACK BUTTON EN MOBILE
+    .back-button {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+      // 🔥 ASEGURAR QUE EL BOTÓN SE MANTIENE VISIBLE
+      min-width: auto;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .top-navigation {
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.75rem;
+
+    .breadcrumb {
+      padding: 8px 12px;
+
+      .breadcrumb-item {
+        font-size: 0.8rem;
+
+        &.active {
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    .back-button {
+      font-size: 0.8rem;
+      padding: 0.3rem 0.6rem;
+
+      i {
+        font-size: 0.75rem;
+      }
+
+      .me-2 {
+        margin-right: 0.25rem !important;
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 TÍTULO LARGO - ESTILOS ESPECÍFICOS
+// ===============================
+
+.breadcrumb-item.active {
+  // Mejorar legibilidad de títulos largos
+  font-weight: 500;
+  color: var(--color-gray-700); // 🔥 Usar variable en lugar de #495057
+
+  // Para títulos muy largos, añadir espaciado entre palabras
+  word-spacing: 0.1em;
+
+  // Mejorar el line-height para títulos multilinea
+  line-height: 1.3;
+}
+
+// ===============================
+// 🔥 VARIANTE PARA TÍTULOS EXTREMADAMENTE LARGOS
+// ===============================
+
+@media (max-width: 576px) {
+  .breadcrumb-item.active {
+    // En pantallas muy pequeñas, reducir ligeramente el font-size
+    font-size: 0.75rem !important;
+    line-height: 1.2;
+  }
+}
+
+// ===============================
+// 🔥 RESPONSIVE - USANDO VARIABLES
+// ===============================
+
+@media (max-width: 768px) {
+  .property-header {
+    text-align: center;
+
+    .property-price {
+      font-size: 2rem;
+    }
+  }
+
+  .property-gallery .main-image {
+    height: 300px;
+  }
+
+  #propertyMap {
+    height: 300px !important;
+
+    .leaflet-container {
+      height: 300px !important;
+    }
+  }
+}
+
+// ===============================
+// 🔥 CURSOR POINTER PARA ELEMENTOS CLICKEABLES
+// ===============================
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// ===============================
+// 🔥 ANIMACIONES - USANDO VARIABLES
+// ===============================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.property-content {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+// 🔧 ALTERNATIVA: Truncado inteligente solo cuando sea absolutamente necesario
+
+.breadcrumb-item.active {
+  color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+
+  // Mostrar texto completo por defecto
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.4;
+
+  // Solo truncar en pantallas muy pequeñas Y con botón presente
+  @media (max-width: 400px) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// ===============================
+// 🔥 BADGES DE ESTADO - USANDO VARIABLES
+// ===============================
+.badge {
+  // Estilos base del badge (ya están bien con Bootstrap)
+
+  // 🔥 COLORES ESPECÍFICOS PARA CADA ESTADO (IGUALES A PROPERTY-LIST)
+  &.bg-success {
+    background-color: var(--color-property-available) !important; // 🔥 Usar variable en lugar de #28a745
+  }
+
+  &.bg-danger {
+    background-color: var(--color-property-sold) !important; // 🔥 Usar variable en lugar de #dc3545
+  }
+
+  &.bg-warning {
+    background-color: var(--color-property-rented) !important; // 🔥 Usar variable en lugar de #fd7e14
+    color: white !important; // Texto blanco para mejor contraste
+  }
+
+  &.bg-info {
+    background-color: var(--color-property-reserved) !important; // 🔥 Usar variable en lugar de #17a2b8
+  }
+
+  &.bg-secondary {
+    background-color: var(--color-gray-600) !important; // 🔥 Usar variable en lugar de #6c757d
+  }
+
+  &.bg-primary {
+    background-color: var(--color-primary) !important; // 🔥 Usar variable
+  }
+}
+
+// ===============================
+// 🔥 INFORMACIÓN DE LA PROPIEDAD - USANDO VARIABLES
+// ===============================
+.card-body {
+  .table {
+    tbody {
+      tr {
+        td {
+          &.fw-semibold {
+            color: var(--color-gray-700); // 🔥 Usar variable en lugar de #495057
+            font-weight: 600 !important;
+          }
+
+          // 🔥 MEJORAR ALINEACIÓN DE BADGES
+          .badge {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 ESTADÍSTICAS - USANDO VARIABLES
+// ===============================
+
+.card-body {
+  .row.text-center {
+    .col-6 {
+      .h5 {
+        // 🔥 AJUSTAR ESPACIADO DE BADGES EN ESTADÍSTICAS
+        .badge {
+          font-size: 0.7rem; // 🔥 Tamaño reducido para estadísticas
+          padding: 0.25rem 0.5rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+  }
+
+  .table {
+    tbody {
+      tr {
+        td {
+          &.fw-semibold {
+            color: var(--color-gray-700); // 🔥 Usar variable en lugar de #495057
+            font-weight: 600 !important;
+          }
+
+          // 🔥 BADGES EN TABLA DE INFORMACIÓN (MÁS GRANDES)
+          .badge {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 BOTONES MEJORADOS CON VARIABLES
+// ===============================
+
+.btn {
+  border-radius: var(--radius-md); // 🔥 Usar variable
+  font-weight: 600;
+  transition: var(--transition-base); // 🔥 Usar variable
+
+  &.btn-primary {
+    background: var(--gradient-primary); // 🔥 Usar variable
+    border: none;
+
+    &:hover {
+      background: var(--gradient-primary); // 🔥 Usar variable
+      filter: brightness(1.1);
+    }
+  }
+
+  &.btn-outline-primary {
+    border-color: var(--color-primary); // 🔥 Usar variable
+    color: var(--color-primary); // 🔥 Usar variable
+
+    &:hover {
+      background: var(--color-primary); // 🔥 Usar variable
+      border-color: var(--color-primary); // 🔥 Usar variable
+      color: white;
+    }
+  }
+
+  &.btn-outline-secondary {
+    border-color: var(--color-gray-600); // 🔥 Usar variable
+    color: var(--color-gray-600); // 🔥 Usar variable
+
+    &:hover {
+      background: var(--color-gray-600); // 🔥 Usar variable
+      border-color: var(--color-gray-600); // 🔥 Usar variable
+      color: white;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// ===============================
+// 🔥 ALERTAS CON VARIABLES
+// ===============================
+
+.alert {
+  border: none;
+  border-radius: var(--radius-md); // 🔥 Usar variable
+  
+  &.alert-danger {
+    background: rgba(var(--color-danger-rgb), 0.1); // 🔥 Usar variable
+    border: 1px solid var(--color-danger); // 🔥 Usar variable
+    color: var(--color-danger-dark); // 🔥 Usar variable
+  }
+
+  &.alert-light {
+    background: var(--color-gray-100); // 🔥 Usar variable
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+    color: var(--text-secondary); // 🔥 Usar variable
+  }
+}
+
+// ===============================
+// 🔥 SPINNER PERSONALIZADO
+// ===============================
+.spinner-border {
+  color: var(--color-primary) !important; // 🔥 Usar variable
+}
+
+// ===============================
+// 🔥 TEXTO CON COLORES DE MARCA
+// ===============================
+.text-primary {
+  color: var(--color-primary) !important; // 🔥 Usar variable
+}
+
+.text-muted {
+  color: var(--text-muted) !important; // 🔥 Usar variable
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important; // 🔥 Usar variable
+}
+
+// ===============================
+// 🔥 MEJORAS DE ACCESIBILIDAD
+// ===============================
+
+.btn-outline-danger {
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--color-danger-rgb), 0.25); // 🔥 Usar variable
+  }
+}
+
+// ===============================
+// 🔥 CONTACT ACTIONS - USANDO VARIABLES
+// ===============================
+
+.contact-actions {
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+
+    .btn {
+      border-radius: var(--radius-md); // 🔥 Usar variable
+      font-weight: 600;
+      transition: var(--transition-base); // 🔥 Usar variable
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-primary); // 🔥 Usar variable
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 NO IMAGES CONTAINER - USANDO VARIABLES
+// ===============================
+
+.no-images-container {
+  .alert {
+    background: var(--color-gray-100); // 🔥 Usar variable
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+    color: var(--text-secondary); // 🔥 Usar variable
+
+    h5 {
+      color: var(--text-muted); // 🔥 Usar variable
+    }
+
+    p {
+      color: var(--text-muted); // 🔥 Usar variable
+    }
+
+    i {
+      color: var(--text-muted); // 🔥 Usar variable
+    }
+  }
+}

@@ -1,0 +1,488 @@
+// ===============================
+// 🔥 FOOTER COMPONENT STYLES - USANDO VARIABLES GLOBALES
+// ===============================
+
+.footer {
+  background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-dark-secondary) 100%); // 🔥 USAR VARIABLES
+  color: #ecf0f1;
+  margin-top: auto; // Para que se pegue al final
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--color-primary) 50%, transparent 100%); // 🔥 USAR VARIABLE
+  }
+
+  // ===============================
+  // FOOTER PRINCIPAL
+  // ===============================
+  .footer-main {
+    padding: 3rem 0 0rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  // ===============================
+  // 🔥 LOGO DEL FOOTER (IGUAL QUE NAVBAR) - USANDO VARIABLES
+  // ===============================
+  .footer-logo {
+    transition: var(--transition-base); // 🔥 USAR VARIABLE
+    border-radius: var(--radius-sm); // 🔥 USAR VARIABLE
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px;
+
+    &:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    // 🔥 ANIMACIÓN DE CARGA SUAVE
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .footer-section {
+    height: 100%;
+
+    .footer-title {
+      color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      transition: var(--transition-base); // 🔥 USAR VARIABLE
+
+      // 🔥 HOVER PARA TÍTULO CON LOGO
+      &:hover {
+        .footer-logo {
+          transform: scale(1.1);
+        }
+
+        i {
+          transform: scale(1.1);
+        }
+      }
+
+      i {
+        color: var(--navbar-brand-gold); // 🔥 USAR VARIABLE EN LUGAR DE #e74c3c
+        transition: var(--transition-base); // 🔥 USAR VARIABLE
+      }
+    }
+
+    .footer-subtitle {
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-description {
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    .footer-contact {
+      p {
+        color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        transition: var(--transition-fast); // 🔥 USAR VARIABLE
+
+        i {
+          color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+          width: 16px;
+          text-align: center;
+        }
+
+        &:hover {
+          color: #ecf0f1;
+        }
+      }
+    }
+
+    // 🔥 ESTILOS PARA HORARIO DINÁMICO
+    .footer-schedule {
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
+      font-size: 0.9rem;
+      line-height: 1.4;
+
+      // Si el horario viene con saltos de línea de Airtable
+      white-space: pre-line;
+    }
+  }
+
+  // ===============================
+  // ENLACES DEL FOOTER - USANDO VARIABLES
+  // ===============================
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      margin-bottom: 0.5rem;
+
+      a {
+        color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: var(--transition-base); // 🔥 USAR VARIABLE
+        position: relative;
+        padding-left: 1rem;
+
+        &::before {
+          content: '▸';
+          position: absolute;
+          left: 0;
+          color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+          transform: translateX(-2px);
+          transition: var(--transition-fast); // 🔥 USAR VARIABLE
+        }
+
+        &:hover {
+          color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+          padding-left: 1.2rem;
+
+          &::before {
+            transform: translateX(0);
+          }
+        }
+      }
+    }
+  }
+
+  // ===============================
+  // 🔥 REDES SOCIALES MEJORADAS - USANDO VARIABLES
+  // ===============================
+  .footer-social {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
+      text-decoration: none;
+      border-radius: var(--radius-round); // 🔥 USAR VARIABLE EN LUGAR DE 50%
+      font-size: 1.1rem;
+      transition: var(--transition-base); // 🔥 USAR VARIABLE
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+
+      &:hover {
+        background: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3); // 🔥 USAR VARIABLE
+      }
+
+      // 🔥 ESTADOS DESHABILITADOS PARA REDES SIN URL
+      &[style*="opacity: 0.5"] {
+        cursor: not-allowed !important;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.1) !important;
+          color: var(--color-gray-300) !important; // 🔥 USAR VARIABLE
+          transform: none !important;
+          box-shadow: none !important;
+        }
+      }
+
+      // Colores específicos para cada red social (solo si están activas)
+      &:not([style*="opacity: 0.5"]) {
+        &:nth-child(1):hover { background: #3b5998; } // Facebook
+        &:nth-child(2):hover { background: #e4405f; } // Instagram
+        &:nth-child(3):hover { background: #1da1f2; } // Twitter
+        &:nth-child(4):hover { background: #0077b5; } // LinkedIn
+      }
+    }
+  }
+
+  // ===============================
+  // NEWSLETTER - USANDO VARIABLES
+  // ===============================
+  .footer-newsletter {
+    .newsletter-title {
+      color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .newsletter-text {
+      color: var(--color-gray-500); // 🔥 USAR VARIABLE EN LUGAR DE #95a5a6
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .input-group {
+      .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ecf0f1;
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm); // 🔥 USAR VARIABLE
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+
+        &::placeholder {
+          color: var(--color-gray-500); // 🔥 USAR VARIABLE EN LUGAR DE #95a5a6
+        }
+
+        &:focus {
+          background: rgba(255, 255, 255, 0.15);
+          border-color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+          box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); // 🔥 USAR VARIABLE
+          color: #ecf0f1;
+        }
+      }
+
+      .btn {
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0; // 🔥 USAR VARIABLE
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+        background: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+        color: white;
+        transition: var(--transition-base); // 🔥 USAR VARIABLE
+
+        &:hover {
+          background: var(--color-primary-dark); // 🔥 USAR VARIABLE EN LUGAR DE #2980b9
+          border-color: var(--color-primary-dark); // 🔥 USAR VARIABLE EN LUGAR DE #2980b9
+          transform: translateY(-1px);
+        }
+
+        i {
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  // ===============================
+  // FOOTER BOTTOM - USANDO VARIABLES
+  // ===============================
+  .footer-bottom {
+    padding: 1.5rem 0;
+    background: rgba(0, 0, 0, 0.2);
+
+    .footer-copyright {
+      color: var(--color-gray-500); // 🔥 USAR VARIABLE EN LUGAR DE #95a5a6
+      font-size: 0.85rem;
+    }
+
+    .footer-legal {
+      text-align: right;
+
+      a {
+        color: var(--color-gray-300); // 🔥 USAR VARIABLE EN LUGAR DE #bdc3c7
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: var(--transition-fast); // 🔥 USAR VARIABLE
+
+        &:hover {
+          color: var(--color-primary); // 🔥 USAR VARIABLE EN LUGAR DE #3498db
+        }
+      }
+
+      .separator {
+        color: var(--color-gray-600); // 🔥 USAR VARIABLE EN LUGAR DE #7f8c8d
+        margin: 0 0.5rem;
+      }
+    }
+  }
+}
+
+// 🔥 ANIMACIÓN PARA LOGOS (IGUAL QUE NAVBAR) - USANDO VARIABLES
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ===============================
+// RESPONSIVE DESIGN - USANDO VARIABLES
+// ===============================
+@media (max-width: 768px) {
+  .footer {
+    .footer-main {
+      padding: 2rem 0 1.5rem;
+      text-align: center;
+    }
+
+    .footer-section {
+      .footer-title {
+        justify-content: center;
+        font-size: 1.3rem;
+
+        .footer-logo {
+          height: 28px !important;
+          max-width: 28px !important;
+        }
+      }
+
+      .footer-subtitle {
+        font-size: 0.95rem;
+      }
+
+      .footer-description {
+        font-size: 0.9rem;
+      }
+    }
+
+    .footer-social {
+      justify-content: center;
+    }
+
+    .footer-newsletter {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding: 1rem 0;
+
+      .footer-legal {
+        text-align: center;
+        margin-top: 1rem;
+
+        a, .separator {
+          font-size: 0.8rem;
+        }
+
+        .separator {
+          margin: 0 0.3rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .footer {
+    .footer-main {
+      padding: 1.5rem 0 1rem;
+    }
+
+    .footer-section {
+      .footer-title {
+        font-size: 1.2rem;
+
+        .footer-logo {
+          height: 24px !important;
+          max-width: 24px !important;
+        }
+      }
+
+      .footer-contact p {
+        font-size: 0.85rem;
+      }
+    }
+
+    .footer-links li a {
+      font-size: 0.85rem;
+    }
+
+    .footer-social {
+      gap: 0.75rem;
+
+      .social-link {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+      }
+    }
+
+    .footer-legal {
+      a, .separator {
+        font-size: 0.75rem !important;
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 MEJORAS ADICIONALES CON VARIABLES GLOBALES
+// ===============================
+
+// Sobrescribir Bootstrap en footer si es necesario
+.footer .btn-primary {
+  background: var(--gradient-primary) !important;
+  border-color: var(--color-primary) !important;
+
+  &:hover {
+    background: var(--gradient-primary) !important;
+    filter: brightness(1.1);
+    border-color: var(--color-primary-dark) !important;
+  }
+}
+
+// Cards en footer si las hay
+.footer .card {
+  background: var(--color-dark-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-lg);
+
+  .card-header {
+    background: var(--gradient-primary);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+}
+
+// Texto con colores consistentes
+.footer .text-primary {
+  color: var(--color-primary) !important;
+}
+
+.footer .text-muted {
+  color: var(--text-muted) !important;
+}
+
+.footer .text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+// ===============================
+// 🔥 PRINT STYLES - IGUAL QUE OTROS COMPONENTES
+// ===============================
+@media print {
+  .footer {
+    background: var(--color-gray-100) !important;
+    color: var(--text-primary) !important;
+    
+    .footer-title,
+    .footer-subtitle,
+    .footer-description,
+    .footer-contact p,
+    .footer-schedule,
+    .footer-links a {
+      color: var(--text-primary) !important;
+    }
+    
+    .footer-social {
+      display: none;
+    }
+    
+    .footer-newsletter {
+      display: none;
+    }
+  }
+}

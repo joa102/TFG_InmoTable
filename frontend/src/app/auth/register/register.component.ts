@@ -1,66 +1,139 @@
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-register',
-  imports: [],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
-})
-export class RegisterComponent {
-
-}
-
-/*import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { AuthService, User } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
-  template: `
-    <div class="register-container">
-      <div class="register-card">
-        <h2>Crear Cuenta</h2>
-        <form>
-          <div class="mb-3">
-            <label for="name" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="name" required>
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" required>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" id="password" required>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Registrarse</button>
-        </form>
-        <p class="mt-3 text-center">
-          ¿Ya tienes cuenta?
-          <a routerLink="/auth/login">Inicia sesión aquí</a>
-        </p>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .register-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+  imports: [
+    CommonModule,
+    RouterModule
+  ],
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.scss'
+})
+export class RegisterComponent implements OnInit, OnDestroy {
+
+  // 🔥 PROPIEDADES PARA MANEJAR LA URL DEL IFRAME
+  airtableBaseUrl = 'https://airtable.com/embed/apphONbM2nnoZThgr/pag9Q6NBo4IFez6L7/form';
+  iframeUrl: SafeResourceUrl = '';
+  currentUser: User | null = null;
+  loading = true;
+
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private router: Router,
+    private sanitizer: DomSanitizer,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    console.log('📝 Inicializando RegisterComponent...');
+
+    // Verificar si ya está autenticado
+    this.authService.getCurrentUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (user: User | null) => {
+          this.currentUser = user;
+          console.log('👤 Usuario actual en register:', user);
+
+          if (user) {
+            // Si ya está logueado, redirigir al dashboard
+            console.log('✅ Usuario ya autenticado, redirigiendo...');
+            //this.router.navigate(['/dashboard']);
+            this.router.navigate(['/propiedades']);
+          } else {
+            // Si no está logueado, construir el formulario
+            this.buildIframeUrl();
+          }
+        },
+        error: (error: any) => {
+          console.error('❌ Error al verificar usuario:', error);
+          this.buildIframeUrl();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /**
+   * 🔧 Construir URL del iframe con parámetros
+   */
+  private buildIframeUrl(): void {
+    let url = this.airtableBaseUrl;
+    const params = new URLSearchParams();
+
+    // Parámetros adicionales para el formulario de registro
+    params.append('hide_Estado', 'true');
+    params.append('prefill_Estado', 'Activo');
+    params.append('hide_Fecha de Registro', 'true');
+
+    // Construir URL final
+    if (params.toString()) {
+      url += '?' + params.toString();
     }
 
-    .register-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-  `]
-})
-export class RegisterComponent {}*/
+    console.log('🔗 URL del formulario de registro:', url);
+    console.log('📋 Parámetros construidos:', Object.fromEntries(params));
+
+    // Sanitizar URL para Angular
+    this.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    this.loading = false;
+  }
+
+  /**
+   * 🔙 Volver al login
+   */
+  goToLogin(): void {
+    console.log('🔙 Navegando al login...');
+    this.router.navigate(['/auth/login']);
+  }
+
+    /**
+   * 🔙 Ir al contact
+   */
+  goToContact(): void {
+    console.log('🔙 Navegando a contacto...');
+    this.router.navigate(['/contacto']);
+  }
+
+  /**
+   * 🏠 Ir a inicio
+   */
+  goToHome(): void {
+    console.log('🏠 Navegando a inicio...');
+    this.router.navigate(['/propiedades']);
+  }
+
+  /**
+   * 💡 Ir a la página de ayuda
+   */
+  goToHelp(): void {
+    console.log('💡 Navegando a ayuda...');
+    // Aquí puedes agregar la lógica para ir a la página de ayuda
+    window.open('mailto:ayuda@inmotable.com', '_blank');
+  }
+
+  /**
+   * 📞 Contactar por teléfono
+   */
+  callSupport(): void {
+    window.open('tel:+34900000000', '_self');
+  }
+
+  /**
+   * 📧 Contactar por email
+   */
+  emailSupport(): void {
+    window.open('mailto:registro@inmotable.com?subject=Ayuda con el registro', '_blank');
+  }
+}

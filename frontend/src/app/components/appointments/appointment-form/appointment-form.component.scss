@@ -1,0 +1,559 @@
+// ===============================
+// 🎯 APPOINTMENT-FORM - USANDO VARIABLES GLOBALES
+// ===============================
+
+// 🔥 NAVBAR - IGUAL QUE TODOS LOS COMPONENTES
+.pt-navbar {
+  padding-top: 5rem !important;
+}
+
+// ===============================
+// 🔥 CONTENEDOR GENERAL - USANDO VARIABLES
+// ===============================
+
+.appointment-form-container {
+  min-height: 100vh;
+  background-color: var(--bg-body); // 🔥 Usar variable en lugar de #f8f9fa
+
+  .container-fluid {
+    max-width: 1400px; // 🔥 IGUAL QUE TODOS LOS COMPONENTES
+    margin: 0 auto;    // 🔥 IGUAL QUE TODOS LOS COMPONENTES
+    padding: 20px;     // 🔥 IGUAL QUE TODOS LOS COMPONENTES
+  }
+}
+
+// ===============================
+// 🔥 LOADING STATE - USANDO VARIABLES
+// ===============================
+
+.loading-container {
+  min-height: 60vh;
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: var(--color-primary) !important; // 🔥 Usar variable
+  }
+}
+
+// ===============================
+// 🔥 HEADER DE FORMULARIO DE CITAS - USANDO VARIABLES
+// ===============================
+
+.appointment-header {
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
+  padding: 2rem;
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+  .appointment-title {
+    color: var(--text-primary); // 🔥 Usar variable en lugar de #2c3e50
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .appointment-actions {
+    .btn {
+      border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+      font-weight: 600;
+      transition: var(--transition-base); // 🔥 Usar variable en lugar de all 0.3s
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 BANNER DE INFORMACIÓN - USANDO VARIABLES
+// ===============================
+
+.property-info-banner,
+.user-info-banner {
+  .alert {
+    border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
+    border: none;
+    box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.1); // 🔥 Usar variable
+
+    .alert-heading {
+      color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+    }
+
+    &.alert-success .alert-heading {
+      color: var(--color-success-dark); // 🔥 Usar variable en lugar de #0f5132
+    }
+
+    &.alert-warning .alert-heading {
+      color: var(--color-warning-dark); // 🔥 Usar variable en lugar de #664d03
+    }
+
+    &.alert-info .alert-heading {
+      color: var(--color-info-dark); // 🔥 Usar variable en lugar de #055160
+    }
+
+    &.alert-light .alert-heading {
+      color: var(--color-gray-700); // 🔥 Usar variable en lugar de #495057
+    }
+
+    // 🔥 BADGES DENTRO DE LOS BANNERS - USANDO VARIABLES
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.35em 0.65em;
+
+      &.bg-primary {
+        background-color: var(--color-primary) !important; // 🔥 Usar variable
+      }
+      &.bg-success {
+        background-color: var(--color-success) !important; // 🔥 Usar variable
+      }
+      &.bg-info {
+        background-color: var(--color-info) !important; // 🔥 Usar variable
+      }
+      &.bg-danger {
+        background-color: var(--color-danger) !important; // 🔥 Usar variable
+      }
+      &.bg-secondary {
+        background-color: var(--color-gray-600) !important; // 🔥 Usar variable
+      }
+    }
+  }
+}
+
+// ===============================
+// 🔥 CARD DEL FORMULARIO - USANDO VARIABLES
+// ===============================
+
+.appointment-form-card {
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  background: var(--bg-card); // 🔥 Usar variable
+
+  .card-header {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; // 🔥 Usar variable
+    border-bottom: none;
+
+    &.bg-primary {
+      background: var(--gradient-primary) !important; // 🔥 Usar variable
+    }
+
+    // 🔥 HEADER CON INFORMACIÓN ADICIONAL
+    .d-flex {
+      align-items: center;
+
+      small {
+        opacity: 0.8;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .card-footer {
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important; // 🔥 Usar variable
+    border-top: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+    background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+  }
+}
+
+// ===============================
+// 🔥 IFRAME DEL FORMULARIO - SIN CAMBIOS (FUNCIONAL)
+// ===============================
+
+.airtable-embed {
+  border: none;
+  border-radius: 0;
+  width: 100%;
+  min-height: 600px;
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
+
+  // Asegurar que se vea correctamente
+  display: block;
+}
+
+// ===============================
+// 🔥 CARDS GENERALES - USANDO VARIABLES
+// ===============================
+
+.card {
+  border-radius: var(--radius-lg); // 🔥 Usar variable en lugar de 12px
+  border: none;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  background: var(--bg-card); // 🔥 Usar variable
+
+  .card-header {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0 !important; // 🔥 Usar variable
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    &.bg-primary {
+      background: var(--gradient-primary) !important; // 🔥 Usar variable
+    }
+  }
+
+  .card-footer {
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important; // 🔥 Usar variable
+    background: var(--color-gray-100); // 🔥 Usar variable en lugar de #f8f9fa
+    border-top: 1px solid var(--color-gray-300); // 🔥 Usar variable en lugar de #dee2e6
+  }
+}
+
+// ===============================
+// 🔥 BREADCRUMB - USANDO VARIABLES
+// ===============================
+
+.breadcrumb {
+  background: var(--bg-card); // 🔥 Usar variable en lugar de white
+  border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+  padding: 1rem 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  .breadcrumb-item {
+    font-size: 0.95rem;
+
+    a {
+      color: var(--color-primary); // 🔥 Usar variable en lugar de #0d6efd
+      text-decoration: none;
+      transition: var(--transition-fast); // 🔥 Usar variable
+
+      &:hover {
+        color: var(--color-primary-dark); // 🔥 Usar variable
+        text-decoration: underline;
+      }
+    }
+
+    &.active {
+      color: var(--text-secondary); // 🔥 Usar variable en lugar de #6c757d
+    }
+  }
+}
+
+// ===============================
+// 🔥 ICONOS DE PROCESO - USANDO VARIABLES
+// ===============================
+
+.fa-2x {
+  transition: var(--transition-base); // 🔥 Usar variable en lugar de all 0.3s ease
+}
+
+.card:hover .fa-2x {
+  transform: scale(1.1);
+}
+
+// ===============================
+// 🔥 BOTONES MEJORADOS - USANDO VARIABLES
+// ===============================
+
+.btn {
+  border-radius: var(--radius-md); // 🔥 Usar variable en lugar de 8px
+  font-weight: 600;
+  transition: var(--transition-base); // 🔥 Usar variable en lugar de all 0.3s
+
+  &.btn-primary {
+    background: var(--gradient-primary); // 🔥 Usar variable
+    border: none;
+
+    &:hover {
+      background: var(--gradient-primary); // 🔥 Usar variable
+      filter: brightness(1.1);
+    }
+  }
+
+  &.btn-outline-primary {
+    border-color: var(--color-primary); // 🔥 Usar variable
+    color: var(--color-primary); // 🔥 Usar variable
+
+    &:hover {
+      background: var(--color-primary); // 🔥 Usar variable
+      border-color: var(--color-primary); // 🔥 Usar variable
+      color: white;
+    }
+  }
+
+  &.btn-outline-secondary {
+    border-color: var(--color-gray-600); // 🔥 Usar variable
+    color: var(--color-gray-600); // 🔥 Usar variable
+
+    &:hover {
+      background: var(--color-gray-600); // 🔥 Usar variable
+      border-color: var(--color-gray-600); // 🔥 Usar variable
+      color: white;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// ===============================
+// 🔥 BADGES PERSONALIZADOS - USANDO VARIABLES
+// ===============================
+
+.badge {
+  font-weight: 600;
+
+  &.bg-primary {
+    background-color: var(--color-primary) !important; // 🔥 Usar variable
+    color: white;
+  }
+  &.bg-success {
+    background-color: var(--color-success) !important; // 🔥 Usar variable
+    color: white;
+  }
+  &.bg-info {
+    background-color: var(--color-info) !important; // 🔥 Usar variable
+    color: white;
+  }
+  &.bg-danger {
+    background-color: var(--color-danger) !important; // 🔥 Usar variable
+    color: white;
+  }
+  &.bg-secondary {
+    background-color: var(--color-gray-600) !important; // 🔥 Usar variable
+    color: white;
+  }
+  &.bg-warning {
+    background-color: var(--color-warning) !important; // 🔥 Usar variable
+    color: white;
+  }
+}
+
+// ===============================
+// 🔥 RESPONSIVE - USANDO VARIABLES
+// ===============================
+
+@media (max-width: 768px) {
+  // 🔥 AJUSTAR CONTAINER-FLUID EN MOBILE IGUAL QUE OTROS COMPONENTES
+  .appointment-form-container {
+    .container-fluid {
+      padding: 15px; // 🔥 Reducir padding en mobile igual que otros componentes
+    }
+  }
+
+  .appointment-header {
+    text-align: center;
+    padding: 1.5rem;
+
+    .appointment-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .appointment-actions {
+      .btn {
+        width: 100%;
+        margin-top: 0.5rem;
+        margin-right: 0 !important;
+      }
+    }
+  }
+
+  .airtable-embed {
+    min-height: 500px;
+  }
+
+  .property-info-banner .alert,
+  .user-info-banner .alert {
+    text-align: center;
+
+    .fa-2x {
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .row {
+      text-align: left;
+    }
+  }
+
+  // 🔥 BOTONES EN MOBILE
+  .appointment-form-card .card-header .d-flex {
+    flex-direction: column;
+    align-items: flex-start;
+
+    small {
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  // 🔥 AJUSTAR CONTAINER-FLUID EN MOBILE PEQUEÑO
+  .appointment-form-container {
+    .container-fluid {
+      padding: 15px; // 🔥 Mantener padding consistente
+    }
+  }
+
+  .appointment-header {
+    padding: 1rem;
+
+    .appointment-title {
+      font-size: 1.75rem;
+    }
+  }
+}
+
+// ===============================
+// 🔥 ANIMACIONES - USANDO VARIABLES
+// ===============================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container-fluid {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+// 🔥 ANIMACIÓN PARA LOS BANNERS
+.property-info-banner,
+.user-info-banner {
+  animation: slideInFromTop 0.6s ease-out;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ===============================
+// 🔥 ESTADOS DE HOVER - USANDO VARIABLES
+// ===============================
+
+.property-info-banner .alert:hover,
+.user-info-banner .alert:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: var(--transition-base); // 🔥 Usar variable
+}
+
+// ===============================
+// 🔥 CURSOR POINTER
+// ===============================
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// ===============================
+// 🔥 ALERTAS CON VARIABLES
+// ===============================
+
+.alert {
+  border: none;
+  border-radius: var(--radius-md); // 🔥 Usar variable
+
+  &.alert-info {
+    background: rgba(var(--color-info-rgb), 0.1); // 🔥 Usar variable
+    border: 1px solid var(--color-info); // 🔥 Usar variable
+    color: var(--color-info-dark); // 🔥 Usar variable
+  }
+
+  &.alert-warning {
+    background: rgba(var(--color-warning-rgb), 0.1); // 🔥 Usar variable
+    border: 1px solid var(--color-warning); // 🔥 Usar variable
+    color: var(--color-warning-dark); // 🔥 Usar variable
+  }
+
+  &.alert-danger {
+    background: rgba(var(--color-danger-rgb), 0.1); // 🔥 Usar variable
+    border: 1px solid var(--color-danger); // 🔥 Usar variable
+    color: var(--color-danger-dark); // 🔥 Usar variable
+  }
+
+  &.alert-success {
+    background: rgba(var(--color-success-rgb), 0.1); // 🔥 Usar variable
+    border: 1px solid var(--color-success); // 🔥 Usar variable
+    color: var(--color-success-dark); // 🔥 Usar variable
+  }
+
+  &.alert-light {
+    background: var(--color-gray-100); // 🔥 Usar variable
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+    color: var(--text-secondary); // 🔥 Usar variable
+  }
+}
+
+// ===============================
+// 🔥 SPINNER PERSONALIZADO
+// ===============================
+.spinner-border {
+  color: var(--color-primary) !important; // 🔥 Usar variable
+}
+
+// ===============================
+// 🔥 TEXTO CON COLORES DE MARCA
+// ===============================
+.text-primary {
+  color: var(--color-primary) !important; // 🔥 Usar variable
+}
+
+.text-success {
+  color: var(--color-success) !important; // 🔥 Usar variable
+}
+
+.text-danger {
+  color: var(--color-danger) !important; // 🔥 Usar variable
+}
+
+.text-warning {
+  color: var(--color-warning) !important; // 🔥 Usar variable
+}
+
+.text-info {
+  color: var(--color-info) !important; // 🔥 Usar variable
+}
+
+.text-muted {
+  color: var(--text-muted) !important; // 🔥 Usar variable
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important; // 🔥 Usar variable
+}
+
+// ===============================
+// 🔥 MEJORAS DE ACCESIBILIDAD
+// ===============================
+
+.btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); // 🔥 Usar variable
+}
+
+// ===============================
+// 🔥 PRINT STYLES - IGUAL QUE OTROS COMPONENTES
+// ===============================
+
+@media print {
+  .appointment-actions {
+    display: none;
+  }
+
+  .property-info-banner,
+  .user-info-banner {
+    box-shadow: none;
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+  }
+
+  .breadcrumb {
+    box-shadow: none;
+    border: 1px solid var(--color-gray-300); // 🔥 Usar variable
+  }
+}

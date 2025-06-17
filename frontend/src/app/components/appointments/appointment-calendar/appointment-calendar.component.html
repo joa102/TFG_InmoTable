@@ -1,6 +1,3 @@
-<!-- 🔥 NAVBAR HEADER -->
-<app-navbar></app-navbar>
-
 <div class="appointment-detail-container pt-navbar">
 
   <!-- Loading State -->
@@ -17,16 +14,20 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
           <a routerLink="/propiedades" class="text-decoration-none">
-            <i class="fas fa-home me-1"></i>
+            <i class="fas fa-building me-1"></i>
             Propiedades
           </a>
         </li>
-        <li class="breadcrumb-item">
+        <!--<li class="breadcrumb-item">
           <a routerLink="/citas" class="text-decoration-none">
             <i class="fas fa-calendar-plus me-1"></i>
             Solicitar Cita
           </a>
         </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <i class="fas fa-calendar-plus me-1"></i>
+            Formulario de Cita
+        </li>-->
         <li class="breadcrumb-item active" aria-current="page">
           <i class="fas fa-calendar-alt me-1"></i>
           Calendario de Citas
@@ -47,7 +48,7 @@
           </p>
 
           <!-- User Info Banner -->
-          <div class="user-info-banner mt-3" *ngIf="currentUser">
+          <!--<div class="user-info-banner mt-3" *ngIf="currentUser">
             <div class="alert alert-info d-flex align-items-center mb-0">
               <i class="fas fa-user-circle fa-2x me-3"></i>
               <div>
@@ -67,25 +68,29 @@
                 </p>
               </div>
             </div>
-          </div>
+          </div>-->
+
         </div>
         <div class="col-lg-4 text-lg-end">
           <div class="appointment-actions">
-            <button class="btn btn-outline-secondary me-2" (click)="goToAppointmentList()">
-              <i class="fas fa-list me-2"></i>
-              Lista de Citas
-            </button>
-            <button class="btn btn-primary" (click)="goBack()">
-              <i class="fas fa-arrow-left me-2"></i>
-              Volver
-            </button>
+            <!-- 🔥 MISMO ESTILO QUE PROPERTY-DETAIL -->
+            <div class="header-actions">
+              <!--<button class="btn btn-outline-primary me-2" (click)="goToAppointmentList()">
+                <i class="fas fa-calendar-plus me-1"></i>
+                Solicitar Cita
+              </button>-->
+              <button class="btn btn-primary" (click)="goBack()">
+                <i class="fas fa-arrow-left me-2"></i>
+                Volver
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Client Info Banner (si hay clienteRecordId) -->
-    <div *ngIf="clienteRecordId" class="property-info-banner mb-4">
+    <!--<div *ngIf="clienteRecordId" class="property-info-banner mb-4">
       <div class="alert alert-success d-flex align-items-center">
         <i class="fas fa-user-check fa-2x me-3"></i>
         <div>
@@ -99,7 +104,7 @@
           </p>
         </div>
       </div>
-    </div>
+    </div>-->
 
     <!-- Warning Banner (si no hay clienteRecordId) -->
     <div *ngIf="!clienteRecordId && currentUser" class="property-info-banner mb-4">
@@ -123,9 +128,9 @@
       <div class="col-12">
         <div class="card appointment-form-card">
           <div class="card-header bg-primary text-white">
-            <h5 class="card-title mb-0">
-              <i class="fas fa-calendar-week me-2"></i>
-              Vista de Calendario - Airtable
+            <h5 class="card-title mb-0" style="margin-left: 0.7em;">
+              <!--<i class="fas fa-calendar-week me-2"></i>-->
+              Vista de Calendario
             </h5>
           </div>
           <div class="card-body p-0">
@@ -137,7 +142,7 @@
               width="100%"
               height="700"
               style="background: transparent;"
-              title="Calendario de Citas - Airtable">
+              title="Calendario de Citas">
             </iframe>
           </div>
           <div class="card-footer bg-light">
@@ -145,7 +150,7 @@
               <div class="col-md-8">
                 <small class="text-muted">
                   <i class="fas fa-info-circle me-1"></i>
-                  Vista integrada de Airtable. Use los controles del calendario para navegar entre fechas y ver detalles de las citas.
+                  Use los controles del calendario para navegar entre fechas y ver detalles de las citas.
                 </small>
               </div>
               <div class="col-md-4 text-md-end">
@@ -162,7 +167,9 @@
 
     <!-- Additional Info Section -->
     <div class="row mt-4">
-      <div class="col-lg-8">
+
+      <!--<div class="col-lg-8">-->
+      <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
             <h6 class="card-title">
@@ -195,7 +202,8 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
+
+      <!--<div class="col-lg-4">
         <div class="card">
           <div class="card-body">
             <h6 class="card-title">
@@ -223,7 +231,7 @@
             <div class="d-grid gap-2 mt-3">
               <button class="btn btn-outline-primary btn-sm" (click)="goToAppointmentList()">
                 <i class="fas fa-calendar-plus me-2"></i>
-                Nueva Cita
+                Solicitar Cita
               </button>
               <button class="btn btn-outline-secondary btn-sm" (click)="goToProperties()">
                 <i class="fas fa-building me-2"></i>
@@ -232,7 +240,8 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
+
     </div>
 
   </div>
