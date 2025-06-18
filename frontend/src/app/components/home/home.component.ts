@@ -1,14 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router, ActivatedRoute } from '@angular/router'; // 🔥 AÑADIR ActivatedRoute
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators'; // 🔥 AÑADIR debounceTime, distinctUntilChanged
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 // Servicios
 import { PropiedadesService } from '../../services/propiedades.service';
 import { AuthService, User } from '../../services/auth.service';
 import { EmpresaService } from '../../services/empresa.service';
+import { ConfigService } from '../../services/config.service'; // 🔥 IMPORTAR CONFIG SERVICE
 
 // Interfaces
 import { Propiedad, PropiedadFields } from '../../models/airtable.interfaces';
@@ -29,8 +30,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // 🏠 DATOS PRINCIPALES
   featuredProperties: Propiedad[] = [];
-  allProperties: Propiedad[] = []; // 🔥 AÑADIR: Todas las propiedades para filtrar
-  filteredProperties: Propiedad[] = []; // 🔥 AÑADIR: Propiedades filtradas
+  allProperties: Propiedad[] = [];
+  filteredProperties: Propiedad[] = [];
   empresaData: Empresa | null = null;
   loading = true;
   error: string | null = null;
@@ -39,19 +40,19 @@ export class HomeComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   currentUser: User | null = null;
 
-  // 🔥 BÚSQUEDA HERO - MEJORADA COMO PROPERTY-LIST
+  // 🔥 BÚSQUEDA HERO
   searchTerm = '';
   searchType = '';
   searchLocation = '';
   priceRange = '';
 
-  // 🔥 AÑADIR: FILTROS ADICIONALES PARA FUNCIONALIDAD COMPLETA
-  filterStatus = 'Disponible'; // Por defecto solo disponibles
+  // 🔥 FILTROS ADICIONALES
+  filterStatus = 'Disponible';
   priceMin: number | null = null;
   priceMax: number | null = null;
 
   // 🔥 VISTA DE PROPIEDADES EN HERO
-  showFilteredResults = false; // Si mostrar resultados filtrados en lugar de destacadas
+  showFilteredResults = false;
 
   // 📊 ESTADÍSTICAS
   stats = {
@@ -73,16 +74,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private favoriteIds: Set<string> = new Set();
   private destroy$ = new Subject<void>();
-  private searchSubject = new Subject<string>(); // 🔥 AÑADIR: Subject para debounce
+  private searchSubject = new Subject<string>();
 
   constructor(
     private propiedadesService: PropiedadesService,
     private authService: AuthService,
     private empresaService: EmpresaService,
+    private configService: ConfigService, // 🔥 INYECTAR CONFIG SERVICE
     private router: Router,
-    private route: ActivatedRoute // 🔥 AÑADIR
+    private route: ActivatedRoute
   ) {
-    // 🔥 CONFIGURAR BÚSQUEDA CON DEBOUNCE COMO PROPERTY-LIST
+    // 🔥 CONFIGURAR BÚSQUEDA CON DEBOUNCE
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
@@ -95,7 +97,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     console.log('🏠 Inicializando HomeComponent...');
     this.checkAuthStatus();
-    this.loadQueryParams(); // 🔥 AÑADIR: Cargar params de URL
+    this.loadQueryParams();
     this.loadHomeData();
   }
 
@@ -104,10 +106,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // 🔥 AÑADIR: CARGAR PARÁMETROS DE URL
-  /**
-   * 📥 Cargar parámetros de URL (si viene de navegación)
-   */
+  // 🔥 CARGAR PARÁMETROS DE URL
   private loadQueryParams(): void {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
       if (params['search']) this.searchTerm = params['search'];
@@ -121,10 +120,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  // 🔥 MÉTODO ÚNICO Y CORRECTO DE AUTENTICACIÓN (SIN CAMBIOS)
-  /**
-   * 🔐 Verificar estado de autenticación
-   */
+  // 🔥 VERIFICAR ESTADO DE AUTENTICACIÓN (SIN CAMBIOS)
   private checkAuthStatus(): void {
     try {
       this.isLoggedIn = this.authService.isAuthenticated;
@@ -160,14 +156,11 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   private loadHomeData(): void {
     this.loading = true;
-    this.loadAllProperties(); // 🔥 CAMBIO: Cargar todas las propiedades
+    this.loadAllProperties();
     this.loadEmpresaData();
   }
 
-  // 🔥 CAMBIO: CARGAR TODAS LAS PROPIEDADES PARA FILTRAR
-  /**
-   * 🏠 Cargar todas las propiedades (para filtros y destacadas)
-   */
+  // 🔥 CARGAR TODAS LAS PROPIEDADES (SIN CAMBIOS)
   private loadAllProperties(): void {
     this.propiedadesService.getAll()
       .pipe(takeUntil(this.destroy$))
@@ -203,18 +196,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🏢 Cargar datos de empresa (SIN CAMBIOS)
+   * 🔥 CARGAR DATOS DE EMPRESA USANDO CONFIG SERVICE
    */
   private loadEmpresaData(): void {
-    this.empresaService.getByName('InmoTable')
+    // 🔥 USAR MÉTODO SIMPLIFICADO QUE USA CONFIGURACIÓN INTERNA
+    this.empresaService.getEmpresaPrincipal()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (empresa: Empresa | null) => {
           if (empresa) {
             this.empresaData = empresa;
-            console.log('✅ Datos de empresa cargados:', empresa);
+            console.log('✅ Datos de empresa cargados desde configuración:', empresa);
           } else {
-            console.warn('⚠️ No se encontró empresa con el nombre InmoTable');
+            // 🔥 USAR CONFIGURACIÓN COMO FALLBACK
+            console.warn('⚠️ No se encontró empresa, usando configuración por defecto');
           }
         },
         error: (error: any) => {
@@ -224,20 +219,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // ===============================
-  // 🔥 MÉTODOS DE FILTRADO COMO PROPERTY-LIST
+  // 🔥 MÉTODOS DE FILTRADO (SIN CAMBIOS)
   // ===============================
 
-  /**
-   * 🔍 Verificar si hay filtros activos
-   */
-  hasActiveFilters(): boolean { // 🔥 QUITAR 'private'
+  hasActiveFilters(): boolean {
     return !!(this.searchTerm || this.searchType || this.searchLocation ||
               this.priceRange || this.priceMin || this.priceMax);
   }
 
-  /**
-   * 🎯 Aplicar filtros en el hero (en tiempo real)
-   */
   private applyHeroFilters(): void {
     if (!this.hasActiveFilters()) {
       this.showFilteredResults = false;
@@ -320,32 +309,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * 🔍 Change en búsqueda con debounce
-   */
+  // ===============================
+  // 🔥 MÉTODOS DE EVENTO (SIN CAMBIOS)
+  // ===============================
+
   onSearchChange(): void {
     this.searchSubject.next(this.searchTerm);
   }
 
-  /**
-   * 🏠 Change en tipo de propiedad
-   */
   onTypeChange(): void {
     this.applyHeroFilters();
   }
 
-  /**
-   * 📍 Change en ubicación
-   */
   onLocationChange(): void {
     this.applyHeroFilters();
   }
 
-  /**
-   * 💰 Change en rango de precio
-   */
   onPriceRangeChange(): void {
-    // Si se selecciona un rango, limpiar precios manuales
     if (this.priceRange) {
       this.priceMin = null;
       this.priceMax = null;
@@ -353,9 +333,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.applyHeroFilters();
   }
 
-  /**
-   * 🧹 Limpiar todos los filtros
-   */
   clearHeroFilters(): void {
     this.searchTerm = '';
     this.searchType = '';
@@ -368,16 +345,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // ===============================
-  // 🚀 MÉTODOS DE NAVEGACIÓN MEJORADOS
+  // 🚀 MÉTODOS DE NAVEGACIÓN (SIN CAMBIOS)
   // ===============================
 
-  /**
-   * 🔍 Realizar búsqueda (navegar a property-list con filtros)
-   */
   performSearch(): void {
     const queryParams: any = {};
 
-    // 🔥 PASAR TODOS LOS FILTROS ACTIVOS
     if (this.searchTerm) queryParams.search = this.searchTerm;
     if (this.searchType) queryParams.type = this.searchType;
     if (this.searchLocation) queryParams.location = this.searchLocation;
@@ -393,39 +366,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/propiedades'], { queryParams });
   }
 
-  /**
-   * 🏠 Ver todas las propiedades (SIN CAMBIOS)
-   */
   viewAllProperties(): void {
     this.router.navigate(['/propiedades']);
   }
 
-  /**
-   * 🏠 Ver detalles de propiedad (SIN CAMBIOS)
-   */
   viewProperty(property: Propiedad): void {
     if (property.id) {
       this.router.navigate(['/propiedades', property.id]);
     }
   }
 
-  /**
-   * 📞 Ir a contacto (SIN CAMBIOS)
-   */
   goToContact(): void {
     this.router.navigate(['/contacto']);
   }
 
-  /**
-   * 👤 Ir a registro (SIN CAMBIOS)
-   */
   goToRegister(): void {
     this.router.navigate(['/auth/register']);
   }
 
-  /**
-   * 👤 Ir a perfil (SIN CAMBIOS)
-   */
   goToProfile(): void {
     this.router.navigate(['/dashboard']);
   }
@@ -434,9 +392,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   // 🔧 MÉTODOS AUXILIARES (SIN CAMBIOS)
   // ===============================
 
-  /**
-   * 💰 Formatear precio
-   */
   formatPrice(price: number | undefined): string {
     if (!price || price === 0) return 'Consultar precio';
     return new Intl.NumberFormat('es-ES', {
@@ -446,25 +401,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     }).format(price);
   }
 
-  /**
-   * ✅ OBTENER VALOR DE CAMPO
-   */
   getFieldAsString(property: Propiedad, field: keyof PropiedadFields): string {
     const value = property?.fields[field];
     return value ? String(value) : '';
   }
 
-  /**
-   * ✅ OBTENER VALOR NUMÉRICO
-   */
   getFieldAsNumber(property: Propiedad, field: keyof PropiedadFields): number {
     const value = property?.fields[field];
     return typeof value === 'number' ? value : 0;
   }
 
-  /**
-   * ✅ PRECIO POR M²
-   */
   getPricePerSquareMeter(property: Propiedad): string {
     const precio = this.getFieldAsNumber(property, 'Precio');
     const superficie = this.getFieldAsNumber(property, 'Superficie');
@@ -481,9 +427,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  /**
-   * ✅ VERIFICAR SI LA PROPIEDAD TIENE IMAGEN VÁLIDA
-   */
   hasPropertyImage(property: Propiedad): boolean {
     const imagenes = property?.fields['Imágenes'];
     if (!Array.isArray(imagenes) || imagenes.length === 0) {
@@ -493,9 +436,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     return !!(firstImage?.url || firstImage?.thumbnails?.large?.url);
   }
 
-  /**
-   * ✅ OBTENER IMAGEN SEGURA
-   */
   getPropertyImage(property: Propiedad): string {
     if (!this.hasPropertyImage(property)) {
       return '';
@@ -508,25 +448,16 @@ export class HomeComponent implements OnInit, OnDestroy {
            '';
   }
 
-  /**
-   * ✅ IMAGEN POR DEFECTO
-   */
   private getDefaultImage(): string {
     return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvcnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZjNzU3ZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPgogICAgPHRzcGFuPjxmYSBjbGFzcz0iZmFzIGZhLWhvbWUiLz4gU2luIGltYWdlbjwvdHNwYW4+CiAgPC90ZXh0Pgo8L3N2Zz4K';
   }
 
-  /**
-   * ✅ MANEJAR ERROR DE IMAGEN
-   */
   onImageError(event: any): void {
     if (event.target.src !== this.getDefaultImage()) {
       event.target.src = this.getDefaultImage();
     }
   }
 
-  /**
-   * ✅ OBTENER NÚMERO DE VISITAS
-   */
   getVisitCount(property: Propiedad): string {
     const fields = property.fields as any;
     const visits = fields['Número de visitas'] ||
@@ -538,9 +469,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     return visits ? String(visits) : '0';
   }
 
-  /**
-   * ✅ OBTENER AÑO DE CONSTRUCCIÓN
-   */
   getConstructionYear(property: Propiedad): string {
     const fields = property.fields as any;
     const year = fields['Año de construcción'] ||
@@ -555,23 +483,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 📍 Obtener nombre de empresa
+   * 🔥 OBTENER NOMBRE DE EMPRESA DESDE CONFIGURACIÓN
    */
   getEmpresaNombre(): string {
-    return this.empresaData?.nombre || 'InmoTable';
+    // 🔥 PRIORIDAD: datos cargados desde API > configuración por defecto
+    return this.empresaData?.nombre || this.configService.getEmpresaNombreFallback();
   }
 
-  // 🔥 AÑADIR: MÉTODOS PARA EL TEMPLATE
-  /**
-   * 🎯 Obtener propiedades a mostrar (filtradas o destacadas)
-   */
+  // 🔥 MÉTODOS PARA EL TEMPLATE (SIN CAMBIOS)
   getDisplayProperties(): Propiedad[] {
     return this.showFilteredResults ? this.filteredProperties : this.featuredProperties;
   }
 
-  /**
-   * 📊 Obtener título de sección dinámico
-   */
   getSectionTitle(): string {
     if (this.showFilteredResults) {
       const count = this.filteredProperties.length;
@@ -580,9 +503,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     return 'Propiedades Destacadas';
   }
 
-  /**
-   * 📝 Obtener subtítulo de sección dinámico
-   */
   getSectionSubtitle(): string {
     if (this.showFilteredResults) {
       return this.filteredProperties.length > 0
@@ -592,10 +512,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     return 'Descubre las mejores oportunidades inmobiliarias';
   }
 
-  /**
-   * 🧹 Mostrar botón de limpiar filtros
-   */
-  shouldShowClearButton(): boolean { // 🔥 ASEGURAR QUE ES PUBLIC
+  shouldShowClearButton(): boolean {
     return this.showFilteredResults && this.hasActiveFilters();
   }
 }

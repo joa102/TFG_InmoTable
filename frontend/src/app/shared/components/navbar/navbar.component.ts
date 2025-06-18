@@ -7,6 +7,8 @@ import { AuthService, User } from '../../../services/auth.service';
 import { EmpresaService } from '../../../services/empresa.service';
 import { ImageService } from '../../../services/image.service';
 import { CacheService } from '../../../services/cache.service';
+import { ConfigService } from '../../../services/config.service'; // 🔥 IMPORTAR CONFIG SERVICE
+import { ThemeService } from '../../../services/theme.service'; // 🔥 IMPORTAR THEME SERVICE
 import { Empresa } from '../../../interfaces/api.interfaces';
 
 @Component({
@@ -24,11 +26,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   // 🏢 DATOS DE LA EMPRESA
   empresaData: Empresa | null = null;
-  empresaNombre: string = 'InmoTable';
-  empresaLogo: string = 'fas fa-home';
+  empresaNombre: string = '';
+  empresaLogo: string = '';
   logoImageError = false;
 
-  // 🔥 NUEVAS VARIABLES PARA CACHÉ PERSISTENTE
+  // 🔥 VARIABLES PARA CACHÉ PERSISTENTE
   logoReady = true;
   fallbackUsed = false;
   imageLoadedFromCache = false;
@@ -41,8 +43,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private empresaService: EmpresaService,
     private imageService: ImageService,
     private cacheService: CacheService,
+    private configService: ConfigService, // 🔥 INYECTAR CONFIG SERVICE
+    private themeService: ThemeService, // 🔥 INYECTAR THEME SERVICE
     private router: Router
-  ) {}
+  ) {
+    // 🔥 INICIALIZAR CON VALORES DE CONFIGURACIÓN
+    this.empresaNombre = this.configService.getEmpresaNombreFallback();
+    this.empresaLogo = this.configService.getEmpresaIconoFallback();
+  }
 
   ngOnInit(): void {
     // 🔥 CARGAR DATOS INMEDIATAMENTE DESDE CACHÉ PERSISTENTE
@@ -81,16 +89,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔥 CARGAR EMPRESA DESDE CACHÉ PERSISTENTE PRIMERO
+   * 🔥 CARGAR EMPRESA DESDE CACHÉ PERSISTENTE PRIMERO (USANDO CONFIGURACIÓN)
    */
   private loadEmpresaFromCacheFirst(): void {
-    console.log('🔍 Buscando empresa en caché persistente...');
+    // 🔥 OBTENER NOMBRE DE EMPRESA DESDE CONFIGURACIÓN
+    const empresaNombreConfig = this.configService.getEmpresaNombre();
+    console.log('🔍 Buscando empresa en caché persistente (desde config):', empresaNombreConfig);
 
     // 🔥 VERIFICAR CACHÉ PERSISTENTE PRIMERO
-    const cachedEmpresa = this.cacheService.getEmpresaByName('InmoTable');
+    const cachedEmpresa = this.cacheService.getEmpresaByName(empresaNombreConfig);
 
     if (cachedEmpresa) {
       console.log('✅ Empresa encontrada en caché persistente:', cachedEmpresa);
+
+      // 🔥 APLICAR COLORES INMEDIATAMENTE DESDE CACHÉ
+      this.applyColorsFromCache(cachedEmpresa);
 
       // 🔥 SI TIENE IMAGEN CACHEADA, USARLA INMEDIATAMENTE
       if (cachedEmpresa.logoDataUrl) {
@@ -124,13 +137,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔄 CARGAR EMPRESA DESDE API (SOLO SI NO HAY CACHÉ)
+   * 🔄 CARGAR EMPRESA DESDE API (USANDO CONFIGURACIÓN)
    */
   private async loadEmpresaFromAPI(): Promise<void> {
     try {
       console.log('🌐 Cargando datos de empresa desde API...');
 
-      const empresa = await this.empresaService.getByName('InmoTable')
+      // 🔥 USAR MÉTODO SIMPLIFICADO QUE USA CONFIGURACIÓN INTERNA
+      const empresa = await this.empresaService.getEmpresaPrincipal()
         .pipe(
           timeout(3000),
           catchError(() => this.empresaService.getFirstActive()),
@@ -142,7 +156,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         console.log('📊 Empresa encontrada en API:', empresa);
 
         // Actualizar datos básicos
-        this.empresaNombre = empresa.nombre || 'InmoTable';
+        this.empresaNombre = empresa.nombre || this.configService.getEmpresaNombreFallback();
         this.fallbackUsed = false;
 
         // 🔥 SI ES IMAGEN, VERIFICAR CACHÉ O DESCARGAR
@@ -161,7 +175,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
           } else {
             console.log('🔄 Descargando y cacheando imagen...');
             // Mostrar icono mientras descarga
-            this.empresaLogo = 'fas fa-home';
+            this.empresaLogo = this.configService.getEmpresaIconoFallback();
 
             // Descargar y cachear
             this.cacheService.cacheImage(empresa.logo)
@@ -177,24 +191,44 @@ export class NavbarComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                   console.warn('⚠️ Error al cachear imagen:', error);
-                  this.empresaLogo = 'fas fa-home';
+                  this.empresaLogo = this.configService.getEmpresaIconoFallback();
                   this.fallbackUsed = true;
                 }
               });
           }
         } else {
           // Es icono, usar directamente
-          this.empresaLogo = empresa.logo || 'fas fa-home';
+          this.empresaLogo = empresa.logo || this.configService.getEmpresaIconoFallback();
           this.updateEmpresaCache(empresa, null);
         }
       } else {
         console.log('⚠️ No se encontró empresa, manteniendo valores por defecto');
         this.fallbackUsed = true;
+        this.empresaNombre = this.configService.getEmpresaNombreFallback();
+        this.empresaLogo = this.configService.getEmpresaIconoFallback();
       }
     } catch (error) {
       console.warn('⚠️ Error al cargar empresa desde API:', error);
       this.fallbackUsed = true;
+      this.empresaNombre = this.configService.getEmpresaNombreFallback();
+      this.empresaLogo = this.configService.getEmpresaIconoFallback();
     }
+  }
+
+  /**
+   * 🔥 APLICAR COLORES DESDE CACHÉ
+   */
+  private applyColorsFromCache(cachedEmpresa: any): void {
+    console.log('🎨 Aplicando colores desde caché:', cachedEmpresa);
+
+    const colorsFromCache = {
+      'color-primary': cachedEmpresa.colorPrimary,
+      'color-primary-dark': cachedEmpresa.colorPrimaryDark,
+      'color-primary-light': cachedEmpresa.colorPrimaryLight,
+      'color-primary-rgb': cachedEmpresa.colorPrimaryRgb
+    };
+
+    this.themeService.applyColorsFromEmpresa(colorsFromCache);
   }
 
   /**
@@ -285,15 +319,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🧹 LIMPIAR CACHÉ COMPLETAMENTE
+   * 🧹 LIMPIAR CACHÉ COMPLETAMENTE (AÑADIR RESET DE COLORES)
    */
   clearCache(): void {
     this.cacheService.clear();
     console.log('🧹 Caché completamente limpiado');
 
-    // Resetear estado
-    this.empresaNombre = 'InmoTable';
-    this.empresaLogo = 'fas fa-home';
+    // 🔥 RESETEAR COLORES A DEFAULT
+    this.themeService.resetToDefault();
+
+    // Resetear estado usando configuración
+    this.empresaNombre = this.configService.getEmpresaNombreFallback();
+    this.empresaLogo = this.configService.getEmpresaIconoFallback();
     this.logoImageError = false;
     this.fallbackUsed = false;
     this.imageLoadedFromCache = false;
@@ -303,14 +340,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 📊 MOSTRAR ESTADÍSTICAS DEL CACHÉ
+   * 📊 MOSTRAR ESTADÍSTICAS DEL CACHÉ (INCLUIR COLORES)
    */
   showCacheStats(): void {
     const stats = this.cacheService.getCacheStats();
     const storageSize = this.cacheService.getLocalStorageSize();
+    const currentColors = this.themeService.getCurrentColors(); // 🔥 OBTENER COLORES ACTUALES
+    const empresaConfig = this.configService.getEmpresaConfig(); // 🔥 OBTENER CONFIG
 
     console.log('📊 Estadísticas del caché:', stats);
     console.log('💾 Tamaño localStorage:', storageSize);
+    console.log('🎨 Colores actuales:', currentColors);
+    console.log('⚙️ Configuración empresa:', empresaConfig);
 
     alert(`📊 Caché Stats:
 
@@ -319,6 +360,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
 📏 Tamaño usado: ${storageSize.used}
 🖼️ Logo desde caché: ${this.imageLoadedFromCache ? 'SÍ' : 'NO'}
 ⚠️ Usando fallback: ${this.fallbackUsed ? 'SÍ' : 'NO'}
+
+🏢 Configuración de Empresa:
+Nombre: ${empresaConfig.nombre}
+Fallback: ${empresaConfig.nombreFallback}
+Icono: ${empresaConfig.idFallback}
+
+🎨 Colores actuales:
+Primary: ${currentColors.primary}
+Primary Dark: ${currentColors.primaryDark}
+Primary Light: ${currentColors.primaryLight}
+Primary RGB: ${currentColors.primaryRgb}
 
 🔑 Claves: ${stats.keys.join(', ')}`);
   }

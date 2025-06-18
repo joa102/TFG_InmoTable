@@ -8,6 +8,8 @@ import { takeUntil, timeout, catchError } from 'rxjs/operators';
 import { EmpresaService } from '../../../services/empresa.service';
 import { ImageService } from '../../../services/image.service';
 import { CacheService } from '../../../services/cache.service';
+import { ConfigService } from '../../../services/config.service'; // 🔥 IMPORTAR CONFIG SERVICE
+import { ThemeService } from '../../../services/theme.service'; // 🔥 IMPORTAR THEME SERVICE
 import { Empresa } from '../../../interfaces/api.interfaces';
 
 @Component({
@@ -29,12 +31,12 @@ export class FooterComponent implements OnInit, OnDestroy {
 
   // 🏢 DATOS DE LA EMPRESA DESDE AIRTABLE
   empresaData: Empresa | null = null;
-  empresaNombre: string = 'InmoTable';
-  empresaLogo: string = 'fas fa-building';
+  empresaNombre: string = '';
+  empresaLogo: string = '';
   empresaTelefono: string = '+34 612 345 789';
   empresaEmail: string = 'info@inmoapp.com';
   empresaDireccion: string = 'Almería, España';
-  empresaHorario: string = 'Lunes a Viernes: 10:00 a 14:00 h - 17:00 a 20:00 h'; // 🔥 AÑADIR HORARIO
+  empresaHorario: string = 'Lunes a Viernes: 10:00 a 14:00 h - 17:00 a 20:00 h';
 
   // Redes sociales
   facebookUrl: string = '#';
@@ -52,10 +54,17 @@ export class FooterComponent implements OnInit, OnDestroy {
   constructor(
     private empresaService: EmpresaService,
     private imageService: ImageService,
-    private cacheService: CacheService
+    private cacheService: CacheService,
+    private configService: ConfigService, // 🔥 INYECTAR CONFIG SERVICE
+    private themeService: ThemeService // 🔥 INYECTAR THEME SERVICE
   ) {
+    // 🔥 INICIALIZAR CON VALORES DE CONFIGURACIÓN
+    this.empresaNombre = this.configService.getEmpresaNombreFallback();
+    this.empresaLogo = this.configService.getEmpresaIconoFallback();
+
     // 🔥 VERIFICAR SI EL CACHÉ TIENE DATOS INCORRECTOS
-    const cachedEmpresa = this.cacheService.getEmpresaByName('InmoTable');
+    const empresaNombreConfig = this.configService.getEmpresaNombre();
+    const cachedEmpresa = this.cacheService.getEmpresaByName(empresaNombreConfig);
     if (cachedEmpresa &&
         (cachedEmpresa.telefono === undefined || cachedEmpresa.direccion === undefined)) {
       console.log('⚠️ Footer: Caché con datos incorrectos detectado, limpiando...');
@@ -67,7 +76,7 @@ export class FooterComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // 🔥 USAR EXACTAMENTE LA MISMA LÓGICA QUE NAVBAR
     console.log('🚀 Footer: Iniciando carga de datos de empresa...');
-    this.loadEmpresaFromCacheFirst(); // 🔥 CAMBIAR ESTE MÉTODO
+    this.loadEmpresaFromCacheFirst(); // 🔥 USAR CONFIGURACIÓN
   }
 
   ngOnDestroy(): void {
@@ -76,15 +85,20 @@ export class FooterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 🔥 CARGAR EMPRESA DESDE CACHÉ PERSISTENTE PRIMERO (AÑADIR HORARIO)
+   * 🔥 CARGAR EMPRESA DESDE CACHÉ PERSISTENTE PRIMERO (USANDO CONFIGURACIÓN)
    */
   private loadEmpresaFromCacheFirst(): void {
-    console.log('🔍 Footer: Buscando empresa en caché persistente...');
+    // 🔥 OBTENER NOMBRE DE EMPRESA DESDE CONFIGURACIÓN
+    const empresaNombreConfig = this.configService.getEmpresaNombre();
+    console.log('🔍 Footer: Buscando empresa en caché persistente (desde config):', empresaNombreConfig);
 
-    const cachedEmpresa = this.cacheService.getEmpresaByName('InmoTable');
+    const cachedEmpresa = this.cacheService.getEmpresaByName(empresaNombreConfig);
 
     if (cachedEmpresa) {
       console.log('✅ Footer: Empresa encontrada en caché persistente:', cachedEmpresa);
+
+      // 🔥 APLICAR COLORES INMEDIATAMENTE DESDE CACHÉ (SOLO SI NAVBAR NO LOS APLICÓ)
+      this.applyColorsFromCacheIfNeeded(cachedEmpresa);
 
       // 🔥 VERIFICAR ESPECÍFICAMENTE LOS CAMPOS QUE FALTAN
       console.log('🔍 Footer: Verificando campos específicos:', {
@@ -97,7 +111,7 @@ export class FooterComponent implements OnInit, OnDestroy {
 
       this.empresaNombre = cachedEmpresa.nombre;
 
-      // 🔥 MAPEAR CAMPOS CON LOGS DETALLADOS
+      // 🔥 MAPEAR CAMPOS CON LOGS DETALLADOS USANDO FALLBACKS DE CONFIG
       this.empresaTelefono = cachedEmpresa.telefono || '+34 612 345 789';
       console.log('📞 Footer: Teléfono final asignado:', this.empresaTelefono);
 
@@ -131,7 +145,7 @@ export class FooterComponent implements OnInit, OnDestroy {
         }
       });
 
-      // 🔥 PROCESAR LOGO (IGUAL QUE NAVBAR)
+      // 🔥 PROCESAR LOGO
       if (cachedEmpresa.logoDataUrl) {
         this.empresaLogo = cachedEmpresa.logoDataUrl;
         this.imageLoadedFromCache = true;
@@ -163,13 +177,14 @@ export class FooterComponent implements OnInit, OnDestroy {
     this.loadEmpresaFromAPI();
 }
   /**
-   * 🔄 CARGAR EMPRESA DESDE API (COPIADO DE NAVBAR Y ADAPTADO)
+   * 🔄 CARGAR EMPRESA DESDE API (USANDO CONFIGURACIÓN)
    */
   private async loadEmpresaFromAPI(): Promise<void> {
     try {
       console.log('🌐 Footer: Cargando datos de empresa desde API...');
 
-      const empresa = await this.empresaService.getByName('InmoTable')
+      // 🔥 USAR MÉTODO SIMPLIFICADO QUE USA CONFIGURACIÓN INTERNA
+      const empresa = await this.empresaService.getEmpresaPrincipal()
         .pipe(
           timeout(3000),
           catchError(() => this.empresaService.getFirstActive()),
@@ -181,7 +196,7 @@ export class FooterComponent implements OnInit, OnDestroy {
         console.log('📊 Footer: Empresa encontrada en API:', empresa);
 
         // Actualizar datos básicos (IGUAL QUE NAVBAR)
-        this.empresaNombre = empresa.nombre || 'InmoTable';
+        this.empresaNombre = empresa.nombre || this.configService.getEmpresaNombreFallback();
         this.fallbackUsed = false;
 
         // 🔥 MAPEAR CAMPOS ADICIONALES PARA FOOTER
@@ -232,10 +247,37 @@ export class FooterComponent implements OnInit, OnDestroy {
       } else {
         console.log('⚠️ Footer: No se encontró empresa, manteniendo valores por defecto');
         this.fallbackUsed = true;
+        this.empresaNombre = this.configService.getEmpresaNombreFallback();
+        this.empresaLogo = this.configService.getEmpresaIconoFallback();
       }
     } catch (error) {
       console.warn('⚠️ Footer: Error al cargar empresa desde API:', error);
       this.fallbackUsed = true;
+      this.empresaNombre = this.configService.getEmpresaNombreFallback();
+      this.empresaLogo = this.configService.getEmpresaIconoFallback();
+    }
+  }
+
+  /**
+   * 🔥 APLICAR COLORES DESDE CACHÉ SOLO SI ES NECESARIO
+   */
+  private applyColorsFromCacheIfNeeded(cachedEmpresa: any): void {
+    // Solo aplicar si hay colores definidos en caché y no se han aplicado aún
+    if (cachedEmpresa.colorPrimary) {
+      console.log('🎨 Footer: Aplicando colores desde caché');
+
+      const colorsFromCache = {
+        'color-primary': cachedEmpresa.colorPrimary,
+        'color-primary-dark': cachedEmpresa.colorPrimaryDark,
+        'color-primary-light': cachedEmpresa.colorPrimaryLight,
+        'color-primary-rgb': cachedEmpresa.colorPrimaryRgb
+      };
+
+      // Verificar si los colores actuales son diferentes
+      const currentColors = this.themeService.getCurrentColors();
+      if (currentColors.primary !== cachedEmpresa.colorPrimary) {
+        this.themeService.applyColorsFromEmpresa(colorsFromCache);
+      }
     }
   }
 
