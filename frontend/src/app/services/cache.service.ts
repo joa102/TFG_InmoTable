@@ -15,7 +15,7 @@ export interface EmpresaCacheData {
   estado: string;
   logoDataUrl?: string;
 
-  // 🔥 AÑADIR CAMPOS ADICIONALES PARA FOOTER
+  // Campos adicionales existentes
   telefono?: string;
   email?: string;
   direccion?: string;
@@ -30,6 +30,12 @@ export interface EmpresaCacheData {
   // Otros campos útiles
   horario?: string;
   idEmpresa?: string;
+
+  // 🔥 AÑADIR CAMPOS DE COLORES DINÁMICOS (ESTOS FALTABAN)
+  colorPrimary?: string;
+  colorPrimaryDark?: string;
+  colorPrimaryLight?: string;
+  colorPrimaryRgb?: string;
 }
 
 @Injectable({
