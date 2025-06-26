@@ -262,7 +262,13 @@ export class FooterComponent implements OnInit, OnDestroy {
    * 🔥 APLICAR COLORES DESDE CACHÉ SOLO SI ES NECESARIO
    */
   private applyColorsFromCacheIfNeeded(cachedEmpresa: any): void {
-    // Solo aplicar si hay colores definidos en caché y no se han aplicado aún
+    // 🔥 VERIFICAR SI YA FUERON APLICADOS POR NAVBAR
+    if (this.themeService.areColorsApplied()) {
+      console.log('🎨 Footer: Colores ya aplicados por otro componente');
+      return;
+    }
+
+    // Solo aplicar si hay colores definidos en caché
     if (cachedEmpresa.colorPrimary) {
       console.log('🎨 Footer: Aplicando colores desde caché');
 
@@ -273,11 +279,7 @@ export class FooterComponent implements OnInit, OnDestroy {
         'color-primary-rgb': cachedEmpresa.colorPrimaryRgb
       };
 
-      // Verificar si los colores actuales son diferentes
-      const currentColors = this.themeService.getCurrentColors();
-      if (currentColors.primary !== cachedEmpresa.colorPrimary) {
-        this.themeService.applyColorsFromEmpresa(colorsFromCache);
-      }
+      this.themeService.applyColorsFromEmpresa(colorsFromCache);
     }
   }
 
