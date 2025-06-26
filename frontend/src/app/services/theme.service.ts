@@ -12,6 +12,7 @@ export interface ThemeColors {
   providedIn: 'root'
 })
 export class ThemeService {
+  private colorsApplied = false; // 🔥 NUEVO FLAG
 
   // 🔥 COLORES POR DEFECTO (LOS ACTUALES)
   private readonly DEFAULT_COLORS: ThemeColors = {
@@ -77,9 +78,15 @@ export class ThemeService {
   }
 
   /**
-   * 🎨 APLICAR COLORES DESDE EMPRESA
+   * 🎨 APLICAR COLORES DESDE EMPRESA (MODIFICADO)
    */
   applyColorsFromEmpresa(empresa: any): void {
+    // 🔥 EVITAR APLICACIONES MÚLTIPLES
+    if (this.colorsApplied) {
+      console.log('🎨 Colores ya aplicados, saltando...');
+      return;
+    }
+
     console.log('🏢 Aplicando colores desde empresa:', empresa);
 
     const colors: Partial<ThemeColors> = {};
@@ -102,6 +109,7 @@ export class ThemeService {
     if (Object.keys(colors).length > 0) {
       console.log('🎨 Colores encontrados en empresa, aplicando:', colors);
       this.applyColors(colors);
+      this.colorsApplied = true; // 🔥 MARCAR COMO APLICADO
     } else {
       console.log('⚠️ No se encontraron colores en empresa, usando por defecto');
     }
@@ -114,6 +122,7 @@ export class ThemeService {
     console.log('🔄 Reseteando a colores por defecto');
     this.applyColors(this.DEFAULT_COLORS);
     localStorage.removeItem('inmotable_theme_colors');
+    this.colorsApplied = false; // 🔥 RESETEAR FLAG
   }
 
   /**
@@ -214,5 +223,12 @@ export class ThemeService {
       return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
     }
     return hexColor;
+  }
+
+  /**
+   * 🔥 NUEVO MÉTODO: VERIFICAR SI COLORES FUERON APLICADOS
+   */
+  areColorsApplied(): boolean {
+    return this.colorsApplied;
   }
 }

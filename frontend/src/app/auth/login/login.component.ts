@@ -109,6 +109,19 @@ import { AuthService, LoginCredentials } from '../../services/auth.service';
           </button>
         </form>
 
+        <!-- 🔥 SEPARADOR Y REGISTRO -->
+        <div class="mt-3">
+          <div class="text-center">
+            <span class="text-muted">o</span>
+          </div>
+          <div class="text-center mt-2">
+            <span class="text-muted me-2">¿No tienes cuenta?</span>
+            <a routerLink="/auth/register" class="text-decoration-none fw-bold">
+              Regístrate aquí
+            </a>
+          </div>
+        </div>
+
         <!-- Footer -->
         <div class="login-footer mt-3">
           <p class="text-center text-muted">

@@ -325,7 +325,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.cacheService.clear();
     console.log('🧹 Caché completamente limpiado');
 
-    // 🔥 RESETEAR COLORES A DEFAULT
+    // 🔥 RESETEAR COLORES A DEFAULT (RESETEA EL FLAG TAMBIÉN)
     this.themeService.resetToDefault();
 
     // Resetear estado usando configuración
@@ -335,8 +335,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.fallbackUsed = false;
     this.imageLoadedFromCache = false;
 
-    // Recargar datos
-    this.loadEmpresaFromCacheFirst();
+    // 🔥 PEQUEÑO DELAY PARA ASEGURAR LIMPIEZA ANTES DE RECARGAR
+    setTimeout(() => {
+      this.loadEmpresaFromCacheFirst();
+    }, 100);
   }
 
   /**
