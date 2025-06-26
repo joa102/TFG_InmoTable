@@ -97,4 +97,19 @@ export class ConfigService {
       console.groupEnd();
     }
   }
+
+  /**
+   * 🔥 DETECTAR SI LA CONFIGURACIÓN CAMBIÓ
+   */
+  hasConfigurationChanged(): boolean {
+    const currentConfig = this.getEmpresaNombre();
+    const lastKnownConfig = localStorage.getItem('inmotable_last_config');
+    
+    if (lastKnownConfig !== currentConfig) {
+      localStorage.setItem('inmotable_last_config', currentConfig);
+      return true;
+    }
+    
+    return false;
+  }
 }

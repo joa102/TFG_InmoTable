@@ -63,7 +63,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   };
 
   // 🎨 CONFIGURACIÓN DE SECCIONES
-  propertyTypes = ['Piso', 'Casa', 'Chalet', 'Apartamento', 'Local', 'Oficina'];
+  propertyTypes = ['Piso', 'Casa', 'Dúplex', 'Ático', 'Garaje', 'Local', 'Terreno'];
   locations = ['Centro', 'Zapillo', 'Nueva Andalucía', 'El Puche', 'Los Ángeles'];
   priceRanges = [
     { label: 'Hasta 100.000€', value: '0-100000' },
@@ -385,7 +385,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   goToProfile(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/perfil']);
   }
 
   // ===============================

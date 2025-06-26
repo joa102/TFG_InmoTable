@@ -50,6 +50,10 @@ export class CacheService {
 
   constructor() {
     console.log('🗂️ CacheService inicializado con persistencia');
+    
+    // 🔥 VERIFICAR SI LA CONFIGURACIÓN CAMBIÓ
+    this.checkConfigurationChange();
+    
     this.loadFromLocalStorage();
     this.cleanupExpiredItems();
 
@@ -373,6 +377,52 @@ export class CacheService {
       };
     } catch (error) {
       return { used: 'Error', keys: 0 };
+    }
+  }
+
+  // 🔥 NUEVO MÉTODO
+  private checkConfigurationChange(): void {
+    // Este método se puede expandir para detectar cambios de configuración
+    // y limpiar automáticamente el caché si es necesario
+    const configHash = this.generateConfigHash();
+    const lastConfigHash = localStorage.getItem('inmotable_config_hash');
+    
+    if (lastConfigHash && lastConfigHash !== configHash) {
+      console.log('⚠️ Configuración cambió, limpiando caché automáticamente');
+      this.clearAllCache();
+    }
+    
+    localStorage.setItem('inmotable_config_hash', configHash);
+  }
+
+  // 🔥 NUEVO MÉTODO
+  private generateConfigHash(): string {
+    // Generar hash simple basado en configuración actual
+    const config = JSON.stringify({
+      // Solo incluir valores que afecten el caché
+      empresa: 'InmoTable' // Usar valor fijo o desde environment
+    });
+    
+    // Hash simple
+    let hash = 0;
+    for (let i = 0; i < config.length; i++) {
+      const char = config.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return hash.toString();
+  }
+
+  // 🔥 NUEVO MÉTODO
+  private clearAllCache(): void {
+    try {
+      const keys = Object.keys(localStorage);
+      const cacheKeys = keys.filter(key => key.startsWith('inmotable_cache_'));
+      cacheKeys.forEach(key => localStorage.removeItem(key));
+      this.cache.clear();
+      console.log('🧹 Todo el caché eliminado por cambio de configuración');
+    } catch (error) {
+      console.error('❌ Error al limpiar caché:', error);
     }
   }
 }
