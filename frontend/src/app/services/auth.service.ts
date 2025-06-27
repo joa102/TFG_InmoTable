@@ -17,6 +17,7 @@ export interface User {
   fechaRegistro: string;
   ultimoLogin?: string;
   recordId: string;
+  recordIdCliente: string;
 }
 
 export interface LoginCredentials {
@@ -50,7 +51,8 @@ export class AuthService {
       agentes: [],
       fechaRegistro: '2024-01-01T10:00:00.000Z',
       ultimoLogin: undefined,
-      recordId: 'recZqPUvF8iL6vr8t'
+      recordId: 'recZqPUvF8iL6vr8t',
+      recordIdCliente: 'rectky7CqkrJSVGbg'
     },
     {
       id: 2,
@@ -64,7 +66,8 @@ export class AuthService {
       agentes: ['6'],
       fechaRegistro: '2024-01-15T10:00:00.000Z',
       ultimoLogin: undefined,
-      recordId: 'rectky7CqkrJSVGbg'
+      recordId: 'rectky7CqkrJSVGbg',
+      recordIdCliente: 'rectky7CqkrJSVGbg'
     },
     {
       id: 56,
@@ -78,7 +81,23 @@ export class AuthService {
       agentes: [],
       fechaRegistro: '2024-02-01T10:00:00.000Z',
       ultimoLogin: undefined,
-      recordId: 'recn081eZJuWJ1pti'
+      recordId: 'recn081eZJuWJ1pti',
+      recordIdCliente: 'recXNz6ABzdQ04Bre'
+    },
+    {
+      id: 215,
+      email: 'joa102@inlumine.ual.es',
+      password: '123456',
+      rol: 'cliente',
+      estado: 'Activo',
+      nombre: 'Juan Diego Ortega Aranda',
+      telefono: '612345789',
+      clientes: ['204'],
+      agentes: [],
+      fechaRegistro: '2025-06-25T10:00:00.000Z',
+      ultimoLogin: undefined,
+      recordId: 'recpRKo2NI3fiIg6b',
+      recordIdCliente: 'recrq9z2GFijDLWIe'
     }
   ];
 

@@ -123,39 +123,23 @@ export class AppointmentFormComponent implements OnInit, OnDestroy {
     let url = this.airtableBaseUrl;
     const params = new URLSearchParams();
 
-    // Agregar ID de propiedad si existe
+    // ✅ SOLO AGREGAR PROPIEDAD SI EXISTE
     if (this.propertyRecordId) {
       params.append('prefill_Propiedad', this.propertyRecordId);
       params.append('hide_Propiedad', 'true');
       console.log('✅ Agregando propiedad al formulario:', this.propertyRecordId);
     }
 
-    // 🔥 USAR EL recordId DEL USUARIO LOGUEADO
-    if (this.currentUser?.recordId) {
-      params.append('prefill_Cliente', this.currentUser.recordId);
+    // ✅ SOLO AGREGAR CLIENTE CON recordIdCLiente DEL USUARIO LOGUEADO
+    if (this.currentUser?.recordIdCliente) {
+      params.append('prefill_Cliente', this.currentUser.recordIdCliente);
       params.append('hide_Cliente', 'true');
-      console.log('✅ Agregando cliente del usuario logueado:', this.currentUser.recordId);
+      console.log('✅ Agregando cliente del usuario logueado:', this.currentUser.recordIdCliente);
     } else {
       console.warn('⚠️ No se encontró recordId del usuario, usando valor por defecto');
       // Fallback al valor anterior si no hay recordId
-      params.append('prefill_Cliente', 'recDmY1oJL8wNTO9q');
+      params.append('prefill_Cliente', 'recrq9z2GFijDLWIe');
       params.append('hide_Cliente', 'true');
-    }
-
-    // Parámetros adicionales
-    params.append('hide_Estado', 'true');
-
-    // Prerellenar información adicional del usuario si está disponible
-    if (this.currentUser) {
-      if (this.currentUser.nombre) {
-        params.append('prefill_Nombre_Cliente', this.currentUser.nombre);
-      }
-      if (this.currentUser.email) {
-        params.append('prefill_Email_Cliente', this.currentUser.email);
-      }
-      if (this.currentUser.telefono) {
-        params.append('prefill_Teléfono_Cliente', this.currentUser.telefono);
-      }
     }
 
     // Construir URL final
@@ -248,7 +232,7 @@ export class AppointmentFormComponent implements OnInit, OnDestroy {
    */
   hasPropertyFeatures(): boolean {
     if (!this.selectedProperty?.fields) return false;
-    
+
     return !!(
       this.selectedProperty.fields['Habitaciones'] ||
       this.selectedProperty.fields['Baños'] ||
