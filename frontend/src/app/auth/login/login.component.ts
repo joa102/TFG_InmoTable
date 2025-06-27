@@ -283,8 +283,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   fillClient3(): void {
     this.loginForm.patchValue({
-      email: 'tito19@carrillo.net',
-      password: 'cliente123'
+      email: 'joa102@inlumine.ual.es',
+      password: '123456'
     });
     this.clearMessages();
   }
