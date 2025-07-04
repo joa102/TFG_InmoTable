@@ -1,5 +1,5 @@
-%\documentclass[11pt, oneside]{book}
-\documentclass[11pt, twoside]{book}  %importante cambiar si es libro
+\documentclass[11pt, oneside]{book}
+%\documentclass[11pt, twoside]{book}  %importante cambiar si es libro
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
@@ -35,6 +35,7 @@
 \captionsetup{font=small,labelfont=bf} % para tamaño y tipo fuentes pie de foto
 \usepackage{multirow} % para las tablas unir columnas
 \usepackage{multicol} %para escribir en multiples columnas
+\usepackage[table]{xcolor} % para colorear filas de tablas
 
 % Referencias y biblio
 
@@ -106,7 +107,13 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 
 \begin{dedicatoria}
-    Texto de la dedicatoria
+    \justify{
+        A mis padres, por darme la oportunidad de estudiar, por su apoyo incondicional y por siempre creer en mí. Vuestra confianza fue, sin duda, mi mayor impulso.
+        \\
+        A mis compañeros de clase, por ser ese apoyo tan importante durante toda la carrera. Hicisteis que el camino fuera mucho más llevadero y divertido.
+        \\
+        A mi tutor, por su guía y paciencia. Gracias a él pude hacer el mejor trabajo posible.
+    }
 \end{dedicatoria}
 
 
@@ -126,7 +133,7 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 \input{contenido1}
 
-\input{contenido2}
+%\input{contenido2}
 
 
 \addcontentsline{toc}{section}{BIBLIOGRAFÍA }
@@ -135,7 +142,7 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \appendix
 %\clearpage
 
-\input{apendices}
+%\input{apendices}
 %\input{pmbok}
 
 \clearpage

@@ -2,14 +2,59 @@
 \babel@toc {spanish}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces Actor ACT-01: Sin Usuario (Web App)}}{11}{table.caption.6}%
+\contentsline {table}{\numberline {2.2}{\ignorespaces Actor ACT-02: Cliente (Web App)}}{11}{table.caption.7}%
+\contentsline {table}{\numberline {2.3}{\ignorespaces Actor ACT-03: Agente (AirTable)}}{12}{table.caption.8}%
+\contentsline {table}{\numberline {2.4}{\ignorespaces Actor ACT-04: Administrador (AirTable)}}{12}{table.caption.9}%
+\contentsline {table}{\numberline {2.5}{\ignorespaces RF 01.1: Buscar Propiedades por Criterios}}{12}{table.caption.10}%
+\contentsline {table}{\numberline {2.6}{\ignorespaces RF 01.2: Visualizar Listado de Propiedades}}{12}{table.caption.11}%
+\contentsline {table}{\numberline {2.7}{\ignorespaces RF 01.3: Visualizar Detalle de Propiedad}}{13}{table.caption.12}%
+\contentsline {table}{\numberline {2.8}{\ignorespaces RF 01.4: Registrarse como Cliente}}{13}{table.caption.13}%
+\contentsline {table}{\numberline {2.9}{\ignorespaces RF 01.5: Iniciar Sesión (Cliente)}}{13}{table.caption.14}%
+\contentsline {table}{\numberline {2.10}{\ignorespaces RF 01.6: Enviar Mensaje de Contacto}}{13}{table.caption.15}%
+\contentsline {table}{\numberline {2.11}{\ignorespaces RF 01.7: Solicitar Cita para Propiedad}}{13}{table.caption.16}%
+\contentsline {table}{\numberline {2.12}{\ignorespaces RF 02.1: Crear Nueva Propiedad}}{14}{table.caption.17}%
+\contentsline {table}{\numberline {2.13}{\ignorespaces RF 02.2: Consultar Propiedades (en Airtable)}}{14}{table.caption.18}%
+\contentsline {table}{\numberline {2.14}{\ignorespaces RF 02.3: Actualizar Información de Propiedad}}{14}{table.caption.19}%
+\contentsline {table}{\numberline {2.15}{\ignorespaces RF 02.4: Eliminar Propiedad}}{14}{table.caption.20}%
+\contentsline {table}{\numberline {2.16}{\ignorespaces RF 03.1: Programar y Modificar Citas}}{15}{table.caption.21}%
+\contentsline {table}{\numberline {2.17}{\ignorespaces RF 03.2: Visualizar Calendario de Citas}}{15}{table.caption.22}%
+\contentsline {table}{\numberline {2.18}{\ignorespaces RF 03.3: Actualizar Estado de Cita}}{15}{table.caption.23}%
+\contentsline {table}{\numberline {2.19}{\ignorespaces RF 04.1: Registrar Nuevo Cliente}}{15}{table.caption.24}%
+\contentsline {table}{\numberline {2.20}{\ignorespaces RF 04.2: Consultar y Actualizar Cliente}}{16}{table.caption.25}%
+\contentsline {table}{\numberline {2.21}{\ignorespaces RF 05.1: Visualizar Análisis de Stock}}{16}{table.caption.26}%
+\contentsline {table}{\numberline {2.22}{\ignorespaces RF 05.2: Visualizar Media de Precios por Tipo de Inmueble}}{16}{table.caption.27}%
+\contentsline {table}{\numberline {2.23}{\ignorespaces RF 05.3: Visualizar Visitas por Propiedad}}{16}{table.caption.28}%
+\contentsline {table}{\numberline {2.24}{\ignorespaces RF 05.4: Visualizar Tiempo Medio de Venta/Rotación}}{17}{table.caption.29}%
+\contentsline {table}{\numberline {2.25}{\ignorespaces RF 05.5: Visualizar Propiedades con Baja Rotación}}{17}{table.caption.30}%
+\contentsline {table}{\numberline {2.26}{\ignorespaces RF 05.6: Visualizar Distribución por Tipo de Propiedad}}{17}{table.caption.31}%
+\contentsline {table}{\numberline {2.27}{\ignorespaces RF 06.1: Administrar Usuarios Internos y Roles}}{17}{table.caption.32}%
+\contentsline {table}{\numberline {2.28}{\ignorespaces RF 06.2: Configurar y Supervisar Automatizaciones}}{18}{table.caption.33}%
+\contentsline {table}{\numberline {2.29}{\ignorespaces RF 06.3: Personalizar Vistas y Formularios (Airtable)}}{18}{table.caption.34}%
+\contentsline {table}{\numberline {2.30}{\ignorespaces Requisito RNF-01.1}}{18}{table.caption.35}%
+\contentsline {table}{\numberline {2.31}{\ignorespaces Requisito RNF-01.2}}{18}{table.caption.36}%
+\contentsline {table}{\numberline {2.32}{\ignorespaces Requisito RNF-01.3}}{19}{table.caption.37}%
+\contentsline {table}{\numberline {2.33}{\ignorespaces Requisito RNF-02.1}}{19}{table.caption.38}%
+\contentsline {table}{\numberline {2.34}{\ignorespaces Requisito RNF-02.2}}{19}{table.caption.39}%
+\contentsline {table}{\numberline {2.35}{\ignorespaces Requisito RNF-02.3}}{19}{table.caption.40}%
+\contentsline {table}{\numberline {2.36}{\ignorespaces Requisito RNF-03.1}}{19}{table.caption.41}%
+\contentsline {table}{\numberline {2.37}{\ignorespaces Requisito RNF-03.2}}{20}{table.caption.42}%
+\contentsline {table}{\numberline {2.38}{\ignorespaces Requisito RNF-04.1}}{20}{table.caption.43}%
+\contentsline {table}{\numberline {2.39}{\ignorespaces Requisito RNF-04.2}}{20}{table.caption.44}%
+\contentsline {table}{\numberline {2.40}{\ignorespaces Requisito RNF-04.3}}{20}{table.caption.45}%
+\contentsline {table}{\numberline {2.41}{\ignorespaces Requisito RNF-05.1}}{20}{table.caption.46}%
+\contentsline {table}{\numberline {2.42}{\ignorespaces Requisito RNF-05.2}}{21}{table.caption.47}%
+\contentsline {table}{\numberline {2.43}{\ignorespaces Requisito RNF-06.1}}{21}{table.caption.48}%
+\contentsline {table}{\numberline {2.44}{\ignorespaces Requisito RNF-06.2}}{21}{table.caption.49}%
+\contentsline {table}{\numberline {2.45}{\ignorespaces Requisito RNF-07.1}}{21}{table.caption.50}%
+\contentsline {table}{\numberline {2.46}{\ignorespaces Requisito RNF-07.2}}{21}{table.caption.51}%
+\contentsline {table}{\numberline {2.47}{\ignorespaces Requisito RNF-08.1}}{22}{table.caption.52}%
+\contentsline {table}{\numberline {2.48}{\ignorespaces Requisito RNF-08.2}}{22}{table.caption.53}%
+\contentsline {table}{\numberline {2.49}{\ignorespaces Requisito RNF-09.1}}{22}{table.caption.54}%
+\contentsline {table}{\numberline {2.50}{\ignorespaces Requisito RNF-09.2}}{22}{table.caption.55}%
+\contentsline {table}{\numberline {2.51}{\ignorespaces Requisito RNF-10.1}}{22}{table.caption.56}%
+\contentsline {table}{\numberline {2.52}{\ignorespaces Requisito RNF-10.2}}{23}{table.caption.57}%
+\contentsline {table}{\numberline {2.53}{\ignorespaces Comparativa de Costes y Enfoque de Airtable con Competidores Clave}}{26}{table.caption.60}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Tipos de letras.}}{7}{table.caption.6}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Campos de una entrada en archivo de bibliografía .bib}}{30}{table.caption.14}%
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {B.1}{\ignorespaces Tipos posibles de elementos en bibligrafía con natbib}}{32}{table.caption.15}%
