@@ -1,5 +1,5 @@
-# Cambiar de PHP-FPM a PHP con servidor incorporado
-FROM php:8.1-cli
+# Usar PHP con Apache para mejor compatibilidad con Render
+FROM php:8.1-apache
 
 # Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
@@ -18,10 +18,18 @@ RUN apt-get update && apt-get install -y \
     pcntl \
     bcmath \
     gd \
-    zip
+    zip \
+    && a2enmod rewrite \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Configurar Apache para Laravel
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # Establecer directorio de trabajo
 WORKDIR /var/www/html
@@ -30,10 +38,13 @@ WORKDIR /var/www/html
 COPY composer*.json ./
 
 # Instalar dependencias de PHP
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copiar archivos de la aplicación
 COPY . .
+
+# Completar instalación de Composer
+RUN composer dump-autoload --optimize
 
 # Crear directorios necesarios
 RUN mkdir -p storage/logs \
@@ -44,14 +55,19 @@ RUN mkdir -p storage/logs \
 
 # Establecer permisos
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 storage \
+    && chmod -R 775 bootstrap/cache
 
 # Crear health check
-RUN echo '<?php echo json_encode(["status" => "OK", "timestamp" => date("Y-m-d H:i:s")]); ?>' > public/health.php
+RUN echo '<?php echo json_encode(["status" => "OK", "app" => "InmoTable", "timestamp" => date("Y-m-d H:i:s")]); ?>' > public/health.php
 
-# Exponer puerto (Railway asignará automáticamente)
-EXPOSE 8000
+# Script de inicio que usa el puerto de Render
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
-# Comando para servir Laravel
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Exponer puerto 80 (Apache)
+EXPOSE 80
+
+# Comando de inicio
+CMD ["/usr/local/bin/start.sh"]
