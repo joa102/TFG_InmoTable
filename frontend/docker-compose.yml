@@ -1,0 +1,26 @@
+#version: '3.8'
+services:
+#  laravel:
+#    build:
+#      context: ./backend
+#      dockerfile: Dockerfile
+#    container_name: laravel_app
+#    ports:
+#      - "8000:80"
+#    volumes:
+#      - ./backend:/var/www/html
+#    environment:
+#      AIRTABLE_ACCESS_TOKEN: ${AIRTABLE_ACCESS_TOKEN}
+#      AIRTABLE_BASE_ID: ${AIRTABLE_BASE_ID}
+#      AIRTABLE_TABLE_NAME: ${AIRTABLE_TABLE_NAME}
+
+  angular:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: angular_app
+    ports:
+      - "4200:80"
+    # O puedes montar bind si quieres desarrollo en caliente, pero dado que construyes en Node, no hace falta en prod
+    # volumes:
+    #   - ./frontend:/app
