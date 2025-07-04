@@ -2,44 +2,81 @@
 \babel@toc {spanish}{}\relax 
 ~\hfill \small {Página}\par 
 \vspace {2pt} \hrule \vspace {5mm} \par 
-\contentsline {chapter}{Resumen y Abstract}{\es@scroman {xii}}{chapter*.4}%
+\contentsline {chapter}{Resumen y Abstract}{\es@scroman {xi}}{chapter*.3}%
 \contentsline {chapter}{\numberline {1}Introducción}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Motivación}{1}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Objetivos}{1}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Planificación Temporal}{2}{section.1.3}%
-\contentsline {chapter}{\numberline {2}Consideraciones generales}{5}{chapter.2}%
-\contentsline {chapter}{\numberline {3}Normas fundamentales del formato}{7}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Estilo, Tipografía y Maquetado}{7}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Estilo ual de latex}{8}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Figuras y tablas}{8}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Listados de código}{9}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Utilización del entorno verbatim}{9}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Utilización de paquete listing}{9}{subsection.3.4.2}%
-\contentsline {chapter}{\numberline {4}Buenas prácticas}{11}{chapter.4}%
-\contentsline {chapter}{\numberline {5}Apartados del trabajo }{15}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Bloque inicial de identificación}{15}{section.5.1}%
-\contentsline {subsection}{\numberline {5.1.1}Portada y contraportada}{15}{subsection.5.1.1}%
-\contentsline {paragraph}{Titulo}{15}{subsection.5.1.1}%
-\contentsline {paragraph}{Resumen }{15}{subsection.5.1.1}%
-\contentsline {subsection}{\numberline {5.1.2}Portadilla}{15}{subsection.5.1.2}%
-\contentsline {subsection}{\numberline {5.1.3}Índices y listas}{16}{subsection.5.1.3}%
-\contentsline {section}{\numberline {5.2}Introducción}{16}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Desarrollo o cuerpo del documento}{16}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Conclusiones}{17}{section.5.4}%
-\contentsline {section}{\numberline {5.5}Bibliografía}{17}{section.5.5}%
-\contentsline {section}{\numberline {5.6}Anexos}{17}{section.5.6}%
-\contentsline {chapter}{\numberline {6}Apartado de INTRODUCCIÓN}{19}{chapter.6}%
-\contentsline {chapter}{\numberline {7}Apartados del CUERPO DEL DOCUMENTO}{21}{chapter.7}%
-\contentsline {paragraph}{Objetivos o cuestiones de investigación}{21}{figure.caption.11}%
-\contentsline {paragraph}{Planificación temporal}{21}{figure.caption.11}%
-\contentsline {paragraph}{Contextualización o estado del arte}{21}{figure.caption.12}%
-\contentsline {paragraph}{Metodología}{23}{figure.caption.12}%
-\contentsline {paragraph}{Resultados}{23}{figure.caption.12}%
-\contentsline {chapter}{\numberline {8}Apartado BIBLIOGRAFIA}{25}{chapter.8}%
-\contentsline {section}{\numberline {8.1}Como citar}{25}{section.8.1}%
-\contentsline {section}{\numberline {8.2}Apartado referencias}{25}{section.8.2}%
-\contentsline {section}{\numberline {8.3}Archivos .bib}{26}{section.8.3}%
-\contentsline {section}{BIBLIOGRAFÍA }{26}{section.8.3}%
- \vspace {5mm} \hrule \par 
-\contentsline {chapter}{\numberline {A}Contenido de una entrada en .bib}{29}{appendix.Alph1}%
-\contentsline {chapter}{\numberline {B}Tipos de referencias}{31}{appendix.Alph2}%
+\contentsline {section}{\numberline {1.2}Objetivos}{3}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Objetivo principal}{3}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Objetivos específicos}{3}{subsection.1.2.2}%
+\contentsline {section}{\numberline {1.3}Planificación Temporal}{4}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Resumen del documento}{8}{section.1.4}%
+\contentsline {chapter}{\numberline {2}Análisis de viabilidad}{10}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Situación actual}{10}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Ingeniería de Requisitos}{11}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Actores}{11}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Requisitos Funcionales}{12}{subsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.2.1}Requisitos Funcionales de la Aplicación Web}{12}{subsubsection.2.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2.2}Requisitos Funcionales del Sistema de Gestión Interna (Airtable)}{14}{subsubsection.2.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Requisitos No Funcionales}{18}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Casos de Uso}{23}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Aplicación web}{23}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Airtable}{24}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}Análisis de costes}{25}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Modelos de desarrollo y tecnologías}{29}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Metodologías de desarrollo}{29}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Comparativa con Otras Metodologías Comunes}{29}{subsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.1.1}Metodologías Tradicionales}{29}{subsubsection.3.1.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.1.2}Metodologías Ágiles}{31}{subsubsection.3.1.1.2}%
+\contentsline {subsubsection}{\numberline {3.1.1.3}DevOps}{33}{subsubsection.3.1.1.3}%
+\contentsline {subsection}{\numberline {3.1.2}Justificación y Razonamiento de la Elección Final (Scrum)}{34}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Arquitecturas de Software}{35}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Justificación de la Arquitectura Seleccionada (Híbrida de Tres Capas)}{36}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Comparativa con Otras Arquitecturas Comunes}{37}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Razonamiento de la Elección Final}{38}{subsection.3.2.3}%
+\contentsline {section}{\numberline {3.3}Tecnologías de Desarrollo}{38}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Tecnologías Frontend}{38}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Tecnologías Backend}{40}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Base de Datos y Gestión de Contenido}{42}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Conclusión sobre la Elección Tecnológica}{46}{subsection.3.3.4}%
+\contentsline {section}{\numberline {3.4}Herramientas de Desarrollo}{46}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Despliegue}{49}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Estrategia de Despliegue Componentizada}{49}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Despliegue del Frontend (Aplicación Web Angular) en Vercel}{50}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Despliegue del Backend (Laravel API) en Render}{51}{subsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.5.4}Interacción con Airtable en Producción}{51}{subsection.3.5.4}%
+\contentsline {section}{\numberline {3.6}Conclusiones}{52}{section.3.6}%
+\contentsline {chapter}{\numberline {4}InmoTable}{54}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Descripción de la aplicación}{54}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Diseño de la arquitectura}{54}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Modelo de Datos}{57}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Diseño e implementación}{59}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Prototipado de la interfaz}{59}{subsection.4.4.1}%
+\contentsline {subsubsection}{\numberline {4.4.1.1}Mockup de la Página de Inicio (Landing Page)}{60}{subsubsection.4.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.4.1.2}Mockup de la Página de Listado de Propiedades}{61}{subsubsection.4.4.1.2}%
+\contentsline {subsubsection}{\numberline {4.4.1.3}Mockup de la Página de Detalle de Propiedad}{62}{subsubsection.4.4.1.3}%
+\contentsline {subsubsection}{\numberline {4.4.1.4}Mockup de Formulario de Solicitud de Cita}{63}{subsubsection.4.4.1.4}%
+\contentsline {subsubsection}{\numberline {4.4.1.5}Mockup de Formulario de Contacto}{64}{subsubsection.4.4.1.5}%
+\contentsline {subsubsection}{\numberline {4.4.1.6}Justificación de las Desviaciones entre Prototipo e Implementación Real}{64}{subsubsection.4.4.1.6}%
+\contentsline {subsection}{\numberline {4.4.2}Diseño de la interfaz}{65}{subsection.4.4.2}%
+\contentsline {subsubsection}{\numberline {4.4.2.1}Módulo: Componentes Globales de la Interfaz del Cliente}{65}{subsubsection.4.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.4.2.2}Módulo: Gestión de Propiedades}{71}{subsubsection.4.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.4.2.3}Módulo: Gestión de Clientes y Preferencias}{80}{subsubsection.4.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.4.2.4}Módulo: Gestión de Citas}{90}{subsubsection.4.4.2.4}%
+\contentsline {subsubsection}{\numberline {4.4.2.5}Módulo: Análisis de Negocio}{94}{subsubsection.4.4.2.5}%
+\contentsline {subsubsection}{\numberline {4.4.2.6}Módulo: Automatizaciones (Visión General)}{104}{subsubsection.4.4.2.6}%
+\contentsline {subsubsection}{\numberline {4.4.2.7}Módulo: Gestión de Cuentas de Usuario y Roles de Acceso (Airtable)}{109}{subsubsection.4.4.2.7}%
+\contentsline {subsection}{\numberline {4.4.3}Flujo de la aplicación}{110}{subsection.4.4.3}%
+\contentsline {subsubsection}{\numberline {4.4.3.1}Flujo de cargar el Formulario de Cita}{110}{subsubsection.4.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.4.3.2}Flujo de Actualización de Datos de Usuario (Cliente)}{111}{subsubsection.4.4.3.2}%
+\contentsline {subsubsection}{\numberline {4.4.3.3}Flujo de Gestión de Propiedades Favoritas (Cliente)}{113}{subsubsection.4.4.3.3}%
+\contentsline {subsection}{\numberline {4.4.4}Implementación}{115}{subsection.4.4.4}%
+\contentsline {subsubsection}{\numberline {4.4.4.1}Estructura General del Proyecto}{115}{subsubsection.4.4.4.1}%
+\contentsline {subsubsection}{\numberline {4.4.4.2}Implementación del Frontend (Aplicación Web Angular)}{116}{subsubsection.4.4.4.2}%
+\contentsline {subsubsection}{\numberline {4.4.4.3}Implementación del Backend (Laravel API)}{120}{subsubsection.4.4.4.3}%
+\contentsline {subsubsection}{\numberline {4.4.4.4}Patrones de Integración con Airtable}{122}{subsubsection.4.4.4.4}%
+\contentsline {subsubsection}{\numberline {4.4.4.5}Entorno de Desarrollo y Despliegue (Docker)}{123}{subsubsection.4.4.4.5}%
+\contentsline {chapter}{\numberline {5}Conclusiones y Trabajos Futuros}{124}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Conclusiones}{124}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Conocimientos Académicos Adquiridos}{124}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Trabajos Futuros}{125}{section.5.3}%
+\contentsline {section}{BIBLIOGRAFÍA }{125}{section.5.3}%
