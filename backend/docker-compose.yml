@@ -2,7 +2,7 @@ services:
   # Servicio PHP-FPM
   app:
     build:
-      context: .
+      context: ./
       dockerfile: Dockerfile
     container_name: inmotable_app
     restart: unless-stopped
