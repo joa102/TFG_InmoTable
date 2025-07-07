@@ -29,6 +29,7 @@ return [
         'https://tfg-inmo-table-git-features-juandis-projects-f502d067.vercel.app',     // 🔥 Tu dominio real de Vercel
         'https://tfg-inmo-table-4kg810yyq-juandis-projects-f502d067.vercel.app',         // 🔥 Si tienes otro dominio
         'https://tfg-inmo-table-git-main-juandis-projects-f502d067.vercel.app',            // 🔥 Reemplaza con tu dominio real
+        'https://tfg-inmotable.vercel.app/',   // ← dominio de producción,
 
         // 🔥 RENDER BACKEND (para pruebas internas)
         'https://tfg-inmotable.onrender.com',
@@ -38,6 +39,7 @@ return [
         // 🔥 PATRONES PARA DOMINIOS DINÁMICOS DE VERCEL
         '/^https:\/\/.*\.vercel\.app$/',
         '/^https:\/\/.*-.*\.vercel\.app$/',
+        'https://.*\.vercel\.app',
     ],
 
     'allowed_headers' => ['*'],
