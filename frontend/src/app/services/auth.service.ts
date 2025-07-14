@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { ApiService } from './api.service';
 
 // 🔥 INTERFACES SIMPLES PARA LOGIN FALSO
 export interface User {
@@ -106,8 +107,73 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
   private tokenSubject = new BehaviorSubject<string | null>(this.getStoredToken());
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private apiService: ApiService,) {
     console.log('🔥 AuthService inicializado con', this.USUARIOS_PRUEBA.length, 'usuarios de prueba');
+  }
+
+  // 🔒 CREAR CLIENTE (REQUIERE AUTH)
+  login2(credentials: LoginCredentials): Observable<any> {
+  console.log(credentials);
+
+  return this.apiService.post<any>('login', credentials)
+    .pipe(
+      map((res: any) => {
+        console.log('📦 Respuesta completa:', res);
+
+        // 🔥 NO HAGAS ESTO: const user: User = res.user;
+        // El servidor envía propiedades con mayúsculas que no coinciden con la interfaz
+
+        const rawUser = res.user; // Datos sin tipear del servidor
+        console.log('👤 Usuario crudo del servidor:', rawUser);
+        console.log('🔍 Estado del servidor:', rawUser.Estado); // Esto SÍ funciona
+
+        // 🔥 MAPEAR CORRECTAMENTE A LA INTERFAZ User
+        const user: User = {
+          id: rawUser['ID Usuario'] || rawUser.id || rawUser.ID || 0,
+          email: rawUser.Email || rawUser.email || '',
+          //password: '', // No enviar password
+          password: rawUser.password || rawUser.Password || '',
+          rol: (rawUser.Rol || rawUser.rol || 'cliente').toLowerCase() as 'admin' | 'agente' | 'cliente',
+          estado: rawUser.Estado || rawUser.estado || 'Activo', // 🔥 MAPEO CORRECTO
+          nombre: rawUser.Nombre || rawUser.nombre || '',
+          telefono: rawUser.Telefono || rawUser.telefono || rawUser.Teléfono || '',
+          clientes: rawUser.Clientes || rawUser.clientes || [],
+          agentes: rawUser.Agentes || rawUser.agentes || [],
+          fechaRegistro: rawUser['Fecha de Registro'] || rawUser.fechaRegistro || new Date().toISOString(),
+          ultimoLogin: new Date().toISOString(),
+          recordId: rawUser.RECORD_ID || rawUser.recordId || '',
+          recordIdCliente: rawUser.recordIdCliente || ''
+        };
+
+        console.log('✅ Usuario mapeado correctamente:', user);
+        console.log('🔍 Estado mapeado:', user.estado); // Ahora esto SÍ funciona
+
+        const token: string = res.data?.access_token || res.token || '';
+        console.log('🔑 Token extraído:', token ? 'Presente' : 'FALTANTE');
+
+        if (!user.email || !user.nombre) {
+          throw new Error('Datos de usuario incompletos');
+        }
+
+        if (user.estado !== 'Activo') {
+          throw new Error('Usuario inactivo');
+        }
+
+        // Guardar usuario mapeado
+        this.setStoredUser(user);
+        this.setStoredToken(token);
+
+        const authResp: AuthResponse = {
+          success: true,
+          message: 'Login exitoso',
+          user,
+          token
+        };
+
+        console.log('🎉 Login completado:', authResp);
+        return authResp;
+      })
+    );
   }
 
   // 🔥 LOGIN FALSO CON SIMULACIÓN DE DELAY

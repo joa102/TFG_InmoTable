@@ -306,7 +306,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: this.loginForm.get('password')?.value
     };
 
-    this.authService.login(credentials)
+    //this.authService.login(credentials)
+    this.authService.login2(credentials)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {

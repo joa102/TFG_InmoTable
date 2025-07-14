@@ -6,6 +6,7 @@ use App\Http\Controllers\CitaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\AgenteController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +79,8 @@ Route::prefix('usuarios')->group(function () {
 //     Route::get('usuarios/{recordId}', [UsuarioController::class, 'show']);
 //     Route::put('usuarios/{recordId}', [UsuarioController::class, 'update']);
 // });
+
+Route::post('/login', [AuthController::class, 'login']);
 
 // 🔥 RUTA DE HEALTH CHECK
 Route::get('/health', function () {
