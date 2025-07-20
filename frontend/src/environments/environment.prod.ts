@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8000/api',
-  //apiUrl: 'https://tfg-inmotable.onrender.com/api',
+  //apiUrl: 'http://localhost:8000/api',
+  apiUrl: 'https://tfg-inmotable.onrender.com/api',
   apiTimeout: 30000,
   appName: 'InmobTable',
   version: '1.0.0',
